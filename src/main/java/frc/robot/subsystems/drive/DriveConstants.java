@@ -82,7 +82,7 @@ public class DriveConstants {
       DriveTrainSimulationConfig.Default()
           .withCustomModuleTranslations(moduleTranslations)
           .withRobotMass(Kilogram.of(robotMassKg))
-          .withGyro(COTS.ofPigeon2())
+          .withGyro(COTS.ofNav2X())
           .withSwerveModule(
               () ->
                   new SwerveModuleSimulation(

@@ -31,7 +31,7 @@ import java.util.function.DoubleSupplier;
  * <p>This version includes an overload for Spark signals, which checks for errors to ensure that
  * all measurements in the sample are valid.
  */
-public class SparkOdometryThread {
+public class SparkOdometryThread extends Thread {
   private final List<SparkBase> sparks = new ArrayList<>();
   private final List<DoubleSupplier> sparkSignals = new ArrayList<>();
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
@@ -98,7 +98,7 @@ public class SparkOdometryThread {
     return queue;
   }
 
-  private void run() {
+  public void run() { // made public
     // Save new data to queues
     Drive.odometryLock.lock();
     try {

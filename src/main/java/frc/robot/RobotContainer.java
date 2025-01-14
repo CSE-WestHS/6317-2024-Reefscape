@@ -15,17 +15,21 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIONavX;
+// import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
-import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
-import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
-import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
+import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
+import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+// import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
+// import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
+// import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import org.ironmaple.simulation.SimulatedArena;
@@ -64,17 +68,16 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(0),
-                new ModuleIOTalonFX(TalonFXModuleConstants.frontLeft),
-                new ModuleIOTalonFX(TalonFXModuleConstants.frontRight),
-                new ModuleIOTalonFX(TalonFXModuleConstants.rearLeft),
-                new ModuleIOTalonFX(TalonFXModuleConstants.rearRight),
-                PhoenixOdometryThread.getInstance());
+                new GyroIONavX(),
+                new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
+                new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
+                new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
+                new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
+                SparkOdometryThread.getInstance());
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(
-                    VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+                new VisionIOLimelight(VisionConstants.camera0Name, () -> new Rotation2d()));
         break;
 
       case SIM:
