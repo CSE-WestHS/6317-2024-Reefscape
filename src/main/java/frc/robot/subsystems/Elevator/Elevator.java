@@ -1,13 +1,14 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Elevator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+// import frc.robot.subsystems.flywheel.FlywheelIOInputsAutoLogged;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-public class Flywheel extends SubsystemBase {
-  private final FlywheelIO flywheel;
-  private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+public class Elevator extends SubsystemBase {
+  private final ElevatorIO Elevator;
+  private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   private final String name;
 
@@ -18,8 +19,8 @@ public class Flywheel extends SubsystemBase {
   private final LoggedTunableNumber kV;
   private final LoggedTunableNumber kA;
 
-  public Flywheel(FlywheelIO io, FlywheelGains gains) {
-    flywheel = io;
+  public Elevator(ElevatorIO io, ElevatorGains gains) {
+    Elevator = io;
 
     name = io.getName();
 
@@ -33,14 +34,14 @@ public class Flywheel extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheel.updateInputs(inputs);
+    Elevator.updateInputs(inputs);
     Logger.processInputs(name, inputs);
 
     LoggedTunableNumber.ifChanged(
         hashCode(),
         (values) -> {
-          flywheel.setGains(
-              new FlywheelGains(values[0], values[1], values[2], values[3], values[4], values[5]));
+          Elevator.setGains(
+              new ElevatorGains(values[0], values[1], values[2], values[3], values[4], values[5]));
         },
         kP,
         kI,
@@ -51,11 +52,11 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setVelocity(double velocity) {
-    flywheel.setVelocity(velocity);
+    Elevator.setVelocity(velocity);
   }
 
   public void setVoltage(double voltage) {
-    flywheel.setVoltage(voltage);
+    Elevator.setVoltage(voltage);
   }
 
   public double getVelocity() {

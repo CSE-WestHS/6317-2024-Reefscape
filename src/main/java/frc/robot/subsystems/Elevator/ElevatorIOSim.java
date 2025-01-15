@@ -1,13 +1,13 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Elevator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelHardwareConfig;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
 
-public class FlywheelIOSim implements FlywheelIO {
+public class ElevatorIOSim implements ElevatorIO {
   private final String name;
 
   private final DCMotor gearBox;
@@ -18,7 +18,7 @@ public class FlywheelIOSim implements FlywheelIO {
 
   private double velocitySetpoint;
 
-  public FlywheelIOSim(String name, FlywheelHardwareConfig config) {
+  public ElevatorIOSim(String name, ElevatorHardwareConfig config) {
     this.name = name;
 
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
@@ -33,7 +33,7 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     sim.setInputVoltage(controller.calculate(sim.getAngularVelocityRadPerSec(), velocitySetpoint));
 
     inputs.velocity = sim.getAngularVelocity().magnitude();
@@ -46,7 +46,7 @@ public class FlywheelIOSim implements FlywheelIO {
   }
 
   @Override
-  public void setGains(FlywheelGains gains) {
+  public void setGains(ElevatorGains gains) {
     controller.setPID(gains.kP(), gains.kI(), gains.kD());
 
     System.out.println(name + " gains set to " + gains);

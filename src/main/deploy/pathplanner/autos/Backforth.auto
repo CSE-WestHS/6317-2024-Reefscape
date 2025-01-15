@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start"
+            "pathName": "forward 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go into Shoot from close"
+            "pathName": "back 1"
           }
         }
       ]

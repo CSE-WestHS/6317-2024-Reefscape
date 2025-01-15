@@ -1,14 +1,14 @@
 package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.Elevator.Elevator;
 import java.util.function.DoubleSupplier;
 
 public class FlywheelVelocityCommand extends Command {
-  private Flywheel flywheel;
+  private Elevator flywheel;
   private DoubleSupplier velocity;
 
-  public FlywheelVelocityCommand(Flywheel flywheel, DoubleSupplier velocity) {
+  public FlywheelVelocityCommand(Elevator flywheel, DoubleSupplier velocity) {
     this.flywheel = flywheel;
     this.velocity = velocity;
     addRequirements(flywheel);

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -13,10 +13,10 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelHardwareConfig;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
 
-public class FlywheelIONeo implements FlywheelIO {
+public class ElevatorIONeo implements ElevatorIO {
   private final String name;
 
   private final SparkMax[] motors;
@@ -33,10 +33,10 @@ public class FlywheelIONeo implements FlywheelIO {
   private final Alert[] motorAlerts;
 
   private double velocitySetpoint = 0.0;
+  private int numMotors = 2;
+  private ElevatorGains gains;
 
-  private FlywheelGains gains;
-
-  public FlywheelIONeo(String name, FlywheelHardwareConfig config) {
+  public ElevatorIONeo(String name, ElevatorHardwareConfig config) {
     this.name = name;
 
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
@@ -49,7 +49,10 @@ public class FlywheelIONeo implements FlywheelIO {
     motorCurrents = new double[config.canIds().length];
     motorAlerts = new Alert[config.canIds().length];
 
-    motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
+    for (int i = 0; i < numMotors; ++i) {
+      motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
+    }
+
     leaderConfig =
         new SparkMaxConfig()
             .inverted(config.reversed()[0])
@@ -83,7 +86,7 @@ public class FlywheelIONeo implements FlywheelIO {
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     inputs.velocity = motors[0].getEncoder().getVelocity();
 
     inputs.desiredVelocity = velocitySetpoint;
@@ -128,7 +131,7 @@ public class FlywheelIONeo implements FlywheelIO {
   }
 
   @Override
-  public void setGains(FlywheelGains gains) {
+  public void setGains(ElevatorGains gains) {
     this.gains = gains;
     motors[0].configure(
         leaderConfig.apply(

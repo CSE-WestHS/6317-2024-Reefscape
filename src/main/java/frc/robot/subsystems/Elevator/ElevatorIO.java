@@ -1,11 +1,11 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Elevator;
 
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface FlywheelIO {
+public interface ElevatorIO {
   @AutoLog
-  public static class FlywheelIOInputs {
+  public static class ElevatorIOInputs {
     public double velocity = 0.0;
 
     public double desiredVelocity = 0.0;
@@ -20,15 +20,15 @@ public interface FlywheelIO {
     public double[] motorCurrents = {0.0};
   }
 
-  public default void updateInputs(FlywheelIOInputs inputs) {}
+  public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setVelocity(double velocity) {}
 
   public default void setVoltage(double voltage) {}
 
-  public default void setGains(FlywheelGains gains) {}
+  public default void setGains(ElevatorGains gains) {}
 
   public default String getName() {
-    return "Flywheel";
+    return "Elevator";
   }
 }
