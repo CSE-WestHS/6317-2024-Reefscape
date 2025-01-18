@@ -27,6 +27,8 @@ public interface ElevatorIO {
   public default void setVoltage(double voltage) {}
 
   public default void setGains(ElevatorGains gains) {}
+  
+  public default void setPosition(double position) {}
 
   public default String getName() {
     return "Elevator";

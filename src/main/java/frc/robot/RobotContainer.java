@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+import frc.robot.subsystems.Elevator.ElevatorIONeo;
+import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -47,6 +52,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Elevator elevator;
 
   @SuppressWarnings("unused")
   private final Vision vision;
@@ -78,6 +84,17 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(VisionConstants.camera0Name, () -> new Rotation2d()));
+        elevator =
+            new Elevator(
+                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA()));
+
         break;
 
       case SIM:
@@ -108,6 +125,16 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     driveSimulation::getSimulatedDriveTrainPose));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA()));
         break;
 
       default:
@@ -121,6 +148,16 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA()));
         break;
     }
 
@@ -196,6 +233,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+    driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }

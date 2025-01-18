@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Elevator;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 // import frc.robot.subsystems.flywheel.FlywheelIOInputsAutoLogged;
@@ -11,7 +13,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   private final String name;
-
+  private TrapezoidProfile.State goal;
   private final LoggedTunableNumber kP;
   private final LoggedTunableNumber kI;
   private final LoggedTunableNumber kD;
@@ -49,6 +51,14 @@ public class Elevator extends SubsystemBase {
         kS,
         kV,
         kA);
+  }
+
+  public void setPosition(double position) {
+    goal =
+        new TrapezoidProfile.State(
+            MathUtil.clamp(position, ElevatorConstants.MINPOS, ElevatorConstants.MAXPOS), 0);
+    Logger.recordOutput("Elevator/position", position);
+    Logger.recordOutput("Elevator/goalPosition", goal.toString());
   }
 
   public void setVelocity(double velocity) {

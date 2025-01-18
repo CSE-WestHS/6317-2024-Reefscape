@@ -76,7 +76,7 @@ public class PositionJointIONeo implements PositionJointIO {
     motorCurrents = new double[config.canIds().length];
     motorAlerts = new Alert[config.canIds().length];
 
-    motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
+    motors[0] = new SparkMax(config.canIds()[0] = 5, MotorType.kBrushless);
     leaderConfig =
         new SparkMaxConfig()
             .inverted(config.reversed()[0])

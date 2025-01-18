@@ -101,7 +101,7 @@ public class SparkMaxModuleConstants {
       Angle CANCoderOffset,
       boolean invertDrive,
       boolean invertSteer) {}
-
+  // CanID change: Used for global find
   public static final ModuleSpecificConfiguration frontLeft =
       new ModuleSpecificConfiguration(31, 41, 21, Rotations.of(-0.181640625 + 0.5), false, false);
   public static final ModuleSpecificConfiguration frontRight =
