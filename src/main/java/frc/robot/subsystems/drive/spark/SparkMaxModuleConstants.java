@@ -74,7 +74,7 @@ public class SparkMaxModuleConstants {
                   .uvwAverageDepth(2))
           .apply(
               new ClosedLoopConfig()
-                  .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                  .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                   .positionWrappingEnabled(true)
                   .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
                   .pidf(turnKp, 0.0, turnKd, 0.0))

@@ -19,7 +19,7 @@ import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 
 public class DriveConstants {
-  public static final double odometryFrequency = 250.0; // Hz (100 for CAN, 250 for CANFD)
+  public static final double odometryFrequency = 100.0; // Hz (100 for CAN, 250 for CANFD)
   public static final double trackWidth = Units.inchesToMeters(26.5);
   public static final double wheelBase = Units.inchesToMeters(26.5);
   public static final double driveBaseRadius = Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
@@ -42,7 +42,7 @@ public class DriveConstants {
   public static final int driveMotorCurrentLimit = 50;
   public static final double driveMotorGearRatio =
       1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)); // Mk4i L3 with 14t pinion
-  public static final DCMotor driveGearbox = DCMotor.getKrakenX60Foc(1);
+  public static final DCMotor driveGearbox = DCMotor.getNEO(1);
 
   // Drive encoder configuration
   public static final double driveEncoderPositionFactor =
@@ -53,7 +53,7 @@ public class DriveConstants {
   // Turn motor configuration
   public static final double steerMotorGearRatio = 150.0 / 7.0; // MK4i
   public static final int turnMotorCurrentLimit = 20;
-  public static final DCMotor turnGearbox = DCMotor.getKrakenX60Foc(1);
+  public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 
   // Turn encoder configuration
   public static final double turnEncoderPositionFactor =

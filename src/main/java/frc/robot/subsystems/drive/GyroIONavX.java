@@ -30,6 +30,7 @@ public class GyroIONavX implements GyroIO {
         yawPositionQueue.stream()
             .map((Double value) -> Rotation2d.fromDegrees(-value))
             .toArray(Rotation2d[]::new);
+    
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
   }

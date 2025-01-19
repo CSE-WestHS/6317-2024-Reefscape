@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 public class Compresors extends SubsystemBase {
   private final CompresorIO Compresor;
-  private final CompresorsIOInputsAutoLogged inputs = new CompressorsIOInputsAutoLogged();
-  private final Compressor pneumaticSolenoid = new Compressor(PneumaticsModuleType.REVPH);
+  private final CompresorIOInputsAutoLogged inputs = new CompresorIOInputsAutoLogged();
+  private final Compressor compressor1 = new Compressor(PneumaticsModuleType.REVPH);
   private final String name;
 
  
