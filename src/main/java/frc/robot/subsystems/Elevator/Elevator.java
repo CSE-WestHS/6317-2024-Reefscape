@@ -53,12 +53,8 @@ public class Elevator extends SubsystemBase {
         kA);
   }
 
-  public void setPosition(double position) {
-    goal =
-        new TrapezoidProfile.State(
-            MathUtil.clamp(position, ElevatorConstants.MINPOS, ElevatorConstants.MAXPOS), 0);
-    Logger.recordOutput("Elevator/position", position);
-    Logger.recordOutput("Elevator/goalPosition", goal.toString());
+  public void setPosition(double position, double desiredVelocity) {
+    Elevator.setPosition(position, desiredVelocity);
   }
 
   public void setVelocity(double velocity) {
