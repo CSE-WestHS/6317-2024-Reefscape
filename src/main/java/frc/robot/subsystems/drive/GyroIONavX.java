@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
+import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+
 import java.util.Queue;
 
 /** IO implementation for NavX. */
@@ -14,8 +16,8 @@ public class GyroIONavX implements GyroIO {
   private final Queue<Double> yawTimestampQueue;
 
   public GyroIONavX() {
-    yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-    yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(navX::getYaw);
+    yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
+    yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getYaw);
   }
 
   @Override

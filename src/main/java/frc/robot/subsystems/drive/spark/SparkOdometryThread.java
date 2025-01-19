@@ -32,7 +32,8 @@ import java.util.function.DoubleSupplier;
  * all measurements in the sample are valid.
  */
 public class SparkOdometryThread extends Thread {
-  private final List<SparkBase> sparks = new ArrayList<>();
+  public static final String CANBusName = "rio";
+private final List<SparkBase> sparks = new ArrayList<>();
   private final List<DoubleSupplier> sparkSignals = new ArrayList<>();
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
   private final List<Queue<Double>> sparkQueues = new ArrayList<>();

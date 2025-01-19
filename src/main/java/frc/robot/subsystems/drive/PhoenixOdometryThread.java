@@ -7,6 +7,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -32,7 +34,7 @@ public class PhoenixOdometryThread extends Thread {
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  private static boolean isCANFD = new CANBus(TalonFXModuleConstants.CANBusName).isNetworkFD();
+  private static boolean isCANFD = new CANBus(SparkOdometryThread.CANBusName).isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
   public static PhoenixOdometryThread getInstance() {

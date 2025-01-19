@@ -99,7 +99,7 @@ public class ModuleIOSpark implements ModuleIO {
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
     // Configure CANCoder
-    CANcoderConfiguration cancoderConfig = TalonFXModuleConstants.cancoderConfig;
+    CANcoderConfiguration cancoderConfig = SparkMaxModuleConstants.cancoderConfig;
     cancoderConfig.MagnetSensor.withMagnetOffset(constants.CANCoderOffset());
     PhoenixUtil.tryUntilOk(5, () -> cancoder.getConfigurator().apply(cancoderConfig, 0.25));
 
