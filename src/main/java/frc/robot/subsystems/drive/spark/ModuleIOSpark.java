@@ -35,6 +35,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants.ModuleSpecificConfiguration;
 import frc.robot.subsystems.drive.TalonFXModuleConstants;
@@ -102,37 +104,45 @@ public class ModuleIOSpark implements ModuleIO {
     CANcoderConfiguration cancoderConfig = SparkMaxModuleConstants.cancoderConfig;
     cancoderConfig.MagnetSensor.withMagnetOffset(constants.CANCoderOffset());
     PhoenixUtil.tryUntilOk(5, () -> cancoder.getConfigurator().apply(cancoderConfig, 0.25));
-
+    
+    
+    
+    
+    
     // Configure turn motor
     turnConfig = SparkMaxModuleConstants.turnMotorConfig;
     turnConfig.inverted(constants.invertSteer());
+      
+    
     tryUntilOk(
         turnSpark,
         5,
         () ->
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    
+
+
     tryUntilOk(
         turnSpark,
-        5,
-        () -> turnEncoder.setPosition(cancoder.getAbsolutePosition().getValueAsDouble()));
+        50,
+        () -> turnEncoder.setPosition(cancoder.getAbsolutePosition().getValueAsDouble() *2 * Math.PI));
+              
 
+    
+   
+    
+    
+    
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
         SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::getPosition);
-
     // Create CANCoder status signal
     turnAbsolutePosition = cancoder.getAbsolutePosition();
-    System.out.println("********************************************************************************************");
-    System.out.println(turnAbsolutePosition);
 
-// -1.802e-01 R rotations
-// 3.428e-01 R rotations
-// 1.724e-01 R rotations
-// 2.532e-01 R rotations
 
     // Configure periodic frames
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnAbsolutePosition);
@@ -173,7 +183,7 @@ public class ModuleIOSpark implements ModuleIO {
         (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
     ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
     inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
-
+    
     // Update odometry inputs
     inputs.odometryTimestamps =
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
@@ -182,7 +192,8 @@ public class ModuleIOSpark implements ModuleIO {
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
             .map((Double value) -> new Rotation2d(value))
-            .toArray(Rotation2d[]::new);
+            .toArray(Rotation2d[]::new); 
+    
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
