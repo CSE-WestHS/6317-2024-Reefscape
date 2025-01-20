@@ -7,6 +7,7 @@ package frc.robot.subsystems.LEDS;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 
 /** Add your docs here. */
@@ -17,17 +18,9 @@ public class LEDS {
         led = new AddressableLED(0);
         ledbuffer = new AddressableLEDBuffer(length);
         led.setLength(ledbuffer.getLength());
-
-        if (DriverStation.isDisabled()) {
-            for (int i = 0; i < ledbuffer.getLength(); ++i) {
-                ledbuffer.setLED(i, Color.kDarkRed);
-            }
-        }
-        if (DriverStation.isEnabled()) {
-            for (int i = 0; i < ledbuffer.getLength(); ++i) {
-                ledbuffer.setLED(i, Color.kGreen);
-            }
-        }
+        LEDPattern red = LEDPattern.solid(Color.kRed);
+        LEDPattern green = LEDPattern.solid(Color.kGreen);
+        
 
         led.setData(ledbuffer);
         led.start();
