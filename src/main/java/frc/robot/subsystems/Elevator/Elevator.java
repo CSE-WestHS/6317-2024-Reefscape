@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 // import frc.robot.subsystems.flywheel.FlywheelIOInputsAutoLogged;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.TunableElevatorFeedforward;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -20,9 +22,10 @@ public class Elevator extends SubsystemBase {
   private final LoggedTunableNumber kS;
   private final LoggedTunableNumber kV;
   private final LoggedTunableNumber kA;
-
+  // private final TunableElevatorFeedforward te = new TunableElevatorFeedforward();
   public Elevator(ElevatorIO io, ElevatorGains gains) {
     Elevator = io;
+    
 
     name = io.getName();
 

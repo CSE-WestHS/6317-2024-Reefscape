@@ -12,6 +12,7 @@ public class ElevatorConstants {
 
   public static final ElevatorGains EXAMPLE_GAINS =
       new ElevatorGains(0.2, 0.0, 0.0, 0.0, 0.065, 0.0);
+    
   public static final double MINPOS = 0;
   public static final double MAXPOS = 0;
 }

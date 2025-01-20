@@ -18,7 +18,9 @@ public class Pneumatics extends SubsystemBase {
     Pneumatics = io;
 
     name = io.getName();
-
+    inputs.solenoid = pneumaticSolenoid.get();
+    inputs.channel = pneumaticSolenoid.getChannel();
+    
    
   }
 
