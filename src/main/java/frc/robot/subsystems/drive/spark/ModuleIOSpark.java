@@ -126,6 +126,13 @@ public class ModuleIOSpark implements ModuleIO {
 
     // Create CANCoder status signal
     turnAbsolutePosition = cancoder.getAbsolutePosition();
+    System.out.println("********************************************************************************************");
+    System.out.println(turnAbsolutePosition);
+
+// -1.802e-01 R rotations
+// 3.428e-01 R rotations
+// 1.724e-01 R rotations
+// 2.532e-01 R rotations
 
     // Configure periodic frames
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnAbsolutePosition);

@@ -12,6 +12,8 @@ import com.revrobotics.spark.config.SignalsConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.drive.DriveConstants;
 
@@ -103,11 +105,11 @@ public class SparkMaxModuleConstants {
       boolean invertSteer) {}
   // CanID change: Used for global find
   public static final ModuleSpecificConfiguration frontLeft =
-      new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(0.308), false, false);
+      new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(-.1733), false, false);
   public static final ModuleSpecificConfiguration frontRight =
-      new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(-0.475), false, false);
+      new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.0293), false, false);
   public static final ModuleSpecificConfiguration rearLeft =
-      new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(0.49), false, true);
+      new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(-0.05), false, false);
   public static final ModuleSpecificConfiguration rearRight =
-      new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.4), true, false);
+      new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.367), true, false);
 }
