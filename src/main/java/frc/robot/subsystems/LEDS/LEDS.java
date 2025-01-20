@@ -14,15 +14,24 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDS {
     AddressableLED led;
     AddressableLEDBuffer ledbuffer;
+    LEDPattern red = LEDPattern.solid(Color.kRed);
+    LEDPattern green = LEDPattern.solid(Color.kGreen);
     public LEDS(int length) {
         led = new AddressableLED(0);
         ledbuffer = new AddressableLEDBuffer(length);
         led.setLength(ledbuffer.getLength());
-        LEDPattern red = LEDPattern.solid(Color.kRed);
-        LEDPattern green = LEDPattern.solid(Color.kGreen);
+        
         
 
         led.setData(ledbuffer);
         led.start();
+    }
+    public void runLEDS() {
+        if (DriverStation.isDisabled()) {
+            red.applyTo(ledbuffer);
+        }
+        else {
+            red.applyTo(ledbuffer);
+        }
     }
 }

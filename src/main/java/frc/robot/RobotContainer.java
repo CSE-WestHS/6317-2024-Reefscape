@@ -15,6 +15,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -53,7 +54,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 //   private final Elevator elevator;
-
+//   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
 
@@ -84,6 +85,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(VisionConstants.camera0Name, () -> new Rotation2d()));
+        // led = new LEDS(60);
         // elevator =
         //     new Elevator(
         //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
@@ -125,6 +127,7 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     driveSimulation::getSimulatedDriveTrainPose));
+        // led = new LEDS(60);
         // elevator =
         //     new Elevator(
         //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
@@ -148,6 +151,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // led = new LEDS(60);
         // elevator =
         //     new Elevator(
         //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
@@ -180,7 +184,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    // led.runLEDS();
     // Configure the button bindings
     configureButtonBindings();
   }
