@@ -104,12 +104,11 @@ public class SparkMaxModuleConstants {
       boolean invertDrive,
       boolean invertSteer) {}
   // CanID change: Used for global find
-  public static final ModuleSpecificConfiguration frontLeft =
-      new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(-.1733), false, false);
-  public static final ModuleSpecificConfiguration frontRight =
-      new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.0293), false, false);
-  public static final ModuleSpecificConfiguration rearLeft =
-      new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(-0.05), false, false);
-  public static final ModuleSpecificConfiguration rearRight =
-      new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.367), true, false);
+  public static final ModuleSpecificConfiguration frontLeft = new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(0.481), false, false);
+  public static final ModuleSpecificConfiguration frontRight = new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(0.310), false, false);
+      
+  public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.369), true, false);
+      
+  public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.033), false, false);
+     
 }
