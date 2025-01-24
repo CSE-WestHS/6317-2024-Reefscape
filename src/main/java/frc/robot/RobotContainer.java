@@ -83,7 +83,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, () -> new Rotation2d()));
+                new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -115,7 +115,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
 
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("limelight", ()->new Rotation2d()));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -196,7 +196,7 @@ public class RobotContainer {
     // Lock to 0° when A button is held
     driverController
         .a()
-        .toggleOnTrue(
+        .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -driverController.getLeftY(),

@@ -29,7 +29,7 @@ public class SparkMaxModuleConstants {
   public static final double driveSimKv = 0.0789;
 
   // Turn PID configuration
-  public static final double turnKp = 2.0;
+  public static final double turnKp = 5.0;
   public static final double turnKd = 0.0;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
