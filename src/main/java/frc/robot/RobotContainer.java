@@ -236,7 +236,8 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povLeft().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward))).onFalse(Commands.run(()->doubleSolenoid.setMode(Value.kOff)));
+    driverController.povLeft().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward)));
+    driverController.povRight().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kOff)));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);

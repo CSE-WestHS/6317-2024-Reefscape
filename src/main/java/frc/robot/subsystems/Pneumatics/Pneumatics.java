@@ -40,6 +40,7 @@ public class Pneumatics extends SubsystemBase {
   
   public void setMode(Value mode) {
     pneumaticSolenoid.set(mode);
+    setSolenoid(mode);
   }
 
 }
