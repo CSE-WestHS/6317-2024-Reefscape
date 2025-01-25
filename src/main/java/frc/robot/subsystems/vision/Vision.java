@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 
@@ -25,7 +26,7 @@ public class Vision extends SubsystemBase {
   private final VisionIO[] io;
   private final VisionIOInputs[] inputs;
   private final Alert[] disconnectedAlerts;
-
+  private Drive drive;
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
@@ -46,7 +47,7 @@ public class Vision extends SubsystemBase {
               AlertType.kWarning);
     }
   }
-
+  
   /**
    * Returns the X angle to the best target, which can be used for simple servoing with vision.
    *
@@ -61,6 +62,7 @@ public class Vision extends SubsystemBase {
     for (int i = 0; i < io.length; i++) {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), (LoggableInputs) inputs[i]);
+      
     }
 
     // Initialize logging values
@@ -130,12 +132,13 @@ public class Vision extends SubsystemBase {
           linearStdDev *= cameraStdDevFactors[cameraIndex];
           angularStdDev *= cameraStdDevFactors[cameraIndex];
         }
-
         // Send vision observation
         consumer.accept(
             observation.pose().toPose2d(),
             observation.timestamp(),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+        
+        
       }
 
       // Log camera datadata

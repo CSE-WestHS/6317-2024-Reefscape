@@ -1,17 +1,20 @@
 package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS.SerialDataType;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 
 import java.util.Queue;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(SPI.Port.kMXP, (byte) DriveConstants.odometryFrequency);
+  private final AHRS navX = new AHRS(Port.kUSB, SerialDataType.kProcessedData,(byte) DriveConstants.odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 

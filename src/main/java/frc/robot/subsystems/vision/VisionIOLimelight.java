@@ -48,7 +48,6 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last 250ms
     inputs.connected = (RobotController.getFPGATime() - latencySubscriber.getLastChange()) < 250000;
-    System.out.println(RobotController.getFPGATime() - latencySubscriber.getLastChange());
     // Update target observation
     inputs.latestTargetObservation =
         new TargetObservation(
@@ -71,7 +70,7 @@ public class VisionIOLimelight implements VisionIO {
       poseObservations.add(
           new PoseObservation(
               // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-9 - rawSample.value[7] * 1.0e-3,
+              rawSample.timestamp * 1.0e-6 - rawSample.value[7] * 1.0e-3,
 
               // 3D pose estimate
               parsePose(rawSample.value),
@@ -80,7 +79,7 @@ public class VisionIOLimelight implements VisionIO {
               rawSample.value.length >= 17 ? rawSample.value[16] : 0.0,
 
               // Tag count
-              (int) rawSample.value[8],
+              (int) rawSample.value[7],
 
               // Average tag distance
               rawSample.value[10],
@@ -96,7 +95,7 @@ public class VisionIOLimelight implements VisionIO {
       poseObservations.add(
           new PoseObservation(
               // Timestamp, based on server timestamp of publish and latency
-              rawSample.timestamp * 1.0e-9 - rawSample.value[7] * 1.0e-3,
+              rawSample.timestamp * 1.0e-6 - rawSample.value[7] * 1.0e-3,
 
               // 3D pose estimate
               parsePose(rawSample.value),
@@ -139,4 +138,5 @@ public class VisionIOLimelight implements VisionIO {
             Units.degreesToRadians(rawLLArray[4]),
             Units.degreesToRadians(rawLLArray[5])));
   }
+  
 }
