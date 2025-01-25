@@ -2,23 +2,20 @@ package frc.robot.subsystems.Pneumatics;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.subsystems.Pneumatics.PneumaticsConstants.PneumaticsGains;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public interface PneumaticsIO {
   @AutoLog
   public static class PneumaticsIOInputs {
-    public boolean solenoid = false;
-    public int channel = 0;
+    public Value solenoid = Value.kOff; 
+    public int channelForward = -1;
+    public int channelReverse = -1;
   }
 
   public default void updateInputs(PneumaticsIOInputs inputs) {}
-
-  public default void setVelocity(double velocity) {}
-
-  public default void setVoltage(double voltage) {}
-
-  public default void setGains(PneumaticsGains gains) {}
-
+  public default void setSolenoid(Value mode) {}
+  public default void setChannelForward(int channel) {}
+  public default void setChannelReverse(int channel) {}
   public default String getName() {
     return "Pneumatics";
   }

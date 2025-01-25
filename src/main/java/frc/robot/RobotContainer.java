@@ -4,9 +4,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,6 +19,8 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.LEDS.LEDS;
+import frc.robot.subsystems.Pneumatics.Pneumatics;
+import frc.robot.subsystems.Pneumatics.PneumaticsIO;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -59,6 +63,7 @@ public class RobotContainer {
 //   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
+  private final Pneumatics doubleSolenoid;
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -86,7 +91,8 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        // led = new LEDS(60);
+                doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
+                // led = new LEDS(60);
         // elevator =
         //     new Elevator(
         //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
@@ -116,6 +122,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[2]),
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
+        doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
@@ -141,6 +148,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 null);
+        doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         // led = new LEDS(60);
         // elevator =
@@ -228,8 +236,7 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-
+    driverController.povLeft().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward))).onFalse(Commands.run(()->doubleSolenoid.setMode(Value.kOff)));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
