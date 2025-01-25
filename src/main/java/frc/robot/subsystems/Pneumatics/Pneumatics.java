@@ -1,13 +1,11 @@
 package frc.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 public class Pneumatics extends SubsystemBase {
   private final PneumaticsIO Pneumatics;
   private final PneumaticsIOInputsAutoLogged inputs = new PneumaticsIOInputsAutoLogged();

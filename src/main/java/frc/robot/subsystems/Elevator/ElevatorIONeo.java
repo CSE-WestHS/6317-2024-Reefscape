@@ -1,7 +1,8 @@
 package frc.robot.subsystems.Elevator;
 
-import java.util.function.DoubleSupplier;
-
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -9,25 +10,39 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import frc.robot.subsystems.Elevator.ElevatorConstants.GravityType;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
-import frc.robot.util.PositionJointFeedforward;
+import frc.robot.util.TunableElevatorFeedforward;
+import frc.robot.util.TunableArmFeedforward;
+import frc.robot.util.TunableElevatorFeedforward;
+import frc.robot.util.encoder.AbsoluteCancoder;
+import frc.robot.util.encoder.AbsoluteMagEncoder;
+import frc.robot.util.encoder.IAbsoluteEncoder;
+import java.util.function.DoubleSupplier;
 
 public class ElevatorIONeo implements ElevatorIO {
   private final String name;
 
+  private final ElevatorHardwareConfig hardwareConfig;
+
+  private final DoubleSupplier externalFeedforward;
+
   private final SparkMax[] motors;
   private final SparkBaseConfig leaderConfig;
 
+  private final IAbsoluteEncoder externalEncoder;
+
   private final boolean[] motorsConnected;
+  private boolean encoderConnected;
 
   private final double[] motorPositions;
   private final double[] motorVelocities;
@@ -36,135 +51,212 @@ public class ElevatorIONeo implements ElevatorIO {
   private final double[] motorCurrents;
 
   private final Alert[] motorAlerts;
+  private final Alert encoderAlert;
 
-  private PositionJointFeedforward feedforward;
-  private double feedforward_position_addition;
-  private DoubleSupplier externalFeedforward;
+  private TunableElevatorFeedforward feedforward;
+  private final double feedforward_position_addition;
+
   private double currentPosition = 0.0;
   private double positionSetpoint = 0.0;
   private double velocitySetpoint = 0.0;
-  private ElevatorGains gains;
-  
-    private boolean closedLoopPosition = false;
-        
-          public ElevatorIONeo(String name, ElevatorHardwareConfig config) {
-            this.name = name;
-        
-            assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
-        
-            motors = new SparkMax[config.canIds().length];
-            motorsConnected = new boolean[config.canIds().length];
-            motorPositions = new double[config.canIds().length];
-            motorVelocities = new double[config.canIds().length];
-            motorVoltages = new double[config.canIds().length];
-            motorCurrents = new double[config.canIds().length];
-            motorAlerts = new Alert[config.canIds().length];
-        
-            motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
-            motors[1] = new SparkMax(config.canIds()[1], MotorType.kBrushless);
-        
-            leaderConfig =
-                new SparkMaxConfig()
-                    .inverted(config.reversed()[0])
-                    .apply(
-                        new EncoderConfig()
-                            .positionConversionFactor(config.gearRatio())
-                            .velocityConversionFactor(config.gearRatio()));
-        
-            motors[0].configure(
-                leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        
-            motorAlerts[0] =
-                new Alert(
-                    name,
-                    name + " Leader Motor Disconnected! CAN ID: " + config.canIds()[0],
-                    AlertType.kError);
-        
-            for (int i = 1; i < config.canIds().length; i++) {
-              motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
-              motors[i].configure(
-                  new SparkMaxConfig().follow(motors[0]).inverted(config.reversed()[i]),
-                  ResetMode.kNoResetSafeParameters,
-                  PersistMode.kNoPersistParameters);
-        
-              motorAlerts[i] =
-                  new Alert(
-                      name,
-                      name + " Follower Motor " + i + " Disconnected! CAN ID: " + config.canIds()[i],
-                      AlertType.kError);
-            }
-          }
-        
-          @Override
-          public void updateInputs(ElevatorIOInputs inputs) {
-            inputs.velocity = motors[0].getEncoder().getVelocity();
-        
-            inputs.desiredVelocity = velocitySetpoint;
-        
-            for (int i = 0; i < motors.length; i++) {
-              motorsConnected[i] = motors[i].getLastError() == REVLibError.kOk;
-        
-              motorPositions[i] = motors[i].getEncoder().getPosition();
-              motorVelocities[i] = motors[i].getEncoder().getVelocity();
-        
-              motorVoltages[i] = motors[i].getAppliedOutput() * 12;
-              motorCurrents[i] = motors[i].getOutputCurrent();
-        
-              motorAlerts[i].set(motorsConnected[i]);
-            }
-        
-            inputs.motorsConnected = motorsConnected;
-        
-            inputs.motorPositions = motorPositions;
-            inputs.motorVelocities = motorVelocities;
-        
-            inputs.motorVoltages = motorVoltages;
-            inputs.motorCurrents = motorCurrents;
-          }
-        
-        
-    @Override
-    public void setPosition(double desiredPosition, double desiredVelocity) {
-      positionSetpoint = desiredPosition;
-        
-      double ffposition = currentPosition + feedforward_position_addition;
-  
-      motors[0]
-          .getClosedLoopController()
-          .setReference(
-              positionSetpoint,
-              ControlType.kPosition,
-              ClosedLoopSlot.kSlot0,
-              feedforward.calculate(ffposition, velocitySetpoint, desiredVelocity, 0.02)
-                  + externalFeedforward.getAsDouble());
-  
-      velocitySetpoint = desiredVelocity;
+
+  public ElevatorIONeo(
+      String name, ElevatorHardwareConfig config, DoubleSupplier externalFeedforward) {
+    this.name = name;
+    hardwareConfig = config;
+    this.externalFeedforward = externalFeedforward;
+
+    assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
+
+    motors = new SparkMax[config.canIds().length];
+    motorsConnected = new boolean[config.canIds().length];
+    motorPositions = new double[config.canIds().length];
+    motorVelocities = new double[config.canIds().length];
+    motorVoltages = new double[config.canIds().length];
+    motorCurrents = new double[config.canIds().length];
+    motorAlerts = new Alert[config.canIds().length];
+
+    motors[0] = new SparkMax(config.canIds()[0] = 5, MotorType.kBrushless);
+    leaderConfig =
+        new SparkMaxConfig()
+            .inverted(config.reversed()[0])
+            .idleMode(IdleMode.kBrake)
+            .apply(
+                new EncoderConfig()
+                    .positionConversionFactor(config.gearRatio())
+                    .velocityConversionFactor(config.gearRatio()));
+
+    switch (config.encoderType()) {
+      case INTERNAL:
+        externalEncoder = new IAbsoluteEncoder() {};
+
+        encoderAlert =
+            new Alert(name, name + " does not use an external encoder 💀", AlertType.kInfo);
+
+        motors[0].configure(
+            leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        break;
+      case EXTERNAL_CANCODER:
+        externalEncoder =
+            new AbsoluteCancoder(
+                config.encoderID(),
+                config.canBus(),
+                new CANcoderConfiguration()
+                    .withMagnetSensor(
+                        new MagnetSensorConfigs()
+                            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+                            .withMagnetOffset(config.encoderOffset().getMeasure())));
+
+        encoderAlert =
+            new Alert(
+                name,
+                name + " CANCoder Disconnected! CAN ID: " + config.encoderID(),
+                AlertType.kError);
+
+        motors[0].configure(
+            leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        motors[0].getEncoder().setPosition(externalEncoder.getAbsoluteAngle().getRotations());
+        break;
+      case EXTERNAL_DIO:
+        externalEncoder = new AbsoluteMagEncoder(config.encoderID());
+
+        encoderAlert =
+            new Alert(
+                name,
+                name + " DIO Encoder Disconnected! DIO ID: " + config.encoderID(),
+                AlertType.kWarning);
+
+        motors[0].configure(
+            leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        motors[0]
+            .getEncoder()
+            .setPosition(
+                externalEncoder.getAbsoluteAngle().plus(config.encoderOffset()).getRotations());
+        break;
+      case EXTERNAL_SPARK:
+        externalEncoder = new IAbsoluteEncoder() {};
+
+        encoderAlert =
+            new Alert(name, name + " Internal SPARK Encoder Disconnected", AlertType.kWarning);
+
+        leaderConfig.apply(
+            new AbsoluteEncoderConfig()
+                .positionConversionFactor(1.0)
+                .velocityConversionFactor(1.0)
+                .zeroOffset(currentPosition)
+                .averageDepth(2));
+
+        motors[0].configure(
+            leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        motors[0]
+            .getEncoder()
+            .setPosition(
+                motors[0].getAbsoluteEncoder().getPosition()
+                    + config.encoderOffset().getRotations());
+        break;
+
+      default:
+        externalEncoder = new IAbsoluteEncoder() {};
+        encoderAlert =
+            new Alert(name, name + " does not use an external encoder 💀", AlertType.kInfo);
+        break;
     }
-  //   public void setPosition(double positionMeters) {
-  //     if (!closedLoopPosition) {
-  //       closedLoopPosition = true;
-  //     pid.reset(new State(getPositionMeters(), getVelocityMetersPerSec()));
-  //   }
-  //   if (positionMeters < ElevatorConstants.MINPOS) {
-  //     positionMeters = ElevatorConstants.MINPOS;
-  //   }
-  //   if (positionMeters > ElevatorConstants.MAXPOS) {
-  //     positionMeters = ElevatorConstants.MAXPOS;
-  //   }
-  //   pid.setGoal(positionMeters);
-  // }
+
+    motorAlerts[0] =
+        new Alert(
+            name,
+            name + " Leader Motor Disconnected! CAN ID: " + config.canIds()[0],
+            AlertType.kError);
+
+    for (int i = 1; i < config.canIds().length; i++) {
+      motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
+      motors[i].configure(
+          new SparkMaxConfig().follow(motors[0]).inverted(config.reversed()[i]),
+          ResetMode.kNoResetSafeParameters,
+          PersistMode.kNoPersistParameters);
+
+      motorAlerts[i] =
+          new Alert(
+              name,
+              name + " Follower Motor " + i + " Disconnected! CAN ID: " + config.canIds()[i],
+              AlertType.kError);
+    }
+
+    if (config.gravity() == GravityType.CONSTANT) {
+      feedforward = new TunableElevatorFeedforward();
+      feedforward_position_addition = 0.0;
+    }  else {
+        feedforward_position_addition = 0.0;
+      }
+    }
+
+  public ElevatorIONeo(String name, ElevatorHardwareConfig config) {
+    this(name, config, () -> 0);
+  }
 
   @Override
-  public void setVelocity(double velocity) {
-    velocitySetpoint = velocity;
+  public void updateInputs(ElevatorIOInputs inputs) {
+    currentPosition = motors[0].getEncoder().getPosition();
+    inputs.outputPosition = currentPosition;
+
+    inputs.desiredPosition = positionSetpoint;
+    inputs.desiredVelocity = velocitySetpoint;
+
+    for (int i = 0; i < motors.length; i++) {
+      motorsConnected[i] = motors[i].getLastError() == REVLibError.kOk;
+
+      motorPositions[i] = motors[i].getEncoder().getPosition();
+      motorVelocities[i] = motors[i].getEncoder().getVelocity();
+
+      motorVoltages[i] = motors[i].getAppliedOutput() * 12;
+      motorCurrents[i] = motors[i].getOutputCurrent();
+
+      motorAlerts[i].set(motorsConnected[i]);
+    }
+
+    inputs.motorsConnected = motorsConnected;
+
+    inputs.motorPositions = motorPositions;
+    inputs.motorVelocities = motorVelocities;
+
+    inputs.motorVoltages = motorVoltages;
+    inputs.motorCurrents = motorCurrents;
+
+    switch (hardwareConfig.encoderType()) {
+      case INTERNAL:
+        encoderConnected = false;
+        break;
+      case EXTERNAL_CANCODER:
+        encoderConnected = externalEncoder.isConnected();
+        break;
+      case EXTERNAL_DIO:
+        encoderConnected = externalEncoder.isConnected();
+        break;
+      case EXTERNAL_SPARK:
+        encoderConnected = motors[0].getLastError() == REVLibError.kOk;
+        break;
+    }
+
+    encoderAlert.set(!encoderConnected);
+    inputs.encoderConnected = encoderConnected;
+  }
+
+  @Override
+  public void setPosition(double desiredPosition, double desiredVelocity) {
+    positionSetpoint = desiredPosition;
+
+    double ffposition = currentPosition + feedforward_position_addition;
 
     motors[0]
         .getClosedLoopController()
         .setReference(
-            velocitySetpoint,
-            ControlType.kVelocity,
+            positionSetpoint,
+            ControlType.kPosition,
             ClosedLoopSlot.kSlot0,
-            gains.kS() * Math.signum(velocity));
+            feedforward.calculate(ffposition, velocitySetpoint, desiredVelocity, 0.02)
+                + externalFeedforward.getAsDouble());
+
+    velocitySetpoint = desiredVelocity;
   }
 
   @Override
@@ -174,10 +266,10 @@ public class ElevatorIONeo implements ElevatorIO {
 
   @Override
   public void setGains(ElevatorGains gains) {
-    this.gains = gains;
+    feedforward.setGains(gains.kS(), gains.kG(), gains.kV(), gains.kA());
+
     motors[0].configure(
-        leaderConfig.apply(
-            new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), gains.kV())),
+        leaderConfig.apply(new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), 0)),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kNoPersistParameters);
 

@@ -4,14 +4,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -27,22 +25,15 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-// import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-// import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
-// import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
-// import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -59,7 +50,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-//   private final Elevator elevator;
+  private final Elevator elevator;
 //   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
@@ -93,16 +84,22 @@ public class RobotContainer {
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
                 doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
                 // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
 
         break;
 
@@ -126,16 +123,22 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
 
       default:
@@ -151,16 +154,22 @@ public class RobotContainer {
         doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(), 
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
     }
 
