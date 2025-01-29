@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 public interface PneumaticsIO {
   @AutoLog
   public static class PneumaticsIOInputs {
-    public Value solenoid = Value.kOff; 
+    public Value solenoid = Value.kReverse; 
     public int channelForward = -1;
     public int channelReverse = -1;
   }

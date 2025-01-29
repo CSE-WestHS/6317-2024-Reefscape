@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,12 +14,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Compressor.CompresorIO;
+import frc.robot.subsystems.Compressor.Compresors;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Pneumatics.Pneumatics;
 import frc.robot.subsystems.Pneumatics.PneumaticsIO;
+import frc.robot.subsystems.SingleSolenoid.SingleSolenoid;
+import frc.robot.subsystems.SingleSolenoid.SingleSolenoidIO;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -55,6 +60,8 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final Vision vision;
   private final Pneumatics doubleSolenoid;
+  private final SingleSolenoid singleSolenoid;
+  private final Compresors compressor;
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -83,6 +90,8 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
                 doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
+                singleSolenoid = new SingleSolenoid(new SingleSolenoidIO() {});
+        compressor = new Compresors(new CompresorIO() {}, false);
                 // led = new LEDS(60);
         elevator =
             new Elevator(
@@ -120,7 +129,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
         doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
-
+        singleSolenoid = new SingleSolenoid(new SingleSolenoidIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         elevator =
@@ -139,6 +148,7 @@ public class RobotContainer {
                     ElevatorConstants.EXAMPLE_GAINS.kMinPosition(), 
                     ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(), 
                     ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+        compressor = new Compresors(new CompresorIO() {}, false);
         break;
 
       default:
@@ -153,6 +163,8 @@ public class RobotContainer {
                 null);
         doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        singleSolenoid = new SingleSolenoid(new SingleSolenoidIO() {});
+        compressor = new Compresors(new CompresorIO() {}, false);
         // led = new LEDS(60);
         elevator =
             new Elevator(
@@ -246,7 +258,11 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povLeft().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward)));
-    driverController.povRight().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kOff)));
+    driverController.povRight().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kReverse)));
+    // driverController.povRight().onTrue(Commands.run(()->singleSolenoid.setMode(false)));
+    // driverController.povDown().onTrue(Commands.run(()->singleSolenoid.setMode(true)));
+    // driverController.povLeft().onTrue(Commands.run(()->compressor.setDisable(true)));
+    
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);

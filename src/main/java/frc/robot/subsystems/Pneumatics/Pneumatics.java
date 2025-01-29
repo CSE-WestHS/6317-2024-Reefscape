@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class Pneumatics extends SubsystemBase {
   private final PneumaticsIO Pneumatics;
   private final PneumaticsIOInputsAutoLogged inputs = new PneumaticsIOInputsAutoLogged();
-  private final DoubleSolenoid pneumaticSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0,1);
+  private final DoubleSolenoid pneumaticSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 7,8);
   private final String name;
 
  
