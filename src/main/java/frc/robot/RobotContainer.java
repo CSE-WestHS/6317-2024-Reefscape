@@ -249,6 +249,7 @@ public class RobotContainer {
                 drive.setPose(
                     new Pose2d(
                         drive.getPose().getTranslation(),
+                       
                         DriverStation.getAlliance().isPresent()
                             ? (DriverStation.getAlliance().get() == DriverStation.Alliance.Red
                                 ? new Rotation2d(Math.PI)
@@ -257,8 +258,8 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povLeft().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward)));
-    driverController.povRight().onTrue(Commands.run(()->doubleSolenoid.setMode(Value.kReverse)));
+    driverController.povLeft().toggleOnTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward)));
+    driverController.povRight().toggleOnTrue(Commands.run(()->doubleSolenoid.setMode(Value.kReverse)));
     // driverController.povRight().onTrue(Commands.run(()->singleSolenoid.setMode(false)));
     // driverController.povDown().onTrue(Commands.run(()->singleSolenoid.setMode(true)));
     // driverController.povLeft().onTrue(Commands.run(()->compressor.setDisable(true)));
