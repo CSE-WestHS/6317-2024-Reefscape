@@ -34,8 +34,7 @@ public class Compresors extends SubsystemBase {
     inputs.isDisabled = !compressor1.isEnabled();
     inputs.Current = compressor1.getCurrent();
     inputs.analogVoltage = compressor1.getAnalogVoltage();
-    inputs.pressure = compressor1.getPressure();
-    inputs.pressureSwitchValueReached = compressor1.getPressureSwitchValue();
+    inputs.pressureSwitchValueReached = !compressor1.getPressureSwitchValue();
     Compresor.updateInputs(inputs);
     Logger.processInputs(name, inputs);
     }
