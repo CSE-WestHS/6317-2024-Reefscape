@@ -321,7 +321,7 @@ public class Drive extends SubsystemBase {
     return DriveConstants.moduleTranslations;
   }
   public Command generatePath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(2,1,Units.degreesToRadians(540),Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(0.25,0.25,Units.degreesToRadians(540),Units.degreesToRadians(720));
     
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
