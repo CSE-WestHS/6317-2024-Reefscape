@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class Compresors extends SubsystemBase {
   private final CompresorIO Compresor;
   private final CompresorIOInputsAutoLogged inputs = new CompresorIOInputsAutoLogged();
   private final Compressor compressor1 = new Compressor(PneumaticsModuleType.REVPH);
+  private final PneumaticHub pneumaticHub = new PneumaticHub();
   private final String name;
   private boolean disable;
 
@@ -35,6 +37,7 @@ public class Compresors extends SubsystemBase {
     inputs.Current = compressor1.getCurrent();
     inputs.analogVoltage = compressor1.getAnalogVoltage();
     inputs.pressureSwitchValueReached = !compressor1.getPressureSwitchValue();
+    inputs.pressure = pneumaticHub.getPressure(0);
     Compresor.updateInputs(inputs);
     Logger.processInputs(name, inputs);
     }

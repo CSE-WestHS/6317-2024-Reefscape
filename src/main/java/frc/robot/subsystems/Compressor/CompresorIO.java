@@ -10,13 +10,14 @@ public interface CompresorIO {
     public boolean isDisabled = false;
     public double analogVoltage = 0.0;
     public double Current = 0.0;
+    public double  pressure = 0.0;
     public boolean pressureSwitchValueReached = false;
   }
 
   public default void updateInputs(CompresorIOInputs inputs) {}
 
   public default void setAnalogVoltage(double voltage) {}
- 
+  public default void setPressure(double pressure) {}
   public default void setCurrent(double Current) {}
  
   public default void setpreessureSwitchValueReached (boolean preesureSwitchValueReached) {} 

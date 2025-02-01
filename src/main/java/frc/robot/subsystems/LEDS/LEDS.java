@@ -16,6 +16,7 @@ public class LEDS {
     AddressableLEDBuffer ledbuffer;
     LEDPattern red = LEDPattern.solid(Color.kRed);
     LEDPattern green = LEDPattern.solid(Color.kGreen);
+    LEDPattern f = LEDPattern.rainbow(150, 150);
     public LEDS(int length) {
         led = new AddressableLED(0);
         ledbuffer = new AddressableLEDBuffer(length);
@@ -29,9 +30,11 @@ public class LEDS {
     public void runLEDS() {
         if (DriverStation.isDisabled()) {
             red.applyTo(ledbuffer);
+            led.setData(ledbuffer);
         }
         else {
-            red.applyTo(ledbuffer);
+            f.applyTo(ledbuffer);
+            led.setData(ledbuffer);
         }
     }
 }
