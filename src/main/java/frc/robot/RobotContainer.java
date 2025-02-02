@@ -42,6 +42,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
+import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -236,9 +237,10 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.povDown().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(frc.robot.util.UtilitiesFieldSectioning.getClosestSection(drive.getPose())));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-    driverController.povLeft().whileTrue(Commands.run(()->System.out.println("Closest Section Pose" + frc.robot.util.UtilitiesFieldSectioning.getClosestSection(new Pose2d(2.553,0.884,new Rotation2d().fromDegrees(0))))));
+    driverController.povLeft().whileTrue(Commands.run(()->System.out.println("Closest Section: " + frc.robot.util.UtilitiesFieldSectioning.getClosestSectionName(drive.getPose()))));
+    driverController.povUp().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
@@ -250,7 +252,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
-
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
