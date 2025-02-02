@@ -240,7 +240,7 @@ public class RobotContainer {
     OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(frc.robot.util.UtilitiesFieldSectioning.getClosestSection(drive.getPose())));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
     driverController.povLeft().whileTrue(Commands.run(()->System.out.println("Closest Section: " + frc.robot.util.UtilitiesFieldSectioning.getClosestSectionName(drive.getPose()))));
-    driverController.povUp().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
+    driverController.povUp().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)).onlyWhile(()->!UtilitiesFieldSectioning.angleController.atGoal()));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 

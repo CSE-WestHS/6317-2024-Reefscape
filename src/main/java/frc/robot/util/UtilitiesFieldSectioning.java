@@ -45,7 +45,7 @@ public class UtilitiesFieldSectioning {
     private static final Pose2d S6 = new Pose2d(3.488,5.428,new Rotation2d().fromDegrees(120.208));
     private static final Pose2d F1 = new Pose2d(1.858, 6.590,new Rotation2d().fromDegrees(-48.832) ); //feed station
     //pid
-    private static final ProfiledPIDController angleController = new ProfiledPIDController(DriveCommands.ANGLE_KP,0, DriveCommands.ANGLE_KD, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
+    public static final ProfiledPIDController angleController = new ProfiledPIDController(0.75,0, 0, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
 
     
@@ -90,6 +90,7 @@ public class UtilitiesFieldSectioning {
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
             Pose2d closest = getClosestSection(currentPose);
             angleController.enableContinuousInput(-Math.PI, Math.PI);
+            angleController.setTolerance(0.349066);
             double omega = angleController.calculate(currentPose.getRotation().getRadians(), closest.getRotation().getRadians());
             ChassisSpeeds speeds = new ChassisSpeeds(0, 0, -omega);
             boolean isFlipped =
