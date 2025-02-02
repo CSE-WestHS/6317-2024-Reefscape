@@ -84,7 +84,7 @@ public class UtilitiesFieldSectioning {
                 return "S" + (value+1);
             }
             else {
-                return "F" + (value + 1);
+                return "F" + (value - 5);
             }
         }
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
