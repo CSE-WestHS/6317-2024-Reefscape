@@ -7,6 +7,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -236,7 +238,7 @@ public class RobotContainer {
     // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-
+    driverController.povLeft().whileTrue(Commands.run(()->System.out.println("Closest Section Pose" + frc.robot.util.UtilitiesFieldSectioning.getClosestSection(new Pose2d(2.553,0.884,new Rotation2d().fromDegrees(0))))));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
