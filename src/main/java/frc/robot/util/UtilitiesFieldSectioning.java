@@ -43,13 +43,14 @@ public class UtilitiesFieldSectioning {
     private static final Pose2d S4 = new Pose2d(3.333,2.563,new Rotation2d().fromDegrees(-122.367));
     private static final Pose2d S5 = new Pose2d(2.493,4.049,new Rotation2d().fromDegrees(-178.152));
     private static final Pose2d S6 = new Pose2d(3.488,5.428,new Rotation2d().fromDegrees(120.208));
+    private static final Pose2d F1 = new Pose2d(1.858, 6.590,new Rotation2d().fromDegrees(-48.832) ); //feed station
     //pid
-    private static final ProfiledPIDController angleController = new ProfiledPIDController(0.5, 0, 0.4, new Constraints(8, 20));
+    private static final ProfiledPIDController angleController = new ProfiledPIDController(DriveCommands.ANGLE_KP,0, DriveCommands.ANGLE_KD, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
 
     
         //array of positions
-        public static final Pose2d[] sectionsArr = {S1, S2, S3, S4, S5, S6};
+        public static final Pose2d[] sectionsArr = {S1, S2, S3, S4, S5, S6,F1};
         
         /***
          * 
@@ -79,7 +80,12 @@ public class UtilitiesFieldSectioning {
                     value = i;
                 }
             }
-            return "S" + (value+1);
+            if (value <= 5) {
+                return "S" + (value+1);
+            }
+            else {
+                return "F" + (value + 1);
+            }
         }
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
             Pose2d closest = getClosestSection(currentPose);
