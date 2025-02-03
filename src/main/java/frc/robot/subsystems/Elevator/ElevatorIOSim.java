@@ -1,8 +1,13 @@
 package frc.robot.subsystems.Elevator;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
@@ -10,38 +15,81 @@ import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
 public class ElevatorIOSim implements ElevatorIO {
   private final String name;
 
+  private final ElevatorHardwareConfig config;
+
   private final DCMotor gearBox;
 
   private final DCMotorSim sim;
 
-  private final PIDController controller;
+  private final ProfiledPIDController controller;
 
-  private double velocitySetpoint;
+  private final boolean[] motorsConnected;
+
+  private final double[] motorPositions;
+  private final double[] motorVelocities;
+
+  private final double[] motorVoltages;
+  private final double[] motorCurrents;
+
+  private double positionSetpoint = 0.0;
+  private double velocitySetpoint = 0.0;
+  private double inputVoltage = 0.0;
 
   public ElevatorIOSim(String name, ElevatorHardwareConfig config) {
     this.name = name;
 
+    this.config = config;
+
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
 
-    gearBox = DCMotor.getKrakenX60Foc(config.canIds().length);
+    motorsConnected = new boolean[config.canIds().length];
+    motorPositions = new double[config.canIds().length];
+    motorVelocities = new double[config.canIds().length];
+    motorVoltages = new double[config.canIds().length];
+    motorCurrents = new double[config.canIds().length];
+
+    gearBox = DCMotor.getNEO(2);
 
     sim =
         new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(gearBox, 0.025, config.gearRatio()), gearBox);
+            LinearSystemId.createDCMotorSystem(gearBox, 0.01, 1.0 / config.gearRatio()), gearBox);
 
-    controller = new PIDController(0, 0, 0);
+    controller = new ProfiledPIDController(ElevatorConstants.EXAMPLE_GAINS.kP(), ElevatorConstants.EXAMPLE_GAINS.kI(), ElevatorConstants.EXAMPLE_GAINS.kD(), new Constraints(8, 8));
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    sim.setInputVoltage(controller.calculate(sim.getAngularVelocityRadPerSec(), velocitySetpoint));
+    inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations), positionSetpoint);
+    sim.setInputVoltage(inputVoltage);
+    sim.update(0.02);
 
-    inputs.velocity = sim.getAngularVelocity().magnitude();
+    inputs.outputPosition = sim.getAngularPosition().in(Rotations);
+    inputs.desiredPosition = positionSetpoint;
+    inputs.velocity = sim.getAngularVelocity().in(RotationsPerSecond);
     inputs.desiredVelocity = velocitySetpoint;
+
+    for (int i = 0; i < config.canIds().length; i++) {
+      motorsConnected[i] = true;
+
+      motorPositions[i] = sim.getAngularPosition().in(Rotations);
+      motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond);
+
+      motorVoltages[i] = sim.getInputVoltage();
+      motorCurrents[i] = sim.getCurrentDrawAmps();
+    }
+
+    inputs.motorsConnected = motorsConnected;
+
+    inputs.motorPositions = motorPositions;
+    inputs.motorVelocities = motorVelocities;
+
+    inputs.motorVoltages = motorVoltages;
+    inputs.motorCurrents = motorCurrents;
   }
 
   @Override
-  public void setVelocity(double velocity) {
+  public void setPosition(double position, double velocity) {
+    positionSetpoint = position;
     velocitySetpoint = velocity;
   }
 
@@ -50,5 +98,10 @@ public class ElevatorIOSim implements ElevatorIO {
     controller.setPID(gains.kP(), gains.kI(), gains.kD());
 
     System.out.println(name + " gains set to " + gains);
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 }

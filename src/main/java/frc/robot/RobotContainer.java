@@ -45,7 +45,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
+import frc.robot.commands.*;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -55,7 +55,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-//   private final Elevator elevator;
+  private final Elevator elevator;
+  private final ElevatorGains gains;
 //   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
@@ -64,7 +65,6 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
-
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -87,16 +87,24 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        gains = ElevatorConstants.EXAMPLE_GAINS;
+        elevator =
+            new Elevator(
+                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
+                    ));
 
         break;
 
@@ -119,6 +127,25 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
+        gains = ElevatorConstants.EXAMPLE_GAINS;
+        elevator =
+            new Elevator(
+                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
+                    ));
+
         // elevator =
         //     new Elevator(
         //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
@@ -127,8 +154,14 @@ public class RobotContainer {
         //             ElevatorConstants.EXAMPLE_GAINS.kI(),
         //             ElevatorConstants.EXAMPLE_GAINS.kD(),
         //             ElevatorConstants.EXAMPLE_GAINS.kS(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kG(),
         //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        //             ElevatorConstants.EXAMPLE_GAINS.kA(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
 
       default:
@@ -143,16 +176,23 @@ public class RobotContainer {
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        gains = ElevatorConstants.EXAMPLE_GAINS;
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
     }
 
@@ -229,7 +269,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-
+    driverController.povDown().and(()->!elevator.isFinished()).onTrue(Commands.run(()->elevator.setPosition(15)));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
