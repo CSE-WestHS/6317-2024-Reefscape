@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -17,6 +18,8 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.LEDS.LEDS;
+import frc.robot.subsystems.Pneumatics.Pneumatics;
+import frc.robot.subsystems.Pneumatics.PneumaticsIO;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -55,6 +58,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Pneumatics doubleSolenoid;
 //   private final Elevator elevator;
 //   private final LEDS led;
   @SuppressWarnings("unused")
@@ -86,6 +90,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+        doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -116,7 +121,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[2]),
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
-
+        doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         // elevator =
@@ -142,6 +147,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        doubleSolenoid = new Pneumatics(new PneumaticsIO() {});
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -229,6 +235,8 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
+    driverController.povLeft().toggleOnTrue(Commands.run(()->doubleSolenoid.setMode(Value.kForward)));
+    driverController.povRight().toggleOnTrue(Commands.run(()->doubleSolenoid.setMode(Value.kReverse)));
 
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
