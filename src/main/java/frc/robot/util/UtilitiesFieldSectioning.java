@@ -37,13 +37,13 @@ public class UtilitiesFieldSectioning {
     private final Pose2d R6 = new Pose2d();
 
     //sections
-    private static final Pose2d S1 = new Pose2d(5.359,5.559,new Rotation2d().fromDegrees(48.752));
-    private static final Pose2d S2 = new Pose2d(6.533,4.169,new Rotation2d().fromDegrees(4.135));
-    private static final Pose2d S3 = new Pose2d(5.454,2.539,new Rotation2d().fromDegrees(-63.682));
-    private static final Pose2d S4 = new Pose2d(3.333,2.563,new Rotation2d().fromDegrees(-122.367));
-    private static final Pose2d S5 = new Pose2d(2.493,4.049,new Rotation2d().fromDegrees(-178.152));
-    private static final Pose2d S6 = new Pose2d(3.488,5.428,new Rotation2d().fromDegrees(120.208));
-    private static final Pose2d F1 = new Pose2d(1.858, 6.590,new Rotation2d().fromDegrees(-48.832) ); //feed station
+    private static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(48.752)); //section 1
+    private static final Pose2d S2 = new Pose2d(6.533,4.169,Rotation2d.fromDegrees(4.135)); //section2
+    private static final Pose2d S3 = new Pose2d(5.454,2.539,Rotation2d.fromDegrees(-63.682));
+    private static final Pose2d S4 = new Pose2d(3.333,2.563,Rotation2d.fromDegrees(-122.367));
+    private static final Pose2d S5 = new Pose2d(2.493,4.049,Rotation2d.fromDegrees(-178.152));
+    private static final Pose2d S6 = new Pose2d(3.488,5.428,Rotation2d.fromDegrees(120.208));
+    private static final Pose2d F1 = new Pose2d(1.858, 6.590,Rotation2d.fromDegrees(-48.832) ); //feed station
     //pid
     public static final ProfiledPIDController angleController = new ProfiledPIDController(0.5,0, 0, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
