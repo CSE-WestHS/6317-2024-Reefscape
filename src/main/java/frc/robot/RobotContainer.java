@@ -236,7 +236,7 @@ public class RobotContainer {
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
-    varJoystick.button(4).onTrue(Commands.run(()->System.out.println("brain hurts")));
+    varJoystick.button(3).onTrue(Commands.run((()->System.out.println("brain hurts"))));
   }
 
   /**
