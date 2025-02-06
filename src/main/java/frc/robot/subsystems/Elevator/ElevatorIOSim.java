@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
@@ -27,10 +28,9 @@ public class ElevatorIOSim implements ElevatorIO {
 
   private final double[] motorPositions;
   private final double[] motorVelocities;
-
+  private final double GearConstant = (12 / 0.0730);
   private final double[] motorVoltages;
   private final double[] motorCurrents;
-
   private double positionSetpoint = 0.0;
   private double velocitySetpoint = 0.0;
   private double inputVoltage = 0.0;
@@ -59,20 +59,20 @@ public class ElevatorIOSim implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations), positionSetpoint);
+    inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations) * GearConstant, positionSetpoint);
     sim.setInputVoltage(inputVoltage);
     sim.update(0.02);
 
     inputs.outputPosition = sim.getAngularPosition().in(Rotations);
     inputs.desiredPosition = positionSetpoint;
-    inputs.velocity = sim.getAngularVelocity().in(RotationsPerSecond);
+    inputs.velocity = sim.getAngularVelocity().in(RotationsPerSecond) * (0.0730 / 12);
     inputs.desiredVelocity = velocitySetpoint;
 
     for (int i = 0; i < config.canIds().length; i++) {
       motorsConnected[i] = true;
 
-      motorPositions[i] = sim.getAngularPosition().in(Rotations);
-      motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond);
+      motorPositions[i] = sim.getAngularPosition().in(Rotations) * GearConstant;
+      motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond) * GearConstant; 
 
       motorVoltages[i] = sim.getInputVoltage();
       motorCurrents[i] = sim.getCurrentDrawAmps();

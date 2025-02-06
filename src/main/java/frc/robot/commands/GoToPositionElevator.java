@@ -39,21 +39,12 @@ public class GoToPositionElevator extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    Elevator.setVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ((Elevator.getPosition() - eg.kMaxPosition()) >= 0) {
-      return true;
-    }
-    if ((Elevator.getPosition() - eg.kMinPosition()) <= 0) {
-      return true;
-    }
-    if (Math.abs(Elevator.getPosition() - position) >= eg.kTolerance()) {
-      return true;
-    }
-    return false;
+    return Elevator.isFinished();
   }
 }

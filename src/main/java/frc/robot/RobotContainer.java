@@ -6,11 +6,16 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick.ButtonType;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -57,12 +62,12 @@ public class RobotContainer {
   private final Drive drive;
   private final Elevator elevator;
   private final ElevatorGains gains;
-//   private final LEDS led;
+  //   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
-
+  private final CommandJoystick js = new CommandJoystick(0);
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
   // Dashboard inputs
@@ -128,27 +133,9 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         gains = ElevatorConstants.EXAMPLE_GAINS;
-        elevator =
-            new Elevator(
-                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
-                    ));
-
         // elevator =
         //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
         //         new ElevatorGains(
         //             ElevatorConstants.EXAMPLE_GAINS.kP(),
         //             ElevatorConstants.EXAMPLE_GAINS.kI(),
@@ -161,7 +148,25 @@ public class RobotContainer {
         //             ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
         //             ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
         //             ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()
+        //             ));
+
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
 
       default:
@@ -236,14 +241,14 @@ public class RobotContainer {
             () -> -driverController.getRightX()));
 
     // Lock to 0° when A button is held
-    driverController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> new Rotation2d()));
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -267,11 +272,16 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povDown().and(()->!elevator.isFinished()).onTrue(Commands.run(()->elevator.setPosition(15)));
+    // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
+    // driverController.povDown().and(()->!elevator.isFinished()).whileTrue(Commands.run((()-> new frc.robot.commands.GoToPositionElevator(elevator,5,gains))));
+    driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
