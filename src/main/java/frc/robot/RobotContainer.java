@@ -71,7 +71,7 @@ public class RobotContainer {
       private SwerveDriveSimulation driveSimulation = null;
     
       // Controller
-      private final CommandXboxController driverController = new CommandXboxController(0);
+      private final static CommandXboxController driverController = new CommandXboxController(0);
       //check for input
       private final Trigger LeftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX())>DriveCommands.DEADBAND));
       private final Trigger LeftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY())>DriveCommands.DEADBAND));
@@ -291,6 +291,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
       return autoChooser.get();
+    }
+
+    public static CommandXboxController getController() {
+        return driverController;
     }
   
     public void resetSimulationField() {
