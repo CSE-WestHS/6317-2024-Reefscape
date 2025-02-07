@@ -201,14 +201,14 @@ public class RobotContainer {
             () -> -driverController.getRightX()));
 
     // Lock to 0° when A button is held
-    driverController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> new Rotation2d()));
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -232,11 +232,16 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.povDown().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-
+    // driverController.povDown().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
+    // OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
+    driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
