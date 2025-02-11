@@ -62,14 +62,14 @@ public class RobotContainer {
   private final Drive drive;
   private final Elevator elevator;
   private final ElevatorGains gains;
-  //   private final LEDS led;
+  public final static LEDS led = new LEDS(10);
   @SuppressWarnings("unused")
   private final Vision vision;
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
   private final CommandJoystick js = new CommandJoystick(0);
   // Controller
-  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final static CommandXboxController driverController = new CommandXboxController(0);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -91,7 +91,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        // led = new LEDS(60);
+        // led = new LEDS(10);
         gains = ElevatorConstants.EXAMPLE_GAINS;
         elevator =
             new Elevator(
@@ -131,7 +131,7 @@ public class RobotContainer {
                 null);
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-        // led = new LEDS(60);
+        // led = new LEDS(10);
         gains = ElevatorConstants.EXAMPLE_GAINS;
         // elevator =
         //     new Elevator(
@@ -180,7 +180,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        // led = new LEDS(60);
+        // led = new LEDS(10);
         gains = ElevatorConstants.EXAMPLE_GAINS;
         elevator =
             new Elevator(
@@ -224,7 +224,9 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
   }
-
+  public static LEDS getLEDS() {
+    return led;
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -232,6 +234,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -293,6 +296,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
+  public static CommandXboxController getController() {
+    return driverController;
+  }
 
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
@@ -300,7 +306,7 @@ public class RobotContainer {
     driveSimulation.setSimulationWorldPose(drive.getPose());
     SimulatedArena.getInstance().resetFieldForAuto();
   }
-
+  
   public void displaySimFieldToAdvantageScope() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
