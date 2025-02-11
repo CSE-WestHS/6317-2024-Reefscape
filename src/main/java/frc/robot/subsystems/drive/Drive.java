@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.RobotContainer;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import java.util.concurrent.locks.Lock;
@@ -171,7 +170,7 @@ public class Drive extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       
     }
-    RobotContainer.getLED().runLEDS();
+
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
@@ -232,6 +231,7 @@ public class Drive extends SubsystemBase {
     return run(() -> runCharacterization(0.0))
         .withTimeout(1.0)
         .andThen(sysId.quasistatic(direction));
+      
   }
 
   /** Returns a command to run a dynamic test in the specified direction. */
@@ -322,7 +322,7 @@ public class Drive extends SubsystemBase {
     return DriveConstants.moduleTranslations;
   }
   public Command generatePath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(0.25,0.25,Units.degreesToRadians(540),Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(2,1,Units.degreesToRadians(540),Units.degreesToRadians(720));
     
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
