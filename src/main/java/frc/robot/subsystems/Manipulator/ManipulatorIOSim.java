@@ -23,19 +23,20 @@ public class ManipulatorIOSim implements ManipulatorIO {
 
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
 
-    gearBox = DCMotor.getKrakenX60Foc(config.canIds().length);
+    gearBox = DCMotor.getNEO(config.canIds().length);
 
     sim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.025, config.gearRatio()), gearBox);
 
-    controller = new PIDController(0, 0, 0);
+    controller = new PIDController(0.5, 0, 0);
   }
 
   @Override
   public void updateInputs(ManipulatorIOInputs inputs) {
     sim.setInputVoltage(controller.calculate(sim.getAngularVelocityRadPerSec(), velocitySetpoint));
-
+    inputs.motorsConnected[0] = true;
+    
     inputs.velocity = sim.getAngularVelocity().magnitude();
     inputs.desiredVelocity = velocitySetpoint;
   }

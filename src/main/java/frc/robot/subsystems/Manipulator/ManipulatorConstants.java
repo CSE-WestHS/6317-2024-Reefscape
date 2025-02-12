@@ -7,7 +7,7 @@ public class ManipulatorConstants {
       int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
 
   public static final ManipulatorHardwareConfig EXAMPLE_CONFIG =
-      new ManipulatorHardwareConfig(new int[] {1}, new boolean[] {true}, 24.0 / 48.0, "CANBus");
+      new ManipulatorHardwareConfig(new int[] {44}, new boolean[] {false}, 24.0 / 48.0, "CANBus");
 
   public static final ManipulatorGains EXAMPLE_GAINS =
       new ManipulatorGains(0.2, 0.0, 0.0, 0.0, 0.065, 0.0);

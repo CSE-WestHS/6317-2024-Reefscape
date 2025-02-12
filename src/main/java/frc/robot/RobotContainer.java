@@ -13,10 +13,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ManipulatorStart;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.LEDS.LEDS;
+import frc.robot.subsystems.Manipulator.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants;
+import frc.robot.subsystems.Manipulator.ManipulatorIO;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorHardwareConfig;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -61,7 +68,7 @@ public class RobotContainer {
   private final Vision vision;
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
-
+  private final Manipulator shooter;
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -73,6 +80,7 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
+      
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
@@ -86,6 +94,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -116,7 +125,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[2]),
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
-
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.EXAMPLE_GAINS);
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         // elevator =
@@ -142,6 +151,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.EXAMPLE_GAINS);
+
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -229,7 +240,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-
+    driverController.povDown().whileTrue(Commands.run(()->new frc.robot.commands.ManipulatorStart(shooter)));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
