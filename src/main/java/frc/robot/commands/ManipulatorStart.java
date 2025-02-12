@@ -35,12 +35,14 @@ public class ManipulatorStart extends Command {
   public void execute() {
     Manip.setVelocity(1500);
     currentTime = clock.getFPGATimestamp();
+    System.out.println("Initialized");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     Manip.setVelocity(0);
+    System.out.println("Set velocity to" + Manip.getVelocity());
   }
 
   // Returns true when the command should end.

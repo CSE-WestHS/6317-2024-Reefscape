@@ -51,9 +51,9 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setVelocity(double velocity) {
-    manipulator.setVelocity(velocity);
+    manipulator.setVelocity(velocity); 
   }
-
+  
   public void setVoltage(double voltage) {
     manipulator.setVoltage(voltage);
   }

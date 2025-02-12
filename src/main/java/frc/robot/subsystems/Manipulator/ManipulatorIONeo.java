@@ -120,6 +120,7 @@ public class ManipulatorIONeo implements ManipulatorIO {
             ControlType.kVelocity,
             ClosedLoopSlot.kSlot0,
             gains.kS() * Math.signum(velocity));
+      
   }
 
   @Override

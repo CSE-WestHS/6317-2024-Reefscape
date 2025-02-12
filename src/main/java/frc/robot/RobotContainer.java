@@ -52,7 +52,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
+import frc.robot.commands.*;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -126,6 +126,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
         shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.EXAMPLE_GAINS);
+        // shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
         // elevator =
@@ -151,7 +152,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.EXAMPLE_GAINS);
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.EXAMPLE_GAINS);
 
         // led = new LEDS(60);
         // elevator =
@@ -238,9 +239,11 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povDown().whileTrue(Commands.run(()->new frc.robot.commands.ManipulatorStart(shooter)));
+    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(1500)));
+    driverController.y().whileTrue(new ManipulatorStart(shooter));
+    
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
