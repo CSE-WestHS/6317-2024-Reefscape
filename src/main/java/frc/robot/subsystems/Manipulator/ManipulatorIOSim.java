@@ -41,7 +41,7 @@ public class ManipulatorIOSim implements ManipulatorIO {
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
     isConnected = config.canIds().length > 0;
     gearRatio = config.gearRatio();
-    gearBox = DCMotor.getNEO(/*config.canIds().length*/1);
+    gearBox = DCMotor.getNEO(config.canIds().length);
     motorsConnected = new boolean[config.canIds().length];
     motorPositions = new double[config.canIds().length];
     motorVelocities = new double[config.canIds().length];
