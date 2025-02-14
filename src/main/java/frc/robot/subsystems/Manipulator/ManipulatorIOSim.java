@@ -31,7 +31,6 @@ public class ManipulatorIOSim implements ManipulatorIO {
   private final double[] motorCurrents;
 
   private double velocitySetpoint = 0;
-  private double wantedVelocity;
   private boolean isConnected = false; 
   public ManipulatorIOSim(String name, ManipulatorHardwareConfig config) {
     this.name = name;
