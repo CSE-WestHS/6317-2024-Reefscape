@@ -93,7 +93,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
+        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -124,7 +124,7 @@ public class RobotContainer {
                 new ModuleIOSparkSim(driveSimulation.getModules()[2]),
                 new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                 null);
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.EXAMPLE_GAINS);
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
         // shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(60);
@@ -151,7 +151,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.EXAMPLE_GAINS);
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
 
         // led = new LEDS(60);
         // elevator =
@@ -240,7 +240,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(10)));
+    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(100)));
     driverController.y().whileTrue(new ManipulatorStart(shooter));
     
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));

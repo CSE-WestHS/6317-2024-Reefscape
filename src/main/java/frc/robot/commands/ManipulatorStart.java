@@ -24,7 +24,7 @@ public class ManipulatorStart extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Manip.setVelocity(10);
+    Manip.setVelocity(100);
     startTime = clock.getFPGATimestamp();
     
     //Manip.setVoltage(0.5);
@@ -33,7 +33,7 @@ public class ManipulatorStart extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Manip.setVelocity(10);
+    Manip.setVelocity(100);
     currentTime = clock.getFPGATimestamp();
     System.out.println("Initialized");
   }

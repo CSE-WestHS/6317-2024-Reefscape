@@ -39,7 +39,7 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
 
   public ManipulatorIOSparkMax(String name, ManipulatorHardwareConfig config) {
     this.name = name;
-    setGains(ManipulatorConstants.EXAMPLE_GAINS);
+    // setGains(ManipulatorConstants.REAL_GAINS);
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
 
     motors = new SparkMax[config.canIds().length];

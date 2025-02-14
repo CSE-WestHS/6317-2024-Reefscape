@@ -31,33 +31,40 @@ public class ManipulatorIOSim implements ManipulatorIO {
   private final double[] motorCurrents;
 
   private double velocitySetpoint = 0;
+  private double wantedVelocity;
   private boolean isConnected = false; 
   public ManipulatorIOSim(String name, ManipulatorHardwareConfig config) {
     this.name = name;
 
     this.config = config;
 
-    assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
-    isConnected = config.canIds().length > 0;
+    assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length); //check if the simulation is valid
+
+    isConnected = config.canIds().length > 0; //check if motors are on by seeing if canids exist
+    
+    //set logging arrays to store values for each motor: therefore, make each array the size of the amount of motors
     motorPositions = new double[config.canIds().length];
     motorVelocities = new double[config.canIds().length];
     motorAccelerations = new double[config.canIds().length];
     motorVoltages = new double[config.canIds().length];
     motorCurrents = new double[config.canIds().length];
 
+    //set up simulation for NEO motor
     gearBox = DCMotor.getNEO(config.canIds().length);
 
     sim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.025, config.gearRatio()), gearBox);
 
+    //set up PID
     controller = new PIDController(0, 0, 0);
     feedforward = new TunableSimpleMotorFeedforward(0, 0, 0);
-    setGains(ManipulatorConstants.EXAMPLE_GAINS);
+    setGains(ManipulatorConstants.SIM_GAINS); //sets sim gains for simulation
   }
   @Override
   public void updateInputs(ManipulatorIOInputs inputs) {
-    inputs.motorsConnected[0] = isConnected;
+    inputs.motorsConnected[0] = isConnected; //check if motors are connected
+    //drive the motor in simulation then store logging values every 0.02 seconds
     double inputVoltage =
         controller.calculate(sim.getAngularVelocityRPM(), velocitySetpoint)
             + feedforward.calculateWithVelocities(sim.getAngularVelocityRPM(), velocitySetpoint);
@@ -66,11 +73,11 @@ public class ManipulatorIOSim implements ManipulatorIO {
 
     inputs.velocity = sim.getAngularVelocityRPM();
     inputs.desiredVelocity = velocitySetpoint;
-
+    // System.out.println("Current Velocity: " + inputs.velocity + "\nWanted Velocity: " + inputs.desiredVelocity);
     for (int i = 0; i < config.canIds().length; i++) {
       motorPositions[i] = sim.getAngularPositionRotations();
       motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond)*60;
-      motorAccelerations[i] = sim.getAngularAcceleration().in(RotationsPerSecondPerSecond);
+      motorAccelerations[i] = sim.getAngularAcceleration().in(RotationsPerSecondPerSecond) * 60;
 
       motorVoltages[i] = inputVoltage;
       motorCurrents[i] = sim.getCurrentDrawAmps();
