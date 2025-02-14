@@ -1,14 +1,16 @@
 package frc.robot.subsystems.Manipulator;
 
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ManipulatorIO {
   @AutoLog
   public static class ManipulatorIOInputs {
     public double velocity = 0.0;
-
     public double desiredVelocity = 0.0;
+
+    public double position = 0.0;
 
     public boolean[] motorsConnected = {false};
 
@@ -28,7 +30,5 @@ public interface ManipulatorIO {
 
   public default void setGains(ManipulatorGains gains) {}
 
-  public default String getName() {
-    return "Manipulator";
-  }
+  public default String getName() { return "Manipulator"; };
 }

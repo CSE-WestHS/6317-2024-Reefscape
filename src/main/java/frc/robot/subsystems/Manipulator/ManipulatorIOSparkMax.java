@@ -15,8 +15,9 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorHardwareConfig;
+import frc.robot.util.feedforwards.TunableSimpleMotorFeedforward;
 
-public class ManipulatorIONeo implements ManipulatorIO {
+public class ManipulatorIOSparkMax implements ManipulatorIO {
   private final String name;
 
   private final SparkMax[] motors;
@@ -32,13 +33,13 @@ public class ManipulatorIONeo implements ManipulatorIO {
 
   private final Alert[] motorAlerts;
 
+  private TunableSimpleMotorFeedforward feedforward;
+
   private double velocitySetpoint = 0.0;
 
-  private ManipulatorGains gains;
-
-  public ManipulatorIONeo(String name, ManipulatorHardwareConfig config) {
+  public ManipulatorIOSparkMax(String name, ManipulatorHardwareConfig config) {
     this.name = name;
-
+    setGains(ManipulatorConstants.EXAMPLE_GAINS);
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
 
     motors = new SparkMax[config.canIds().length];
@@ -55,8 +56,8 @@ public class ManipulatorIONeo implements ManipulatorIO {
             .inverted(config.reversed()[0])
             .apply(
                 new EncoderConfig()
-                    .positionConversionFactor(config.gearRatio())
-                    .velocityConversionFactor(config.gearRatio()));
+                    .positionConversionFactor(1.0 / config.gearRatio())
+                    .velocityConversionFactor(1.0 / (60.0 * config.gearRatio())));
 
     motors[0].configure(
         leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -80,6 +81,8 @@ public class ManipulatorIONeo implements ManipulatorIO {
               name + " Follower Motor " + i + " Disconnected! CAN ID: " + config.canIds()[i],
               AlertType.kError);
     }
+
+    feedforward = new TunableSimpleMotorFeedforward(0, 0, 0);
   }
 
   @Override
@@ -97,7 +100,7 @@ public class ManipulatorIONeo implements ManipulatorIO {
       motorVoltages[i] = motors[i].getAppliedOutput() * 12;
       motorCurrents[i] = motors[i].getOutputCurrent();
 
-      motorAlerts[i].set(motorsConnected[i]);
+      motorAlerts[i].set(!motorsConnected[i]);
     }
 
     inputs.motorsConnected = motorsConnected;
@@ -119,8 +122,7 @@ public class ManipulatorIONeo implements ManipulatorIO {
             velocitySetpoint,
             ControlType.kVelocity,
             ClosedLoopSlot.kSlot0,
-            gains.kS() * Math.signum(velocity));
-      
+            feedforward.calculateWithVelocities(motors[0].getEncoder().getVelocity(), velocity));
   }
 
   @Override
@@ -130,12 +132,12 @@ public class ManipulatorIONeo implements ManipulatorIO {
 
   @Override
   public void setGains(ManipulatorGains gains) {
-    this.gains = gains;
     motors[0].configure(
-        leaderConfig.apply(
-            new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), gains.kV())),
+        leaderConfig.apply(new ClosedLoopConfig().pid(gains.kP(), gains.kI(), gains.kD())),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kNoPersistParameters);
+
+    feedforward.setGains(gains.kS(), gains.kV(), gains.kA());
 
     System.out.println(name + " gains set to " + gains);
   }

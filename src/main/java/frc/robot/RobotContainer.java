@@ -22,7 +22,6 @@ import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIO;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
-import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorHardwareConfig;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
@@ -241,7 +240,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(1500)));
+    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(10)));
     driverController.y().whileTrue(new ManipulatorStart(shooter));
     
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
