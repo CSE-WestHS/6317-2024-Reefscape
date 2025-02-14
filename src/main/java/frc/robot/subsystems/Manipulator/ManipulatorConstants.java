@@ -18,5 +18,5 @@ public class ManipulatorConstants {
       new ManipulatorHardwareConfig(new int[] {1}, new boolean[] {true}, 2.0, "");
 
   public static final ManipulatorGains EXAMPLE_GAINS =
-      new ManipulatorGains(0.5, 0.0, 0.0, 0.0, 0.065, 0.0, 1.0, 1.0);
+      new ManipulatorGains(0.6, 0.0, 0, 0.0, 0.035, 0.0, 1.0, 0.2);
 }

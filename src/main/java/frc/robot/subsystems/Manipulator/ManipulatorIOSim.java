@@ -65,7 +65,6 @@ public class ManipulatorIOSim implements ManipulatorIO {
     sim.update(0.02);
 
     inputs.velocity = sim.getAngularVelocityRPM();
-    System.out.println("Velocity of Manipulator Motor: " + inputs.velocity);
     inputs.desiredVelocity = velocitySetpoint;
 
     for (int i = 0; i < config.canIds().length; i++) {
