@@ -4,26 +4,25 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Joystick.ButtonType;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.LEDS.LEDS;
-import frc.robot.subsystems.Elevator.ElevatorIONeo;
-import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Pneumatics.Pneumatics;
+import frc.robot.subsystems.Pneumatics.PneumaticsIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -60,9 +59,8 @@ import frc.robot.commands.*;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Elevator elevator;
-  private final ElevatorGains gains;
   public final static LEDS led = new LEDS(10);
+  private final Pneumatics pneumaticSolenoid;
   @SuppressWarnings("unused")
   private final Vision vision;
   // Simulation
@@ -73,6 +71,9 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
+
+  //pneumatics commands
+  private Command pneumaticClimbCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -92,24 +93,7 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
         // led = new LEDS(10);
-        gains = ElevatorConstants.EXAMPLE_GAINS;
-        elevator =
-            new Elevator(
-                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
-                    ));
+        pneumaticSolenoid = new Pneumatics(new PneumaticsIO() {});
 
         break;
 
@@ -132,10 +116,11 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         // led = new LEDS(10);
-        gains = ElevatorConstants.EXAMPLE_GAINS;
+        pneumaticSolenoid = new Pneumatics(new PneumaticsIO() {});
+
         // elevator =
         //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
         //         new ElevatorGains(
         //             ElevatorConstants.EXAMPLE_GAINS.kP(),
         //             ElevatorConstants.EXAMPLE_GAINS.kI(),
@@ -148,25 +133,7 @@ public class RobotContainer {
         //             ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
         //             ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
         //             ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()
-        //             ));
-
-        elevator =
-            new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
 
       default:
@@ -181,23 +148,24 @@ public class RobotContainer {
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         // led = new LEDS(10);
-        gains = ElevatorConstants.EXAMPLE_GAINS;
-        elevator =
-            new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+        pneumaticSolenoid = new Pneumatics(new PneumaticsIO() {});
+        // gains = ElevatorConstants.EXAMPLE_GAINS;
+        // elevator =
+        //     new Elevator(
+        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+        //         new ElevatorGains(
+        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kG(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kA(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+        //             ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
     }
 
@@ -221,6 +189,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     // led.runLEDS();
+
+    //command definitions
+    pneumaticClimbCommand = Commands.run(()->pneumaticSolenoid.setSolenoid(Value.kForward)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2).andThen(()->pneumaticSolenoid.setSolenoid(Value.kReverse)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
+
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -278,13 +251,16 @@ public class RobotContainer {
     // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     // driverController.povDown().and(()->!elevator.isFinished()).whileTrue(Commands.run((()-> new frc.robot.commands.GoToPositionElevator(elevator,5,gains))));
-    driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
+    // driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
+    driverController.a().whileTrue(Commands.run(()->pneumaticSolenoid.setSolenoid(Value.kForward)));
+    driverController.y().whileTrue(Commands.run(()->pneumaticSolenoid.setSolenoid(Value.kReverse)));
+    driverController.povDown().onTrue(pneumaticClimbCommand);
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
