@@ -97,6 +97,6 @@ public class Manipulator extends SubsystemBase {
   }
 
   public boolean isFinished() {
-    return Math.abs(inputs.velocity - inputs.desiredVelocity) < kTolerance.get();
+    return Math.abs(inputs.velocity - inputs.desiredVelocity) < kTolerance.get() && inputs.velocity != 0;
   }
 }

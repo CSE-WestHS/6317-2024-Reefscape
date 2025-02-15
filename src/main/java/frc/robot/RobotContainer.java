@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ManipulatorStart;
@@ -68,125 +70,134 @@ public class RobotContainer {
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
   private final Manipulator shooter;
+ 
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
-
+   //triggers
+  private Trigger shootCommandTrigger;
+  private final Trigger yIsPressed = new Trigger(driverController.y());
+  
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    switch (Constants.currentMode) {
-      case REAL:
-      
-        // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIONavX(),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
-                SparkOdometryThread.getInstance());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
-
-        break;
-
-      case SIM:
-        // create a maple-sim swerve drive simulation instance
-        driveSimulation =
-            new SwerveDriveSimulation(
-                DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-        // add the simulated drivetrain to the simulation field
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                new ModuleIOSparkSim(driveSimulation.getModules()[0]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[1]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[2]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[3]),
-                null);
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
-        // shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
-        break;
-
-      default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                null);
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
-
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
-        break;
-    }
-
-    // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
-
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // led.runLEDS();
+  //command definitions
+  private Command ManipulatorShoot;
+  private Command ManipulatorStop;
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+      switch (Constants.currentMode) {
+        case REAL:
+        
+          // Real robot, instantiate hardware IO implementations
+          drive =
+              new Drive(
+                  new GyroIONavX(),
+                  new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
+                  new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
+                  new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
+                  new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
+                  SparkOdometryThread.getInstance());
+          vision =
+              new Vision(
+                  drive::addVisionMeasurement,
+                  new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+          shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
+          // led = new LEDS(60);
+          // elevator =
+          //     new Elevator(
+          //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+          //         new ElevatorGains(
+          //             ElevatorConstants.EXAMPLE_GAINS.kP(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kI(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kD(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kS(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kV(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+  
+          break;
+  
+        case SIM:
+          // create a maple-sim swerve drive simulation instance
+          driveSimulation =
+              new SwerveDriveSimulation(
+                  DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+          // add the simulated drivetrain to the simulation field
+          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          // Sim robot, instantiate physics sim IO implementations
+          drive =
+              new Drive(
+                  new GyroIOSim(driveSimulation.getGyroSimulation()),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[0]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[1]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[2]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[3]),
+                  null);
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
+          // shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
+          vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
+          // led = new LEDS(60);
+          // elevator =
+          //     new Elevator(
+          //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+          //         new ElevatorGains(
+          //             ElevatorConstants.EXAMPLE_GAINS.kP(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kI(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kD(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kS(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kV(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+          break;
+  
+        default:
+          // Replayed robot, disable IO implementations
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  null);
+          vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
+  
+          // led = new LEDS(60);
+          // elevator =
+          //     new Elevator(
+          //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+          //         new ElevatorGains(
+          //             ElevatorConstants.EXAMPLE_GAINS.kP(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kI(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kD(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kS(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kV(),
+          //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+          break;
+      }
+  
+      // Set up auto routines
+      autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+      xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
+  
+      // Set up SysId routines
+      autoChooser.addOption(
+          "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+      autoChooser.addOption(
+          "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+      autoChooser.addOption(
+          "Drive SysId (Quasistatic Forward)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption(
+          "Drive SysId (Quasistatic Reverse)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooser.addOption(
+          "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption(
+          "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      //Commands
+      ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).withTimeout(15);
+      ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
+      shootCommandTrigger = new Trigger(()->shooter.isFinished());
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -218,7 +229,7 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
+    yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
     // Reset gyro / odometry
     final Runnable resetGyro =
         Constants.currentMode == Constants.Mode.SIM
@@ -240,8 +251,8 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(100)));
-    driverController.y().whileTrue(new ManipulatorStart(shooter));
+    driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(100))).whileFalse(ManipulatorShoot);
+    // driverController.y().and(shootCommandTrigger.negate()).whileTrue(ManipulatorShoot);
     
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
