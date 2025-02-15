@@ -1,6 +1,9 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.Event;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,7 +12,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -17,23 +19,19 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
-import frc.robot.subsystems.LEDS.LEDS;
+// import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-// import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-// import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
-// import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
-// import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -181,6 +179,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     // led.runLEDS();
+    NamedCommands.registerCommand("SysidDynamicForward", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    NamedCommands.registerCommand("SysidDynamicReverse", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    NamedCommands.registerCommand("SysidQuasistaticForward", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    NamedCommands.registerCommand("SysidQuasistaticReverse", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -196,7 +199,7 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(),
+            () -> driverController.getLeftY(),
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
 
@@ -233,15 +236,15 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.povDown().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    // // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
+    driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     // OperatorController.y().and(allTrigger.negate()).whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-    driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
+    // driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 

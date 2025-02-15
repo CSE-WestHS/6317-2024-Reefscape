@@ -3,40 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.386842105263158,
-        "y": 5.7280427631578945
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4102637783547234,
-        "y": 4.2407665218436446
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.281967377058862,
-        "y": 0.3513250963734456
+        "x": 4.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 8.281967377058866,
-        "y": 1.2999028565817468
+        "x": 3.0,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.11,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "SysidDynamicForward",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "SysidDynamicReverse",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 0.5,
     "maxAcceleration": 0.5,
@@ -47,7 +55,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
