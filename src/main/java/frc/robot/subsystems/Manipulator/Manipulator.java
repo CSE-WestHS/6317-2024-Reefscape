@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Manipulator;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
 import frc.robot.util.mechanical_advantage.LinearProfile;
@@ -47,6 +49,7 @@ public class Manipulator extends SubsystemBase {
     kSetpoint = new LoggedTunableNumber(name + "/Gains/kSetpoint", 0.0);
 
     profile = new LinearProfile(gains.kMaxAccel(), 0.02);
+    
   }
 
   @Override
@@ -83,7 +86,7 @@ public class Manipulator extends SubsystemBase {
   public void setVelocity(double velocity) {
     profile.setGoal(velocity, velocitySetpoint);
   }
-
+  
   public void setVoltage(double voltage) {
     manipulator.setVoltage(voltage);
   }
@@ -95,7 +98,7 @@ public class Manipulator extends SubsystemBase {
   public double getVelocitySetpoint() {
     return inputs.desiredVelocity;
   }
-
+ 
   public boolean isFinished() {
     return Math.abs(inputs.velocity - inputs.desiredVelocity) < kTolerance.get() && inputs.velocity != 0;
   }

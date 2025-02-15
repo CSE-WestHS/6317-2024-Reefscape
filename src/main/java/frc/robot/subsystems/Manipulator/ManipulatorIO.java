@@ -11,6 +11,7 @@ public interface ManipulatorIO {
     public double desiredVelocity = 0.0;
 
     public double position = 0.0;
+    public double desiredPosition = 0.0;
 
     public boolean[] motorsConnected = {false};
 
@@ -25,6 +26,8 @@ public interface ManipulatorIO {
   public default void updateInputs(ManipulatorIOInputs inputs) {}
 
   public default void setVelocity(double velocity) {}
+
+  public default void setPositon(double desiredPosition) {}
 
   public default void setVoltage(double voltage) {}
 

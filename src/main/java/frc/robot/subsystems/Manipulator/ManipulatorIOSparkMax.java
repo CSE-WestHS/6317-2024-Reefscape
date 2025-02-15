@@ -11,6 +11,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
@@ -36,6 +38,7 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
   private TunableSimpleMotorFeedforward feedforward;
 
   private double velocitySetpoint = 0.0;
+  private double positionSetpoint = 0.0;
 
   public ManipulatorIOSparkMax(String name, ManipulatorHardwareConfig config) {
     this.name = name;
@@ -124,6 +127,18 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
             ClosedLoopSlot.kSlot0,
             feedforward.calculateWithVelocities(motors[0].getEncoder().getVelocity(), velocity));
   }
+
+  // @Override
+  // public void setPositon(double desiredPosition) {
+  //   positionSetpoint = desiredPosition;
+  //   System.out.println("Number 2 running...");
+  //   motors[0].getClosedLoopController().
+  //     setReference(motors[0].getEncoder().getPosition(), 
+  //       ControlType.kPosition,
+  //       ClosedLoopSlot.kSlot1,
+  //       feedforward.calculate(motors[0].getEncoder().getPosition()));
+  //   System.out.println("Setting Position...");
+  // }
 
   @Override
   public void setVoltage(double voltage) {

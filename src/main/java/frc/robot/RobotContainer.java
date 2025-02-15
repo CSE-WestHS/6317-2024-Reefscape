@@ -25,6 +25,11 @@ import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIO;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorHardwareConfig;
+import frc.robot.subsystems.beam_break.BeamBreak;
+import frc.robot.subsystems.beam_break.BeamBreakConstants;
+import frc.robot.subsystems.beam_break.BeamBreakIO;
+import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
+import frc.robot.subsystems.beam_break.BeamBreakConstants.BeamBreakConfig;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
@@ -70,7 +75,9 @@ public class RobotContainer {
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
   private final Manipulator shooter;
- 
+  //beam breaks
+  private final BeamBreak beamBreakBack;
+  private final BeamBreak beamBreakMid;
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
    //triggers
@@ -102,6 +109,8 @@ public class RobotContainer {
                   drive::addVisionMeasurement,
                   new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
           shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           // led = new LEDS(60);
           // elevator =
           //     new Elevator(
@@ -133,7 +142,8 @@ public class RobotContainer {
                   new ModuleIOSparkSim(driveSimulation.getModules()[3]),
                   null);
           shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
-          // shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.EXAMPLE_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
           // led = new LEDS(60);
           // elevator =
@@ -160,7 +170,8 @@ public class RobotContainer {
                   null);
           vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
           shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
-  
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           // led = new LEDS(60);
           // elevator =
           //     new Elevator(
@@ -253,7 +264,7 @@ public class RobotContainer {
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     driverController.povLeft().whileTrue(Commands.run(()->shooter.setVelocity(100))).whileFalse(ManipulatorShoot);
     // driverController.y().and(shootCommandTrigger.negate()).whileTrue(ManipulatorShoot);
-    
+    driverController.povRight().whileTrue(new frc.robot.commands.CoralAlignment(shooter,beamBreakMid,beamBreakBack));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
