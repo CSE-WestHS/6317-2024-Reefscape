@@ -54,25 +54,25 @@ public class ElevatorIOSim implements ElevatorIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.01, 1.0 / config.gearRatio()), gearBox);
 
-    controller = new ProfiledPIDController(ElevatorConstants.EXAMPLE_GAINS.kP(), ElevatorConstants.EXAMPLE_GAINS.kI(), ElevatorConstants.EXAMPLE_GAINS.kD(), new Constraints(8, 8));
+    controller = new ProfiledPIDController(ElevatorConstants.EXAMPLE_GAINS.kP(), ElevatorConstants.EXAMPLE_GAINS.kI(), ElevatorConstants.EXAMPLE_GAINS.kD(), new Constraints(ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(), ElevatorConstants.EXAMPLE_GAINS.kMaxAccel()));
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations) * GearConstant, positionSetpoint);
+    inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations), positionSetpoint);
     sim.setInputVoltage(inputVoltage);
     sim.update(0.02);
 
     inputs.outputPosition = sim.getAngularPosition().in(Rotations);
     inputs.desiredPosition = positionSetpoint;
-    inputs.velocity = sim.getAngularVelocity().in(RotationsPerSecond) * (0.0730 / 12);
+    inputs.velocity = sim.getAngularVelocity().in(RotationsPerSecond);
     inputs.desiredVelocity = velocitySetpoint;
 
     for (int i = 0; i < config.canIds().length; i++) {
       motorsConnected[i] = true;
 
-      motorPositions[i] = sim.getAngularPosition().in(Rotations) * GearConstant;
-      motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond) * GearConstant; 
+      motorPositions[i] = sim.getAngularPosition().in(Rotations);
+      motorVelocities[i] = sim.getAngularVelocity().in(RotationsPerSecond); 
 
       motorVoltages[i] = sim.getInputVoltage();
       motorCurrents[i] = sim.getCurrentDrawAmps();

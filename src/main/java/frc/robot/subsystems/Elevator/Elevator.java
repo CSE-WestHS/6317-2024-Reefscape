@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   private final LoggedTunableNumber kSetpoint;
 
   private TrapezoidProfile.Constraints constraints;
-
+  private double wanted_position = 0.0;
   private TrapezoidProfile profile;
 
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();
@@ -123,6 +123,7 @@ public class Elevator extends SubsystemBase {
     goal =
         new TrapezoidProfile.State(
             MathUtil.clamp(position, kMinPosition.get(), kMaxPosition.get()), 0);
+            System.out.println("Ran setPosition on Elevator...");
   }
 
   public void incrementPosition(double deltaPosition) {
@@ -142,6 +143,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean isFinished() {
-    return Math.abs(inputs.outputPosition - goal.position) < kTolerance.get() && Math.abs(inputs.outputPosition - goal.position) > 0;
+    return Math.abs(inputs.outputPosition - goal.position) < kTolerance.get() && inputs.outputPosition != goal.position;
   }
 }

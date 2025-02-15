@@ -14,10 +14,9 @@ public class GoToPositionElevator extends Command {
   double position;
   ElevatorGains eg;
   /** Creates a new GoToPositionElevator. */
-  public GoToPositionElevator(Elevator elevator, double desiredPosition, ElevatorGains EG) {
+  public GoToPositionElevator(Elevator elevator, double desiredPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.Elevator = elevator;
-    this.eg = EG;
     this.position = desiredPosition;
     addRequirements(elevator);
   }
@@ -25,7 +24,7 @@ public class GoToPositionElevator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    System.out.println("Elevator command is running...");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -45,7 +45,7 @@ public class ElevatorConstants {
       String canBus) {}
 
   public static final ElevatorGains EXAMPLE_GAINS =
-      new ElevatorGains(5, 0.0, 0.0, 0.5, 1.0, 2.0, 0.0, 10.0, 20.0, 0.0, 30, 0.2);
+      new ElevatorGains(0.56, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 10.0, 20.0, 0.0, 30, 0.2);
 
   public static final ElevatorHardwareConfig EXAMPLE_CONFIG =
       new ElevatorHardwareConfig(

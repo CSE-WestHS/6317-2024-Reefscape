@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -65,11 +66,16 @@ public class RobotContainer {
   //   private final LEDS led;
   @SuppressWarnings("unused")
   private final Vision vision;
+
+ 
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
   private final CommandJoystick js = new CommandJoystick(0);
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
+   //triggers
+  private Trigger elevatorButtonTrigger = new Trigger(driverController.povDown());
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -274,14 +280,15 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    // driverController.povDown().and(()->!elevator.isFinished()).whileTrue(Commands.run((()-> new frc.robot.commands.GoToPositionElevator(elevator,5,gains))));
-    driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
+    // driverController.povDown().whileTrue(Commands.run(()->new frc.robot.commands.GoToPositionElevator(elevator,5,gains)));
+    // driverController.povLeft().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.povRight().whileTrue(drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.povDown().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.povUp().whileTrue(drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.a().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.y().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
+    elevatorButtonTrigger.whileFalse(new GoToPositionElevator(elevator,0)).whileTrue(new GoToPositionElevator(elevator,2));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
