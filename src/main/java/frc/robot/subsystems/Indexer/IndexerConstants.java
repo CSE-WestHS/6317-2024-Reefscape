@@ -1,0 +1,24 @@
+package frc.robot.subsystems.Indexer;
+
+public class IndexerConstants {
+  public record IndexerGains(
+      double kP,
+      double kI,
+      double kD,
+      double kS,
+      double kV,
+      double kA,
+      double kMaxAccel,
+      double kTolerance) {}
+
+  public record IndexerHardwareConfig(
+      int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
+
+  public static final IndexerHardwareConfig EXAMPLE_CONFIG =
+      new IndexerHardwareConfig(new int[] {10,20}, new boolean[] {false,true}, 2.0, "");
+
+  public static final IndexerGains SIM_GAINS =
+      new IndexerGains(0.2, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);
+  public static final IndexerGains REAL_GAINS =
+      new IndexerGains(1, 0.0, 0, 0.0, 0.5, 0.0, 1.0, 0.2);
+}
