@@ -52,7 +52,7 @@ public class IndexerIOSim implements IndexerIO {
 
     //set up simulation for NEO motor
     gearBox = DCMotor.getNEO(config.canIds().length);
-
+    
     sim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.025, config.gearRatio()), gearBox);
