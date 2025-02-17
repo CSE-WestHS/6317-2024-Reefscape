@@ -133,6 +133,7 @@ public class RobotContainer {
   private Command ManipulatorClear;
   private Command indexerStart;
   private Command indexerStop;
+  private Command AlgaeArmPositionSet;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -247,6 +248,7 @@ public class RobotContainer {
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
     indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
     indexerStop = Commands.run(()->indexer.setVelocity(0));
+    AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -303,7 +305,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-    driverController.povRight().whileTrue(new AlgaeArmPositionCommand(algaeArm, 10));
+    driverController.povRight().whileTrue(AlgaeArmPositionSet);
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
