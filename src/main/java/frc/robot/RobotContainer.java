@@ -132,7 +132,7 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
         shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
-        indexer = new Indexer(new IndexerIO() {}, IndexerConstants.SIM_GAINS);
+        indexer = new Indexer(new IndexerIO() {}, IndexerConstants.REAL_GAINS);
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
