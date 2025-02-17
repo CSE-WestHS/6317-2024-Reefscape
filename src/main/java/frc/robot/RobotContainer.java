@@ -21,6 +21,42 @@ import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 // import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Funnel.Funnel;
+import frc.robot.subsystems.Funnel.FunnelConstants;
+import frc.robot.subsystems.Funnel.FunnelIOReplay;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerConstants;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Manipulator.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.beam_break.BeamBreak;
+import frc.robot.subsystems.beam_break.BeamBreakConstants;
+import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
+import frc.robot.subsystems.Funnel.Funnel;
+import frc.robot.subsystems.Funnel.FunnelConstants;
+import frc.robot.subsystems.Funnel.FunnelIOSim;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerConstants;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Manipulator.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.beam_break.BeamBreak;
+import frc.robot.subsystems.beam_break.BeamBreakConstants;
+import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
+import frc.robot.subsystems.Funnel.Funnel;
+import frc.robot.subsystems.Funnel.FunnelConstants;
+import frc.robot.subsystems.Funnel.FunnelIO;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerConstants;
+import frc.robot.subsystems.Indexer.IndexerIO;
+import frc.robot.subsystems.Manipulator.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants;
+import frc.robot.subsystems.Manipulator.ManipulatorIO;
+import frc.robot.subsystems.beam_break.BeamBreak;
+import frc.robot.subsystems.beam_break.BeamBreakConstants;
+import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -56,11 +92,9 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
 //   private final Elevator elevator;
 //   private final LEDS led;
-  @SuppressWarnings("unused")
-  private final Vision vision;
+  
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -75,6 +109,15 @@ public class RobotContainer {
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
   private Trigger elevatorButtonTrigger = new Trigger(driverController.povDown());
 
+  //Subsystem Definitions
+  private final Drive drive;
+  @SuppressWarnings("unused")
+  private final Vision vision;
+  private final Manipulator shooter;
+  private final Indexer indexer;
+  private final BeamBreak beamBreakBack;
+  private final BeamBreak beamBreakMid;
+  private final Funnel funnel;
   //commands
   private Command ManipulatorShoot;
   private Command ManipulatorStop;
@@ -102,7 +145,11 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        
+        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
+        indexer = new Indexer(new IndexerIO() {}, IndexerConstants.SIM_GAINS);
+        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+        funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -135,7 +182,11 @@ public class RobotContainer {
                 null);
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
+        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+        funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -160,6 +211,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
+        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+        funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
+
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
