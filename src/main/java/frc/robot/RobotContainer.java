@@ -118,6 +118,7 @@ public class RobotContainer {
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
   private final Funnel funnel;
+  private final Elevator elevator;
   //commands
   private Command ManipulatorShoot;
   private Command ManipulatorStop;
@@ -151,16 +152,23 @@ public class RobotContainer {
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
+                    ));
 
         break;
 
@@ -188,16 +196,22 @@ public class RobotContainer {
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
 
       default:
@@ -218,16 +232,22 @@ public class RobotContainer {
         funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
 
         // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+        elevator =
+            new Elevator(
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
+                new ElevatorGains(
+                    ElevatorConstants.EXAMPLE_GAINS.kP(),
+                    ElevatorConstants.EXAMPLE_GAINS.kI(),
+                    ElevatorConstants.EXAMPLE_GAINS.kD(),
+                    ElevatorConstants.EXAMPLE_GAINS.kS(),
+                    ElevatorConstants.EXAMPLE_GAINS.kG(),
+                    ElevatorConstants.EXAMPLE_GAINS.kV(),
+                    ElevatorConstants.EXAMPLE_GAINS.kA(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
+                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
         break;
     }
 
