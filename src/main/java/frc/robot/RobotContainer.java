@@ -279,25 +279,6 @@ public class RobotContainer {
                 () -> -driverController.getLeftX(),
                 () -> -driverController.getRightX()));
 
-
-
-    // Default command, normal field-relative drive
-    // drive.setDefaultCommand(
-    //     DriveCommands.joystickDrive(
-    //         drive,
-    //         () -> -driverController.getLeftY(),
-    //         () -> -driverController.getLeftX(),
-    //         () -> -driverController.getRightX()));
-
-    // Lock to 0° when A button is held
-    // driverController
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -driverController.getLeftY(),
-    //             () -> -driverController.getLeftX(),
-    //             () -> new Rotation2d()));
     //trigger controls
     yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
     povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
