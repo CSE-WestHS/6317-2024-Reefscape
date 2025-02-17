@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -69,6 +70,17 @@ public class RobotContainer {
   //buttonboard
   private static final CommandJoystick buttonboardController = new CommandJoystick(1);
 
+  //triggers
+  private final Trigger yIsPressed = new Trigger(driverController.y());
+  private final Trigger povDownisPressed = new Trigger(driverController.povDown());
+  private Trigger elevatorButtonTrigger = new Trigger(driverController.povDown());
+
+  //commands
+  private Command ManipulatorShoot;
+  private Command ManipulatorStop;
+  private Command ManipulatorClear;
+  private Command indexerStart;
+  private Command indexerStop;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -90,6 +102,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+        
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -122,6 +135,7 @@ public class RobotContainer {
                 null);
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
+
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -179,7 +193,12 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // led.runLEDS();
+    // command definitions
+    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).withTimeout(15);
+    ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
+    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
+    indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
+    indexerStop = Commands.run(()->indexer.setVelocity(0));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -200,15 +219,18 @@ public class RobotContainer {
             () -> -driverController.getRightX()));
 
     // Lock to 0° when A button is held
-    driverController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> new Rotation2d()));
-
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> new Rotation2d()));
+    //trigger controls
+    yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
+    povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
+    elevatorButtonTrigger.whileFalse(new GoToPositionElevator(elevator,0)).whileTrue(new GoToPositionElevator(elevator,2));
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
