@@ -83,6 +83,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
+import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import org.ironmaple.simulation.SimulatedArena;
@@ -325,6 +326,10 @@ public class RobotContainer {
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     driverController.povRight().whileTrue(AlgaeArmPositionSet);
     driverController.povLeft().whileTrue(new FunnelUp(funnel));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,1/4));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,2/4));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,3/4));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,4/4));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
