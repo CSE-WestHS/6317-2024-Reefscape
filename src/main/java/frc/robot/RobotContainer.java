@@ -191,7 +191,10 @@ public class RobotContainer {
     // led.runLEDS();
 
     //command definitions
-    pneumaticClimbCommand = Commands.run(()->pneumaticSolenoid.setSolenoid(Value.kForward)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2).andThen(()->pneumaticSolenoid.setSolenoid(Value.kReverse)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
+    pneumaticClimbCommand = Commands.run(()->pneumaticSolenoid.setSolenoid(Value.kForward))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
+        .andThen(()->pneumaticSolenoid.setSolenoid(Value.kReverse))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
 
 
     // Configure the button bindings
