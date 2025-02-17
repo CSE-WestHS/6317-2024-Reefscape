@@ -1,4 +1,4 @@
-package frc.robot.subsystems.position_joint;
+package frc.robot.subsystems.AlgaeArm;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -18,9 +18,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.position_joint.PositionJointConstants.GravityType;
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointGains;
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointHardwareConfig;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmGains;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmHardwareConfig;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.GravityType;
 import frc.robot.util.PositionJointFeedforward;
 import frc.robot.util.TunableArmFeedforward;
 import frc.robot.util.TunableElevatorFeedforward;
@@ -29,10 +29,10 @@ import frc.robot.util.encoder.AbsoluteMagEncoder;
 import frc.robot.util.encoder.IAbsoluteEncoder;
 import java.util.function.DoubleSupplier;
 
-public class PositionJointIONeo implements PositionJointIO {
+public class AlgaeArmIONeo implements AlgaeArmIO {
   private final String name;
 
-  private final PositionJointHardwareConfig hardwareConfig;
+  private final AlgaeArmHardwareConfig hardwareConfig;
 
   private final DoubleSupplier externalFeedforward;
 
@@ -60,8 +60,8 @@ public class PositionJointIONeo implements PositionJointIO {
   private double positionSetpoint = 0.0;
   private double velocitySetpoint = 0.0;
 
-  public PositionJointIONeo(
-      String name, PositionJointHardwareConfig config, DoubleSupplier externalFeedforward) {
+  public AlgaeArmIONeo(
+      String name, AlgaeArmHardwareConfig config, DoubleSupplier externalFeedforward) {
     this.name = name;
     hardwareConfig = config;
     this.externalFeedforward = externalFeedforward;
@@ -195,12 +195,12 @@ public class PositionJointIONeo implements PositionJointIO {
     }
   }
 
-  public PositionJointIONeo(String name, PositionJointHardwareConfig config) {
+  public AlgaeArmIONeo(String name, AlgaeArmHardwareConfig config) {
     this(name, config, () -> 0);
   }
 
   @Override
-  public void updateInputs(PositionJointIOInputs inputs) {
+  public void updateInputs(AlgaeArmIOInputs inputs) {
     currentPosition = motors[0].getEncoder().getPosition();
     inputs.outputPosition = currentPosition;
 
@@ -270,7 +270,7 @@ public class PositionJointIONeo implements PositionJointIO {
   }
 
   @Override
-  public void setGains(PositionJointGains gains) {
+  public void setGains(AlgaeArmGains gains) {
     feedforward.setGains(gains.kS(), gains.kG(), gains.kV(), gains.kA());
 
     motors[0].configure(

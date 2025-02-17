@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.position_joint.PositionJointPositionCommand;
+import frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand;
+import frc.robot.subsystems.AlgaeArm.AlgaeArm;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
@@ -31,10 +35,6 @@ import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-import frc.robot.subsystems.position_joint.PositionJoint;
-import frc.robot.subsystems.position_joint.PositionJointConstants;
-import frc.robot.subsystems.position_joint.PositionJointIO;
-import frc.robot.subsystems.position_joint.PositionJointIOSim;
 // import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
 // import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
 // import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
@@ -60,7 +60,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final PositionJoint positionJoint;
+  private final AlgaeArm positionJoint;
 //   private final Elevator elevator;
 //   private final LEDS led;
   @SuppressWarnings("unused")
@@ -93,7 +93,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        positionJoint = new PositionJoint(new PositionJointIO() {}, PositionJointConstants.EXAMPLE_GAINS);
+        positionJoint = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -126,7 +126,7 @@ public class RobotContainer {
                 null);
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-        positionJoint = new PositionJoint(new PositionJointIOSim("PositionJointSim", PositionJointConstants.EXAMPLE_CONFIG), PositionJointConstants.EXAMPLE_GAINS);
+        positionJoint = new AlgaeArm(new AlgaeArmIOSim("PositionJointSim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(
@@ -151,7 +151,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        positionJoint = new PositionJoint(new PositionJointIOSim("PositionJointReplay", PositionJointConstants.EXAMPLE_CONFIG), PositionJointConstants.EXAMPLE_GAINS);
+        positionJoint = new AlgaeArm(new AlgaeArmIOSim("PositionJointReplay", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         // elevator =
         //     new Elevator(

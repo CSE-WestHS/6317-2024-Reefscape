@@ -1,15 +1,16 @@
-package frc.robot.subsystems.position_joint;
+package frc.robot.subsystems.AlgaeArm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointGains;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIOInputsAutoLogged;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmGains;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-public class PositionJoint extends SubsystemBase {
-  private final PositionJointIO positionJoint;
-  private final PositionJointIOInputsAutoLogged inputs = new PositionJointIOInputsAutoLogged();
+public class AlgaeArm extends SubsystemBase {
+  private final AlgaeArmIO algaeArm;
+  private final AlgaeArmIOInputsAutoLogged inputs = new AlgaeArmIOInputsAutoLogged();
 
   private final String name;
 
@@ -39,8 +40,8 @@ public class PositionJoint extends SubsystemBase {
 
   private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-  public PositionJoint(PositionJointIO io, PositionJointGains gains) {
-    positionJoint = io;
+  public AlgaeArm(AlgaeArmIO io, AlgaeArmGains gains) {
+    algaeArm = io;
     name = io.getName();
 
     kP = new LoggedTunableNumber(name + "/Gains/kP", gains.kP());
@@ -70,18 +71,18 @@ public class PositionJoint extends SubsystemBase {
 
   @Override
   public void periodic() {
-    positionJoint.updateInputs(inputs);
+    algaeArm.updateInputs(inputs);
     Logger.processInputs(name, inputs);
 
     setpoint = profile.calculate(0.02, setpoint, goal);
 
-    positionJoint.setPosition(setpoint.position, setpoint.velocity);
+    algaeArm.setPosition(setpoint.position, setpoint.velocity);
 
     LoggedTunableNumber.ifChanged(
         hashCode(),
         (values) -> {
-          positionJoint.setGains(
-              new PositionJointGains(
+          algaeArm.setGains(
+              new AlgaeArmGains(
                   values[0],
                   values[1],
                   values[2],
@@ -130,7 +131,7 @@ public class PositionJoint extends SubsystemBase {
   }
 
   public void setVoltage(double voltage) {
-    positionJoint.setVoltage(voltage);
+    algaeArm.setVoltage(voltage);
   }
 
   public double getPosition() {

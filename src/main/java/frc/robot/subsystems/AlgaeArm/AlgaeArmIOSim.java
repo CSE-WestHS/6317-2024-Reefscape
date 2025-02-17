@@ -1,4 +1,4 @@
-package frc.robot.subsystems.position_joint;
+package frc.robot.subsystems.AlgaeArm;
 
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -7,13 +7,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointGains;
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointHardwareConfig;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmGains;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmHardwareConfig;
 
-public class PositionJointIOSim implements PositionJointIO {
+
+public class AlgaeArmIOSim implements AlgaeArmIO {
   private final String name;
 
-  private final PositionJointHardwareConfig config;
+  private final AlgaeArmHardwareConfig config;
 
   private final DCMotor gearBox;
 
@@ -33,7 +34,7 @@ public class PositionJointIOSim implements PositionJointIO {
   private double velocitySetpoint = 0.0;
   private double inputVoltage = 0.0;
 
-  public PositionJointIOSim(String name, PositionJointHardwareConfig config) {
+  public AlgaeArmIOSim(String name, AlgaeArmHardwareConfig config) {
     this.name = name;
 
     this.config = config;
@@ -52,11 +53,11 @@ public class PositionJointIOSim implements PositionJointIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.01, 1.0 / config.gearRatio()), gearBox);
 
-    controller = new PIDController(PositionJointConstants.EXAMPLE_GAINS.kP(), PositionJointConstants.EXAMPLE_GAINS.kI(), PositionJointConstants.EXAMPLE_GAINS.kD());
+    controller = new PIDController(AlgaeArmConstants.EXAMPLE_GAINS.kP(), AlgaeArmConstants.EXAMPLE_GAINS.kI(), AlgaeArmConstants.EXAMPLE_GAINS.kD());
   }
 
   @Override
-  public void updateInputs(PositionJointIOInputs inputs) {
+  public void updateInputs(AlgaeArmIOInputs inputs) {
     inputVoltage = controller.calculate(sim.getAngularPosition().in(Rotations), positionSetpoint);
     sim.setInputVoltage(inputVoltage);
     sim.update(0.02);
@@ -92,7 +93,7 @@ public class PositionJointIOSim implements PositionJointIO {
   }
 
   @Override
-  public void setGains(PositionJointGains gains) {
+  public void setGains(AlgaeArmGains gains) {
     controller.setPID(gains.kP(), gains.kI(), gains.kD());
 
     System.out.println(name + " gains set to " + gains);

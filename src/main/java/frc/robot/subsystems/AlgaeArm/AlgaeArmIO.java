@@ -1,11 +1,12 @@
-package frc.robot.subsystems.position_joint;
+package frc.robot.subsystems.AlgaeArm;
 
-import frc.robot.subsystems.position_joint.PositionJointConstants.PositionJointGains;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface PositionJointIO {
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmGains;
+
+public interface AlgaeArmIO {
   @AutoLog
-  public static class PositionJointIOInputs {
+  public static class AlgaeArmIOInputs {
     public double outputPosition = 0.0;
     public double rotorPosition = 0.0;
     public double desiredPosition = 0.0;
@@ -24,11 +25,11 @@ public interface PositionJointIO {
     public double[] motorCurrents = {0.0};
   }
 
-  public default void updateInputs(PositionJointIOInputs inputs) {}
+  public default void updateInputs(AlgaeArmIOInputs inputs) {}
 
   public default void setPosition(double position, double velocity) {}
 
-  public default void setGains(PositionJointGains gains) {}
+  public default void setGains(AlgaeArmGains gains) {}
 
   public default void setVoltage(double voltage) {}
 
