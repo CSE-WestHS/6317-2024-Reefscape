@@ -1,14 +1,17 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Manipulator;
 
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
+
 import org.littletonrobotics.junction.AutoLog;
 
-public interface FlywheelIO {
+public interface ManipulatorIO {
   @AutoLog
-  public static class FlywheelIOInputs {
+  public static class ManipulatorIOInputs {
     public double velocity = 0.0;
-
     public double desiredVelocity = 0.0;
+
+    public double position = 0.0;
+    public double desiredPosition = 0.0;
 
     public boolean[] motorsConnected = {false};
 
@@ -20,15 +23,15 @@ public interface FlywheelIO {
     public double[] motorCurrents = {0.0};
   }
 
-  public default void updateInputs(FlywheelIOInputs inputs) {}
+  public default void updateInputs(ManipulatorIOInputs inputs) {}
 
   public default void setVelocity(double velocity) {}
 
+  public default void setPositon(double desiredPosition) {}
+
   public default void setVoltage(double voltage) {}
 
-  public default void setGains(FlywheelGains gains) {}
+  public default void setGains(ManipulatorGains gains) {}
 
-  public default String getName() {
-    return "Flywheel";
-  }
+  public default String getName() { return "Manipulator"; };
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Indexer;
 
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -11,12 +11,15 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelGains;
-import frc.robot.subsystems.flywheel.FlywheelConstants.FlywheelHardwareConfig;
+import frc.robot.subsystems.Indexer.IndexerConstants.IndexerGains;
+import frc.robot.subsystems.Indexer.IndexerConstants.IndexerHardwareConfig;
+import frc.robot.util.feedforwards.TunableSimpleMotorFeedforward;
 
-public class FlywheelIONeo implements FlywheelIO {
+public class IndexerIOSparkMax implements IndexerIO {
   private final String name;
 
   private final SparkMax[] motors;
@@ -32,13 +35,13 @@ public class FlywheelIONeo implements FlywheelIO {
 
   private final Alert[] motorAlerts;
 
+  private TunableSimpleMotorFeedforward feedforward;
+
   private double velocitySetpoint = 0.0;
+  private double positionSetpoint = 0.0;
 
-  private FlywheelGains gains;
-
-  public FlywheelIONeo(String name, FlywheelHardwareConfig config) {
+  public IndexerIOSparkMax(String name, IndexerHardwareConfig config) {
     this.name = name;
-
     assert config.canIds().length > 0 && (config.canIds().length == config.reversed().length);
 
     motors = new SparkMax[config.canIds().length];
@@ -55,8 +58,8 @@ public class FlywheelIONeo implements FlywheelIO {
             .inverted(config.reversed()[0])
             .apply(
                 new EncoderConfig()
-                    .positionConversionFactor(config.gearRatio())
-                    .velocityConversionFactor(config.gearRatio()));
+                    .positionConversionFactor(1.0 / config.gearRatio())
+                    .velocityConversionFactor(1.0 / (60.0 * config.gearRatio())));
 
     motors[0].configure(
         leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -80,10 +83,12 @@ public class FlywheelIONeo implements FlywheelIO {
               name + " Follower Motor " + i + " Disconnected! CAN ID: " + config.canIds()[i],
               AlertType.kError);
     }
+
+    feedforward = new TunableSimpleMotorFeedforward(0, 0, 0);
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
+  public void updateInputs(IndexerIOInputs inputs) {
     inputs.velocity = motors[0].getEncoder().getVelocity();
 
     inputs.desiredVelocity = velocitySetpoint;
@@ -97,7 +102,7 @@ public class FlywheelIONeo implements FlywheelIO {
       motorVoltages[i] = motors[i].getAppliedOutput() * 12;
       motorCurrents[i] = motors[i].getOutputCurrent();
 
-      motorAlerts[i].set(motorsConnected[i]);
+      motorAlerts[i].set(!motorsConnected[i]);
     }
 
     inputs.motorsConnected = motorsConnected;
@@ -119,8 +124,20 @@ public class FlywheelIONeo implements FlywheelIO {
             velocitySetpoint,
             ControlType.kVelocity,
             ClosedLoopSlot.kSlot0,
-            gains.kS() * Math.signum(velocity));
+            feedforward.calculateWithVelocities(motors[0].getEncoder().getVelocity(), velocity));
   }
+
+  // @Override
+  // public void setPositon(double desiredPosition) {
+  //   positionSetpoint = desiredPosition;
+  //   System.out.println("Number 2 running...");
+  //   motors[0].getClosedLoopController().
+  //     setReference(motors[0].getEncoder().getPosition(), 
+  //       ControlType.kPosition,
+  //       ClosedLoopSlot.kSlot1,
+  //       feedforward.calculate(motors[0].getEncoder().getPosition()));
+  //   System.out.println("Setting Position...");
+  // }
 
   @Override
   public void setVoltage(double voltage) {
@@ -128,13 +145,13 @@ public class FlywheelIONeo implements FlywheelIO {
   }
 
   @Override
-  public void setGains(FlywheelGains gains) {
-    this.gains = gains;
+  public void setGains(IndexerGains gains) {
     motors[0].configure(
-        leaderConfig.apply(
-            new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), gains.kV())),
+        leaderConfig.apply(new ClosedLoopConfig().pid(gains.kP(), gains.kI(), gains.kD())),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kNoPersistParameters);
+
+    feedforward.setGains(gains.kS(), gains.kV(), gains.kA());
 
     System.out.println(name + " gains set to " + gains);
   }
