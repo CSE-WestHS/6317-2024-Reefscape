@@ -27,6 +27,7 @@ import frc.robot.subsystems.Funnel.FunnelIOReplay;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerConstants;
 import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
@@ -83,7 +84,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
+import frc.robot.commands.GoToPositionElevator;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -119,6 +120,7 @@ public class RobotContainer {
   private final BeamBreak beamBreakMid;
   private final Funnel funnel;
   private final Elevator elevator;
+  public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
   private Command ManipulatorShoot;
   private Command ManipulatorStop;
