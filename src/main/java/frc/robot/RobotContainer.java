@@ -219,7 +219,7 @@ public class RobotContainer {
             //Commands
             ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).withTimeout(15);
             ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-            ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)); //runs motor backwards to get rid of coral from manipulator
+            ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
             indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
             indexerStop = Commands.run(()->indexer.setVelocity(0));
         
