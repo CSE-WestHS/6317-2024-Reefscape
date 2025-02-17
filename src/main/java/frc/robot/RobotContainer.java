@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.AlgaeArm.AlgaeArm;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
@@ -85,6 +89,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import frc.robot.commands.GoToPositionElevator;
+import frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -120,9 +125,10 @@ public class RobotContainer {
   private final BeamBreak beamBreakMid;
   private final Funnel funnel;
   private final Elevator elevator;
+  private final AlgaeArm algaeArm;
   public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
-  private Command ManipulatorShoot;
+  private Command ManipulatorShoot; 
   private Command ManipulatorStop;
   private Command ManipulatorClear;
   private Command indexerStart;
@@ -153,24 +159,12 @@ public class RobotContainer {
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
+        algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
                 new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()
-                    ));
+               ElevatorConstants.EXAMPLE_GAINS);
 
         break;
 
@@ -197,23 +191,11 @@ public class RobotContainer {
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
+        algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
         break;
 
       default:
@@ -232,24 +214,11 @@ public class RobotContainer {
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
         funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
-
+        algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-                new ElevatorGains(
-                    ElevatorConstants.EXAMPLE_GAINS.kP(),
-                    ElevatorConstants.EXAMPLE_GAINS.kI(),
-                    ElevatorConstants.EXAMPLE_GAINS.kD(),
-                    ElevatorConstants.EXAMPLE_GAINS.kS(),
-                    ElevatorConstants.EXAMPLE_GAINS.kG(),
-                    ElevatorConstants.EXAMPLE_GAINS.kV(),
-                    ElevatorConstants.EXAMPLE_GAINS.kA(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxVelo(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxAccel(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMinPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kMaxPosition(),
-                    ElevatorConstants.EXAMPLE_GAINS.kTolerance()));
+                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
         break;
     }
 
@@ -334,7 +303,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
-
+    driverController.povRight().whileTrue(new AlgaeArmPositionCommand(algaeArm, 10));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
