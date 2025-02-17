@@ -4,37 +4,32 @@
 
 package frc.robot.util;
 
-import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
     //scoring positions
-    public static final Pose2d L1 = new Pose2d(4.936,5.074,new Rotation2d().fromDegrees(-119.384));
-    public static final Pose2d L2 = new Pose2d(5.330,5.189,new Rotation2d().fromDegrees(-119.384));
-    public static final Pose2d L3 = new Pose2d(5.956,4.179,new Rotation2d().fromDegrees(178.122));
-    public static final Pose2d L4 = new Pose2d(5.956,3.833,new Rotation2d().fromDegrees(178.122));
-    public static final Pose2d L5 = new Pose2d(5.359,2.842, new Rotation2d().fromDegrees(118.887));
-    public static final Pose2d L6 = new Pose2d(5.080,2.630, new Rotation2d().fromDegrees(118.887));
-    public static final Pose2d R6 = new Pose2d(3.916, 2.688, new Rotation2d().fromDegrees(62.526));
-    public static final Pose2d R5 = new Pose2d(3.916, 2.832, new Rotation2d().fromDegrees(62.526));
-    public static final Pose2d R4 = new Pose2d(3.002, 3.871, new Rotation2d().fromDegrees(-0.909));
-    public static final Pose2d R3 = new Pose2d(3.012, 4.179, new Rotation2d().fromDegrees(-0.909));
-    public static final Pose2d R2 = new Pose2d(3.512, 5.276, new Rotation2d().fromDegrees(-58.570));
-    public static final Pose2d R1 = new Pose2d(3.801, 5.516, new Rotation2d().fromDegrees(-58.570));
+    public static final Pose2d L1 = new Pose2d(4.936,5.074,Rotation2d.fromDegrees(-119.384));
+    public static final Pose2d L2 = new Pose2d(5.330,5.189,Rotation2d.fromDegrees(-119.384));
+    public static final Pose2d L3 = new Pose2d(5.956,4.179,Rotation2d.fromDegrees(178.122));
+    public static final Pose2d L4 = new Pose2d(5.956,3.833,Rotation2d.fromDegrees(178.122));
+    public static final Pose2d L5 = new Pose2d(5.359,2.842,  Rotation2d.fromDegrees(118.887));
+    public static final Pose2d L6 = new Pose2d(5.080,2.630, Rotation2d.fromDegrees(118.887));
+    public static final Pose2d R6 = new Pose2d(3.916, 2.688, Rotation2d.fromDegrees(62.526));
+    public static final Pose2d R5 = new Pose2d(3.916, 2.832, Rotation2d.fromDegrees(62.526));
+    public static final Pose2d R4 = new Pose2d(3.002, 3.871, Rotation2d.fromDegrees(-0.909));
+    public static final Pose2d R3 = new Pose2d(3.012, 4.179, Rotation2d.fromDegrees(-0.909));
+    public static final Pose2d R2 = new Pose2d(3.512, 5.276, Rotation2d.fromDegrees(-58.570));
+    public static final Pose2d R1 = new Pose2d(3.801, 5.516, Rotation2d.fromDegrees(-58.570));
 
     //sections
     public static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(-114.228)); //section 1

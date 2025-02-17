@@ -12,7 +12,6 @@ import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.Indexer.IndexerConstants.IndexerGains;
@@ -38,7 +37,6 @@ public class IndexerIOSparkMax implements IndexerIO {
   private TunableSimpleMotorFeedforward feedforward;
 
   private double velocitySetpoint = 0.0;
-  private double positionSetpoint = 0.0;
 
   public IndexerIOSparkMax(String name, IndexerHardwareConfig config) {
     this.name = name;

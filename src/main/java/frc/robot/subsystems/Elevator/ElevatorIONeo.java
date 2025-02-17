@@ -22,8 +22,6 @@ import frc.robot.subsystems.Elevator.ElevatorConstants.GravityType;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
 import frc.robot.util.TunableElevatorFeedforward;
-import frc.robot.util.TunableArmFeedforward;
-import frc.robot.util.TunableElevatorFeedforward;
 import frc.robot.util.encoder.AbsoluteCancoder;
 import frc.robot.util.encoder.AbsoluteMagEncoder;
 import frc.robot.util.encoder.IAbsoluteEncoder;

@@ -32,7 +32,6 @@ public class Elevator extends SubsystemBase {
   private final LoggedTunableNumber kSetpoint;
 
   private TrapezoidProfile.Constraints constraints;
-  private double wanted_position = 0.0;
   private TrapezoidProfile profile;
 
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();

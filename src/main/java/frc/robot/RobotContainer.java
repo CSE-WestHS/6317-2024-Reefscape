@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,8 +21,6 @@ import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
-// import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Funnel.Funnel;
@@ -39,50 +36,23 @@ import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.beam_break.BeamBreak;
 import frc.robot.subsystems.beam_break.BeamBreakConstants;
 import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
-import frc.robot.subsystems.Funnel.Funnel;
-import frc.robot.subsystems.Funnel.FunnelConstants;
 import frc.robot.subsystems.Funnel.FunnelIOSim;
-import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.Indexer.IndexerConstants;
-import frc.robot.subsystems.Indexer.IndexerIOSim;
-import frc.robot.subsystems.Manipulator.Manipulator;
-import frc.robot.subsystems.Manipulator.ManipulatorConstants;
-import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
-import frc.robot.subsystems.beam_break.BeamBreak;
-import frc.robot.subsystems.beam_break.BeamBreakConstants;
-import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
-import frc.robot.subsystems.Funnel.Funnel;
-import frc.robot.subsystems.Funnel.FunnelConstants;
 import frc.robot.subsystems.Funnel.FunnelIO;
-import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.Indexer.IndexerConstants;
 import frc.robot.subsystems.Indexer.IndexerIO;
-import frc.robot.subsystems.Manipulator.Manipulator;
-import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIO;
-import frc.robot.subsystems.beam_break.BeamBreak;
-import frc.robot.subsystems.beam_break.BeamBreakConstants;
-import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-// import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-// import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
-// import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
-// import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
@@ -92,7 +62,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import frc.robot.commands.GoToPositionElevator;
-import frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -116,17 +85,17 @@ public class RobotContainer {
   //triggers
   private final Trigger yIsPressed = new Trigger(driverController.y());
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
-  private Trigger elevatorButtonTrigger = new Trigger(driverController.rightStick());
-  private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
-  private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
+//   private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
+//   private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
   private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
-  private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
+//   private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
   //Subsystem Definitions
   private final Drive drive;
   @SuppressWarnings("unused")
   private final Vision vision;
   private final Manipulator shooter;
   private final Indexer indexer;
+  @SuppressWarnings("unused")
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
   private final Funnel funnel;
@@ -136,6 +105,7 @@ public class RobotContainer {
   //commands
   private Command ManipulatorShoot; 
   private Command ManipulatorStop;
+  @SuppressWarnings("unused")
   private Command ManipulatorClear;
   private Command indexerStart;
   private Command indexerStop;

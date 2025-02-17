@@ -12,7 +12,6 @@ import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants.ManipulatorGains;
@@ -38,7 +37,6 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
   private TunableSimpleMotorFeedforward feedforward;
 
   private double velocitySetpoint = 0.0;
-  private double positionSetpoint = 0.0;
 
   public ManipulatorIOSparkMax(String name, ManipulatorHardwareConfig config) {
     this.name = name;

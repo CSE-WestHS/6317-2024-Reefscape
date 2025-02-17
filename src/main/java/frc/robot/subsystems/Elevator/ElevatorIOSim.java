@@ -3,12 +3,10 @@ package frc.robot.subsystems.Elevator;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
@@ -28,7 +26,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
   private final double[] motorPositions;
   private final double[] motorVelocities;
-  private final double GearConstant = (12 / 0.0730);
+  // private final double GearConstant = (12 / 0.0730);
   private final double[] motorVoltages;
   private final double[] motorCurrents;
   private double positionSetpoint = 0.0;
