@@ -31,19 +31,19 @@ public class UtilitiesFieldSectioning {
     private final Pose2d L6 = new Pose2d();
     private final Pose2d R1 = new Pose2d();
     private final Pose2d R2 = new Pose2d();
-    private final Pose2d R3 = new Pose2d();
-    private final Pose2d R4 = new Pose2d();
-    private final Pose2d R5 = new Pose2d();
-    private final Pose2d R6 = new Pose2d();
+    public final Pose2d R3 = new Pose2d();
+    public final Pose2d R4 = new Pose2d();
+    public final Pose2d R5 = new Pose2d();
+    public final Pose2d R6 = new Pose2d();
 
     //sections
-    private static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(48.752)); //section 1
-    private static final Pose2d S2 = new Pose2d(6.533,4.169,Rotation2d.fromDegrees(4.135)); //section2
-    private static final Pose2d S3 = new Pose2d(5.454,2.539,Rotation2d.fromDegrees(-63.682));
-    private static final Pose2d S4 = new Pose2d(3.333,2.563,Rotation2d.fromDegrees(-122.367));
-    private static final Pose2d S5 = new Pose2d(2.493,4.049,Rotation2d.fromDegrees(-178.152));
-    private static final Pose2d S6 = new Pose2d(3.488,5.428,Rotation2d.fromDegrees(120.208));
-    private static final Pose2d F1 = new Pose2d(1.858, 6.590,Rotation2d.fromDegrees(-48.832) ); //feed station
+    public static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(-114.228)); //section 1
+    public static final Pose2d S2 = new Pose2d(6.533,4.169,Rotation2d.fromDegrees(-180.000)); //section 2
+    public static final Pose2d S3 = new Pose2d(5.454,2.539,Rotation2d.fromDegrees(125.395)); //section 3
+    public static final Pose2d S4 = new Pose2d(3.333,2.563,Rotation2d.fromDegrees(62.904)); //section 4
+    public static final Pose2d S5 = new Pose2d(2.493,4.049,Rotation2d.fromDegrees(7.883)); //section 5
+    public static final Pose2d S6 = new Pose2d(3.488,5.428,Rotation2d.fromDegrees(-55.886)); //section 6
+    public static final Pose2d F1 = new Pose2d(1.858, 6.590,Rotation2d.fromDegrees(-48.832) ); //feed station
     //pid
     public static final ProfiledPIDController angleController = new ProfiledPIDController(0.5,0, 0, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
@@ -71,6 +71,34 @@ public class UtilitiesFieldSectioning {
             }
             return currentClosest;
         }
+
+        /**
+         * 
+         * @param currentPose robots current pose
+         * @param reefPose pose of the specific reef section
+         * @param drive drive subsystem
+         */
+        public static void faceSpecificReef(Pose2d currentPose, Pose2d reefPose, Drive drive) {
+            angleController.enableContinuousInput(-Math.PI, Math.PI);
+            angleController.setTolerance(0.349066);
+            double omega = angleController.calculate(currentPose.getRotation().getRadians(), reefPose.getRotation().getRadians());
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, -omega);
+            boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                speeds,
+                isFlipped
+                    ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                    : drive.getRotation());
+            drive.runVelocity(speeds);
+        }
+
+        /**
+         * 
+         * @param currentPose current pose of robot
+         * @return name of reef section
+         */
         public static String getClosestSectionName(Pose2d currentPose) {
             Pose2d closest = getClosestSection(currentPose);
             angleController.enableContinuousInput(-Math.PI, Math.PI);
@@ -87,6 +115,12 @@ public class UtilitiesFieldSectioning {
                 return "F" + (value - 5);
             }
         }
+
+        /**
+         * 
+         * @param currentPose current robot pose
+         * @param drive drive subsystem
+         */
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
             Pose2d closest = getClosestSection(currentPose);
             angleController.enableContinuousInput(-Math.PI, Math.PI);
