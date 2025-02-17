@@ -274,6 +274,7 @@ public class RobotContainer {
     driverController.povRight().whileTrue(new frc.robot.commands.CoralAlignment(shooter,beamBreakMid,beamBreakBack));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
     driverController.leftStick().whileTrue(ManipulatorClear);
+    
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
