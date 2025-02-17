@@ -22,7 +22,7 @@ import frc.robot.subsystems.drive.Drive;
 
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
-    //scoring positions - less accurate - most likely going to use sections rather than this
+    //scoring positions
     public static final Pose2d L1 = new Pose2d(4.936,5.074,new Rotation2d().fromDegrees(-119.384));
     public static final Pose2d L2 = new Pose2d(5.330,5.189,new Rotation2d().fromDegrees(-119.384));
     public static final Pose2d L3 = new Pose2d(5.956,4.179,new Rotation2d().fromDegrees(178.122));

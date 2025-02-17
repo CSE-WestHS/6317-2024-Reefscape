@@ -248,6 +248,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        
     // command definitions
     ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).withTimeout(15);
     ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
@@ -255,6 +256,7 @@ public class RobotContainer {
     indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
     indexerStop = Commands.run(()->indexer.setVelocity(0));
     AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -299,7 +301,6 @@ public class RobotContainer {
     //trigger controls
     yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
     povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
-    elevatorButtonTrigger.whileFalse(new GoToPositionElevator(elevator,0)).whileTrue(new GoToPositionElevator(elevator,2));
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -322,15 +323,12 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
     driverController.povRight().whileTrue(AlgaeArmPositionSet);
     driverController.povLeft().whileTrue(new FunnelUp(funnel));
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,1/4));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,2/4));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,3/4));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,4/4));
-    // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
     ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
     ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
     ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
