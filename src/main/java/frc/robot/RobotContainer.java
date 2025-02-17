@@ -248,9 +248,9 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        
+
     // command definitions
-    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).withTimeout(15);
+    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->!beamBreakMid.beamBreakTripped()).withTimeout(15);
     ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
     indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
