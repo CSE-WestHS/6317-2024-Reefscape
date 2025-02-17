@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -64,6 +65,9 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
+  
+  //buttonboard
+  private static final CommandJoystick buttonboardController = new CommandJoystick(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -243,7 +247,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
-
+  public static CommandJoystick getButtonBoard() {
+    return buttonboardController;
+  } 
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
