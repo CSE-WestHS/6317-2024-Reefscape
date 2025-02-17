@@ -7,19 +7,32 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
 /** Add your docs here. */
 public class ButtonBoardButtons {
-    public static final Trigger PNEUMATIC_OUT = RobotContainer.getButtonBoard().button(3);
-    public static final Trigger PNEUMATIC_IN = RobotContainer.getButtonBoard().button(4);
-    public static final Trigger UNLOAD_MANIPULATOR = RobotContainer.getButtonBoard().button(5);
-    public static final Trigger LOAD_MANIPULATOR = RobotContainer.getButtonBoard().button(6);
+
+    /*
+     * 
+     * private Trigger forwardX = new Trigger(()->varJoystick.getX() > 0.5);
+  private Trigger BackwardX = new Trigger(()->varJoystick.getX() < -0.5);
+  private Trigger forwardY = new Trigger(()->varJoystick.getY() > 0.5);
+  private Trigger BackwardY = new Trigger(()->varJoystick.getY() < -0.5);
+     * 
+     * 
+     * 
+     */
     public static final Trigger LEVEL_1 = RobotContainer.getButtonBoard().button(7); 
     public static final Trigger LEVEL_2 = RobotContainer.getButtonBoard().button(8); 
     public static final Trigger LEVEL_3 = RobotContainer.getButtonBoard().button(9); 
     public static final Trigger LEVEL_4 = RobotContainer.getButtonBoard().button(10);
-    public static final Trigger REEF_1 = RobotContainer.getButtonBoard().button(11); 
-    public static final Trigger REEF_2 = RobotContainer.getButtonBoard().button(12); 
-    public static final Trigger REEF_3 = RobotContainer.getButtonBoard().button(13); 
-    public static final Trigger REEF_4 = RobotContainer.getButtonBoard().button(14);
-    public static final Trigger REEF_5 = RobotContainer.getButtonBoard().button(15);
-    public static final Trigger REEF_6 = RobotContainer.getButtonBoard().button(16);
+    public static final Trigger REEF_1 = new Trigger(()->RobotContainer.getButtonBoard().getX() > 0.5);
+    public static final Trigger REEF_2 = new Trigger(()->RobotContainer.getButtonBoard().getY() > 0.5);
+    public static final Trigger REEF_3 = new Trigger(()->RobotContainer.getButtonBoard().getY() > -0.5);
+    public static final Trigger REEF_4 = RobotContainer.getButtonBoard().button(1);
+    public static final Trigger REEF_5 = RobotContainer.getButtonBoard().button(2);
+    public static final Trigger REEF_6 = RobotContainer.getButtonBoard().button(3);
+    public static final Trigger REEF_7 = RobotContainer.getButtonBoard().button(4);
+    public static final Trigger REEF_8 = RobotContainer.getButtonBoard().button(5);
+    public static final Trigger REEF_9 = RobotContainer.getButtonBoard().button(6);
+    public static final Trigger REEF_10 = RobotContainer.getButtonBoard().button(11);
+    public static final Trigger REEF_11 = RobotContainer.getButtonBoard().button(12);
+    public static final Trigger REEF_12 = new Trigger(()->RobotContainer.getButtonBoard().getX() > -0.5);
      
 }
