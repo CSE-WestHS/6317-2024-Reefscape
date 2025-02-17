@@ -114,7 +114,10 @@ public class RobotContainer {
   private final Trigger yIsPressed = new Trigger(driverController.y());
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
   private Trigger elevatorButtonTrigger = new Trigger(driverController.povDown());
-
+  private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
+  private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
+  private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
+  private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
   //Subsystem Definitions
   private final Drive drive;
   @SuppressWarnings("unused")
