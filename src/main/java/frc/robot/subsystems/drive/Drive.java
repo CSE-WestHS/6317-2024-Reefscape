@@ -169,12 +169,10 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-
-      //run LEDS
-      RobotContainer.led.runLEDS();
       
     }
-
+    //run LEDS
+    RobotContainer.led.runLEDS();
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }

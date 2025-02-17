@@ -83,6 +83,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
+import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import org.ironmaple.simulation.SimulatedArena;
@@ -326,6 +327,18 @@ public class RobotContainer {
     driverController.povRight().whileTrue(AlgaeArmPositionSet);
     driverController.povLeft().whileTrue(new FunnelUp(funnel));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
+    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
+    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
 
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }

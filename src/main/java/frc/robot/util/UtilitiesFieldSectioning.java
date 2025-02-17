@@ -23,18 +23,18 @@ import frc.robot.subsystems.drive.Drive;
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
     //scoring positions - less accurate - most likely going to use sections rather than this
-    private final Pose2d L1 = new Pose2d(5.359,5.559,new Rotation2d().fromDegrees(0));
-    private final Pose2d L2 = new Pose2d();
-    private final Pose2d L3 = new Pose2d();
-    private final Pose2d L4 = new Pose2d();
-    private final Pose2d L5 = new Pose2d();
-    private final Pose2d L6 = new Pose2d();
-    private final Pose2d R1 = new Pose2d();
-    private final Pose2d R2 = new Pose2d();
-    public final Pose2d R3 = new Pose2d();
-    public final Pose2d R4 = new Pose2d();
-    public final Pose2d R5 = new Pose2d();
-    public final Pose2d R6 = new Pose2d();
+    public static final Pose2d L1 = new Pose2d(4.936,5.074,new Rotation2d().fromDegrees(-119.384));
+    public static final Pose2d L2 = new Pose2d(5.330,5.189,new Rotation2d().fromDegrees(-119.384));
+    public static final Pose2d L3 = new Pose2d(5.956,4.179,new Rotation2d().fromDegrees(178.122));
+    public static final Pose2d L4 = new Pose2d(5.956,3.833,new Rotation2d().fromDegrees(178.122));
+    public static final Pose2d L5 = new Pose2d(5.359,2.842, new Rotation2d().fromDegrees(118.887));
+    public static final Pose2d L6 = new Pose2d(5.080,2.630, new Rotation2d().fromDegrees(118.887));
+    public static final Pose2d R6 = new Pose2d(3.916, 2.688, new Rotation2d().fromDegrees(62.526));
+    public static final Pose2d R5 = new Pose2d(3.916, 2.832, new Rotation2d().fromDegrees(62.526));
+    public static final Pose2d R4 = new Pose2d(3.002, 3.871, new Rotation2d().fromDegrees(-0.909));
+    public static final Pose2d R3 = new Pose2d(3.012, 4.179, new Rotation2d().fromDegrees(-0.909));
+    public static final Pose2d R2 = new Pose2d(3.512, 5.276, new Rotation2d().fromDegrees(-58.570));
+    public static final Pose2d R1 = new Pose2d(3.801, 5.516, new Rotation2d().fromDegrees(-58.570));
 
     //sections
     public static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(-114.228)); //section 1
@@ -50,7 +50,7 @@ public class UtilitiesFieldSectioning {
 
     
         //array of positions
-        public static final Pose2d[] sectionsArr = {S1, S2, S3, S4, S5, S6,F1};
+        public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
         
         /***
          * 
