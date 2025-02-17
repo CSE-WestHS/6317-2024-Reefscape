@@ -13,10 +13,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FunnelUp;
 import frc.robot.commands.ManipulatorStart;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
+import frc.robot.subsystems.Funnel.Funnel;
+import frc.robot.subsystems.Funnel.FunnelConstants;
+import frc.robot.subsystems.Funnel.FunnelIO;
+import frc.robot.subsystems.Funnel.FunnelIOReplay;
+import frc.robot.subsystems.Funnel.FunnelIOSim;
 import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
@@ -73,6 +79,7 @@ public class RobotContainer {
   private SwerveDriveSimulation driveSimulation = null;
   private final Manipulator shooter;
   private final Indexer indexer;
+  private final Funnel funnel;
   //beam breaks
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
@@ -112,6 +119,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIO() {}, IndexerConstants.SIM_GAINS);
                 beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
                 beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+                funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
                 // led = new LEDS(60);
                 // elevator =
                 //     new Elevator(
@@ -147,6 +155,7 @@ public class RobotContainer {
                 beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
                 beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
                 vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
+                funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
                 // led = new LEDS(60);
                 // elevator =
                 //     new Elevator(
@@ -175,6 +184,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
                 beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
                 beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+                funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
                 // led = new LEDS(60);
                 // elevator =
                 //     new Elevator(
@@ -274,7 +284,7 @@ public class RobotContainer {
     driverController.povRight().whileTrue(new frc.robot.commands.CoralAlignment(shooter,beamBreakMid,beamBreakBack));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
     driverController.leftStick().whileTrue(ManipulatorClear);
-    
+    driverController.a().whileTrue(new FunnelUp(funnel));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
