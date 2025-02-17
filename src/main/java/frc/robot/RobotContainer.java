@@ -331,19 +331,22 @@ public class RobotContainer {
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,3/4));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,4/4));
     // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
-    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4).andThen(Commands.run(()->System.out.println(UtilitiesFieldSectioning.getClosestSectionName(drive.getPose())))));
-
+    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
+    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
+    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
+    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
+    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
+    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
+    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
+    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
+    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
+    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
+    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
+    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator, 0.25)).whileFalse(new GoToPositionElevator(elevator, 0));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator, 0.5)).whileFalse(new GoToPositionElevator(elevator, 0));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator, 0.75)).whileFalse(new GoToPositionElevator(elevator, 0));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator, 1)).whileFalse(new GoToPositionElevator(elevator, 0));
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 

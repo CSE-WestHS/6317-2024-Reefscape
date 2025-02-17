@@ -18,10 +18,10 @@ public class ButtonBoardButtons {
      * 
      * 
      */
-    public static final Trigger LEVEL_1 = RobotContainer.getButtonBoard().button(7); 
-    public static final Trigger LEVEL_2 = RobotContainer.getButtonBoard().button(8); 
-    public static final Trigger LEVEL_3 = RobotContainer.getButtonBoard().button(9); 
-    public static final Trigger LEVEL_4 = RobotContainer.getButtonBoard().button(10);
+    public static final Trigger LEVEL_4 = RobotContainer.getButtonBoard().button(7); 
+    public static final Trigger LEVEL_3 = RobotContainer.getButtonBoard().button(8); 
+    public static final Trigger LEVEL_2 = RobotContainer.getButtonBoard().button(9); 
+    public static final Trigger LEVEL_1 = RobotContainer.getButtonBoard().button(10);
     public static final Trigger FAR_CENTER_1 = RobotContainer.getButtonBoard().button(3);
     public static final Trigger FAR_RIGHT_1 = RobotContainer.getButtonBoard().button(6);
     public static final Trigger FAR_RIGHT_2 = RobotContainer.getButtonBoard().button(5);
