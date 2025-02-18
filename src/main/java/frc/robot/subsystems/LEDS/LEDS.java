@@ -44,8 +44,8 @@ public class LEDS {
             led.setData(ledbuffer);
         }
         if (ButtonBoardButtons.LEVEL_4.getAsBoolean()) {
-            pink.applyTo(ledBuffer);
-            led.setData(ledBuffer);
+            pink.applyTo(ledbuffer);
+            led.setData(ledbuffer);
         }
         if (DriverStation.isDisabled()) {
             for (int i = 0; i < ledbuffer.getLength()/2; ++i) {
