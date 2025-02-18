@@ -5,6 +5,8 @@
 package frc.robot.util;
 
 
+import java.util.List;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -117,7 +119,7 @@ public class UtilitiesFieldSectioning {
          * @param drive drive subsystem
          */
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
-            Pose2d closest = getClosestSection(currentPose);
+            Pose2d closest = currentPose.nearest(List.of(sectionsArr));
             angleController.enableContinuousInput(-Math.PI, Math.PI);
             angleController.setTolerance(0.349066);
             double omega = angleController.calculate(currentPose.getRotation().getRadians(), closest.getRotation().getRadians());

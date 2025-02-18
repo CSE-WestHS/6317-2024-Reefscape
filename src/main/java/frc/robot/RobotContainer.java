@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -273,25 +274,26 @@ public class RobotContainer {
                                 : new Rotation2d())
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
+    
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.povRight().whileTrue(AlgaeArmPositionSet);
     driverController.povLeft().whileTrue(new FunnelUp(funnel));
-    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25));
-    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,.5));
-    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,.75));
-    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,1));
-    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
-    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
-    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
-    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
-    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
-    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
-    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
-    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
-    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
-    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
-    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
-    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,.75).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator, 0.25)).whileFalse(new GoToPositionElevator(elevator, 0));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator, 0.5)).whileFalse(new GoToPositionElevator(elevator, 0));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator, 0.75)).whileFalse(new GoToPositionElevator(elevator, 0));
