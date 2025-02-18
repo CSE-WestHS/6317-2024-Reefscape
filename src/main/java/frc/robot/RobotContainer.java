@@ -276,10 +276,10 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     driverController.povRight().whileTrue(AlgaeArmPositionSet);
     driverController.povLeft().whileTrue(new FunnelUp(funnel));
-    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,1/4));
-    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,2/4));
-    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,3/4));
-    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,4/4));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,.5));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,.75));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,1));
     ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
     ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
     ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
