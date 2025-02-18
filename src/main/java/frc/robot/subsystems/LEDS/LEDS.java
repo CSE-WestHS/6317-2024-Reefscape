@@ -19,6 +19,7 @@ public class LEDS {
     LEDPattern red = LEDPattern.solid(Color.kRed);
     LEDPattern green = LEDPattern.solid(Color.kGreen);
     LEDPattern cyan = LEDPattern.solid(Color.kDarkCyan);
+    LEDPattern pink = LEDPattern.solid(Color.kPink);
     
     public LEDS(int length) {
         led = new AddressableLED(0);
@@ -41,6 +42,10 @@ public class LEDS {
         if (ButtonBoardButtons.LEVEL_3.getAsBoolean()) {
             cyan.applyTo(ledbuffer);
             led.setData(ledbuffer);
+        }
+        if (ButtonBoardButtons.LEVEL_4.getAsBoolean()) {
+            pink.applyTo(ledBuffer);
+            led.setData(ledBuffer);
         }
         if (DriverStation.isDisabled()) {
             for (int i = 0; i < ledbuffer.getLength()/2; ++i) {
