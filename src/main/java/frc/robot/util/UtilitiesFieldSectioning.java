@@ -4,6 +4,7 @@
 
 package frc.robot.util;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -88,7 +89,7 @@ public class UtilitiesFieldSectioning {
             }
         }
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
-            Pose2d closest = getClosestSection(currentPose);
+            Pose2d closest = /*getClosestSection(currentPose);*/ currentPose.nearest(List.of(sectionsArr));
             angleController.enableContinuousInput(-Math.PI, Math.PI);
             angleController.setTolerance(0.349066);
             double omega = angleController.calculate(currentPose.getRotation().getRadians(), closest.getRotation().getRadians());

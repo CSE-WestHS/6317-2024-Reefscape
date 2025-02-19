@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,8 +27,8 @@ import java.util.function.Supplier;
 
 public class DriveCommands {
   public static final double DEADBAND = 0.1;
-  public static final double ANGLE_KP = 5.0;
-  public static final double ANGLE_KD = 0.4;
+  public static final double ANGLE_KP = 0.19;
+  public static final double ANGLE_KD = 0.001;
   public static final double ANGLE_MAX_VELOCITY = 8.0;
   public static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
@@ -107,7 +108,9 @@ public class DriveCommands {
             0.0,
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+      
     angleController.enableContinuousInput(-Math.PI, Math.PI);
+    angleController.setTolerance(Units.degreesToRadians(10));
 
     // Construct command
     return Commands.run(
@@ -115,7 +118,7 @@ public class DriveCommands {
               // Get linear velocity
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-
+              SmartDashboard.putNumber("SetpointJoystickAtAngle", angleController.getSetpoint().position);
               // Calculate angular speed
               double omega =
                   angleController.calculate(

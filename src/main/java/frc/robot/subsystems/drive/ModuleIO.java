@@ -41,7 +41,7 @@ public interface ModuleIO {
   public default void setTurnPosition(Rotation2d rotation) {}
 
   public default ModuleGains getGains() {
-    return new ModuleGains(0, 0, 0, 0, 0, 0);
+    return new ModuleGains(0.05, 0, 0, 0, 0, 0);
   }
 
   public default void setGains(ModuleGains gains) {}
