@@ -30,17 +30,17 @@ import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 
 public class DriveCommands {
   public static final double DEADBAND = 0.1;
-  private static double ANGLE_KP = 5.0;
-  private static double ANGLE_KD = 0.4;
+  public static double ANGLE_KP = 0.5;
+  public static double ANGLE_KD = 0.0;
   public static final double ANGLE_MAX_VELOCITY = 8.0;
   public static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
-  private static LoggedTunableNumber Kp = new LoggedTunableNumber("kp drive cmd",ANGLE_KP);
+  public static LoggedTunableNumber Kp = new LoggedTunableNumber("kp drive cmd",ANGLE_KP);
  // private final LoggedTunableNumber Ki;
-  private static LoggedTunableNumber Kd = new LoggedTunableNumber("Kd drive cmd",ANGLE_KD);
+  public static LoggedTunableNumber Kd = new LoggedTunableNumber("Kd drive cmd",ANGLE_KD);
 
   private DriveCommands() {
     //tuneable number test 
@@ -119,21 +119,17 @@ public class DriveCommands {
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
+    angleController.setTolerance(Units.degreesToRadians(5));
 
     // Construct command
     return Commands.run(
             () -> {
+              //set pid controller with new values from advantage scope
+              angleController.setPID(ANGLE_KP, 0, ANGLE_KD);
               // Get linear velocity
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-        SmartDashboard.putNumber("kp", ANGLE_KP);
-        SmartDashboard.putNumber("kd", ANGLE_KD);
-        LoggedTunableNumber.ifChanged(200,() -> {
-          setUpTrash(Kd.get(),Kp.get());
-        },
-        Kp,Kd);
-        
-
+              
               // Calculate angular speed
               double omega =
                   angleController.calculate(
@@ -302,5 +298,6 @@ public class DriveCommands {
   public static void setUpTrash(double Kd_v,double KP_v){
     ANGLE_KP=KP_v;
     ANGLE_KD=Kd_v;
+    
   }
 }

@@ -27,13 +27,16 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.DriveCommands;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -171,6 +174,13 @@ public class Drive extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       
     }
+    //log drive commands pid values
+    SmartDashboard.putNumber("kp", DriveCommands.ANGLE_KP);
+    SmartDashboard.putNumber("kd", DriveCommands.ANGLE_KD);
+    LoggedTunableNumber.ifChanged(2000,() -> {
+      DriveCommands.setUpTrash(DriveCommands.Kd.get(),DriveCommands.Kp.get());
+      },
+      DriveCommands.Kp,DriveCommands.Kd);
     //run LEDS
     RobotContainer.led.runLEDS();
     // Update gyro alert
