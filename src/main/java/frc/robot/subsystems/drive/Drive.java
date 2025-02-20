@@ -178,7 +178,7 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("kp", DriveCommands.ANGLE_KP);
     SmartDashboard.putNumber("kd", DriveCommands.ANGLE_KD);
     LoggedTunableNumber.ifChanged(2000,() -> {
-      DriveCommands.setUpTrash(DriveCommands.Kd.get(),DriveCommands.Kp.get());
+      DriveCommands.setDriveConstantPID(DriveCommands.Kd.get(),DriveCommands.Kp.get());
       },
       DriveCommands.Kp,DriveCommands.Kd);
     //run LEDS

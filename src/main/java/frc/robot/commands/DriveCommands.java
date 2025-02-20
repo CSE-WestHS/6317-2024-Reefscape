@@ -295,7 +295,7 @@ public class DriveCommands {
     Rotation2d lastAngle = new Rotation2d();
     double gyroDelta = 0.0;
   }
-  public static void setUpTrash(double Kd_v,double KP_v){
+  public static void setDriveConstantPID(double Kd_v,double KP_v){
     ANGLE_KP=KP_v;
     ANGLE_KD=Kd_v;
     
