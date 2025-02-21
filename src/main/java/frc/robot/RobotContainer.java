@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -200,6 +202,22 @@ public class RobotContainer {
         break;
     }
 
+    // command definitions
+    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
+    ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
+    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
+    indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
+    indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
+    AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
+
+    //set up path planner commands
+    NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    NamedCommands.registerCommand("ManipulatorShoot", ManipulatorShoot);
+    NamedCommands.registerCommand("IndexerStart", indexerStart);
+    NamedCommands.registerCommand("IndexerStop", indexerStop);
+    NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
+    NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
@@ -219,14 +237,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // command definitions
-    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->!beamBreakMid.beamBreakTripped()).withTimeout(15);
-    ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-    indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
-    indexerStop = Commands.run(()->indexer.setVelocity(0));
-    AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
 
     // Configure the button bindings
     configureButtonBindings();
