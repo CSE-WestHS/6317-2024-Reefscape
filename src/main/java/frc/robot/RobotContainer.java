@@ -126,28 +126,30 @@ public class RobotContainer {
   
   private Command ManipulatorVariable;
   
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-      switch (Constants.currentMode) {
-        case REAL:
-          // Real robot, instantiate hardware IO implementations
-          drive =
-              new Drive(
-                  new GyroIONavX(),
-                  new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
-                  new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
-                  new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
-                  new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
-                  SparkOdometryThread.getInstance());
-          vision =
-              new Vision(
-                  drive::addVisionMeasurement,
-                  new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-          shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
-          indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
-          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        //   pneumatics = new Pneumatics(new PneumaticsIO() );
+  private Pneumatics pneumatics;
+    
+      /** The container for the robot. Contains subsystems, OI devices, and commands. */
+      public RobotContainer() {
+        switch (Constants.currentMode) {
+          case REAL:
+            // Real robot, instantiate hardware IO implementations
+            drive =
+                new Drive(
+                    new GyroIONavX(),
+                    new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
+                    new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
+                    new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
+                    new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
+                    SparkOdometryThread.getInstance());
+            vision =
+                new Vision(
+                    drive::addVisionMeasurement,
+                    new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+            shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
+            indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
+            beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+            beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+            pneumatics = new Pneumatics(new PneumaticsIO() {});
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
           // led = new LEDS(60);
@@ -317,6 +319,7 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
 
+    driverController.x().onTrue(pn)
 
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
