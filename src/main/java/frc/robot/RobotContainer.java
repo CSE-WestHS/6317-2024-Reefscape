@@ -6,11 +6,13 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -127,6 +129,8 @@ public class RobotContainer {
   private Command ManipulatorVariable;
   
   private Pneumatics pneumatics;
+
+private ParallelRaceGroup pneumaticClimbCommand;
     
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
       public RobotContainer() {
@@ -285,7 +289,7 @@ public class RobotContainer {
             drive,
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
-            () -> -driverController.getRightX()));
+            () -> -driverController.getRightX()*0.5));
 
     //trigger controls
     // yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
@@ -319,7 +323,15 @@ public class RobotContainer {
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
 
-    driverController.x().onTrue(pn)
+
+
+    pneumaticClimbCommand = Commands.run(
+        ()->pneumatics.setSolenoid(Value.kForward))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
+        .andThen(()->pneumatics.setSolenoid(Value.kReverse))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
+    
+    driverController.x().onTrue(pneumaticClimbCommand);
 
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
