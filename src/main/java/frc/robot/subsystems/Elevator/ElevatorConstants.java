@@ -58,4 +58,22 @@ public class ElevatorConstants {
           9999, //TODO: ID
           Rotation2d.fromRotations(0),
           "");
+
+
+
+
+  public static final ElevatorGains CompBot_GAINS =
+      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 3.0, 1.0, 0.0, 30, 0.2);
+    
+  public static final ElevatorHardwareConfig CompBot_CONFIG =
+      new ElevatorHardwareConfig(
+          new int[] {3,8},//{3,8}
+          new boolean[] {false,true},
+          1/( 2.8),//2.8 gives inches of travel //85.33333 * 2 * Math.PI
+          20,
+          GravityType.CONSTANT,
+          EncoderType.INTERNAL,
+          9999, //TODO: ID
+          Rotation2d.fromRotations(0),
+          "");
 }

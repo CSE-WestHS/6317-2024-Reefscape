@@ -148,8 +148,8 @@ public class RobotContainer {
         // led = new LEDS(60);
         elevator =
             new Elevator(
-                new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-               ElevatorConstants.EXAMPLE_GAINS);
+                new ElevatorIONeo("Elevator", ElevatorConstants.CompBot_CONFIG),
+               ElevatorConstants.CompBot_GAINS);
 
         break;
 
@@ -310,10 +310,14 @@ public class RobotContainer {
     // testController.a().whileTrue(Commands.startEnd(() ->indexer.setVoltage(4),() ->indexer.setVoltage(6)));
     // testController.b().whileTrue(Commands.startEnd(() ->shooter.setVoltage(4),() ->shooter.setVoltage(6)));
     // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
-    testController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)));
+    testController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)).ignoringDisable(true));
     testController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
-    testController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)));
+    testController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)).ignoringDisable(true));
     testController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
+
+    testController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(1)).ignoringDisable(true));
+    testController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-1)).ignoringDisable(true));
+
 
 
     testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
