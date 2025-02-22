@@ -37,6 +37,7 @@ import frc.robot.subsystems.LEDS.LEDS;
 import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSparkMax;
 import frc.robot.subsystems.beam_break.BeamBreak;
 import frc.robot.subsystems.beam_break.BeamBreakConstants;
 import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
@@ -138,7 +139,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
+        shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
         indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
