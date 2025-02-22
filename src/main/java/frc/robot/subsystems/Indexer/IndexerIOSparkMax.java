@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.Indexer.IndexerConstants.IndexerGains;
 import frc.robot.subsystems.Indexer.IndexerConstants.IndexerHardwareConfig;
@@ -53,12 +54,13 @@ public class IndexerIOSparkMax implements IndexerIO {
     motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
     leaderConfig =
         new SparkMaxConfig()
-            .inverted(config.reversed()[0])
+            
             .smartCurrentLimit(config.currentLimit())
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(1.0 / config.gearRatio())
-                    .velocityConversionFactor(1.0 / (60.0 * config.gearRatio())));
+                    .velocityConversionFactor(1.0 / (60.0 * config.gearRatio())))
+            .inverted(config.reversed()[0]);
 
     motors[0].configure(
         leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -72,10 +74,13 @@ public class IndexerIOSparkMax implements IndexerIO {
     for (int i = 1; i < config.canIds().length; i++) {
       motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
       motors[i].configure(
-          new SparkMaxConfig().follow(motors[0]).inverted(config.reversed()[i]),
+          // new SparkMaxConfig().inverted(config.reversed()[i]),
+          new SparkMaxConfig().follow(motors[0], config.reversed()[i]),
           ResetMode.kNoResetSafeParameters,
           PersistMode.kNoPersistParameters);
-      
+
+      // Timer.delay(3);
+
 
       motorAlerts[i] =
           new Alert(
@@ -125,6 +130,13 @@ public class IndexerIOSparkMax implements IndexerIO {
             ControlType.kVelocity,
             ClosedLoopSlot.kSlot0,
             feedforward.calculateWithVelocities(motors[0].getEncoder().getVelocity(), velocity));
+    // motors[1]
+    //     .getClosedLoopController()
+    //     .setReference(
+    //         velocitySetpoint,
+    //         ControlType.kVelocity,
+    //         ClosedLoopSlot.kSlot0,
+    //         feedforward.calculateWithVelocities(motors[0].getEncoder().getVelocity(), velocity));
   }
 
   // @Override

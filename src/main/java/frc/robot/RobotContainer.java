@@ -88,10 +88,10 @@ public class RobotContainer {
   private static final CommandJoystick buttonboardController = new CommandJoystick(1);
   
   // Controller
-  private final CommandXboxController testController = new CommandXboxController(2);
+//   private final CommandXboxController testController = new CommandXboxController(2);
 
   //triggers
-  private final Trigger yIsPressed = new Trigger(driverController.y());
+//   private final Trigger yIsPressed = new Trigger(driverController.y());
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
 //   private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
 //   private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
@@ -261,22 +261,29 @@ public class RobotContainer {
     //Main drive controls
     //inverted activation for testing
     // TODO:reverse the activation logic
-    rightXTrigger
-      .whileTrue(
-        DriveCommands.joystickDriveAtAngle(
-          drive,  
-          () -> -driverController.getLeftY(),
-          () -> -driverController.getLeftX(), 
-          () -> new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())))
-      .whileFalse(
+    // rightXTrigger
+    //   .whileTrue(
+    //     DriveCommands.joystickDriveAtAngle(
+    //       drive,  
+    //       () -> -driverController.getLeftY(),
+    //       () -> -driverController.getLeftX(), 
+    //       () -> new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())))
+    //   .whileFalse(
+    //     DriveCommands.joystickDrive(
+    //       drive,
+    //       () -> -driverController.getLeftY(),
+    //       () -> -driverController.getLeftX(),
+    //       () -> -driverController.getRightX()));
+
+    drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-          drive,
-          () -> -driverController.getLeftY(),
-          () -> -driverController.getLeftX(),
-          () -> -driverController.getRightX()));
+            drive,
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> -driverController.getRightX()));
 
     //trigger controls
-    yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
+    // yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
     // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
 
 
@@ -302,9 +309,10 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     
-    driverController.povUp().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(3))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
 
 
 
@@ -314,27 +322,31 @@ public class RobotContainer {
     // testController.a().whileTrue(Commands.startEnd(() ->indexer.setVoltage(4),() ->indexer.setVoltage(6)));
     // testController.b().whileTrue(Commands.startEnd(() ->shooter.setVoltage(4),() ->shooter.setVoltage(6)));
     // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
-    testController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)).ignoringDisable(true));
-    testController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
-    testController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)).ignoringDisable(true));
-    testController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
-
-    testController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(1)).ignoringDisable(true));
-    testController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-1)).ignoringDisable(true));
-
-
-
-    testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
-
-    testController.povLeft().whileTrue(Commands.startEnd(() ->shooter.setVelocity(15),() ->shooter.setVoltage(0.0)));
 
 
 
 
-    // ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(]\[InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,.75).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // driverController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)).ignoringDisable(true));
+    // driverController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
+    // driverController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)).ignoringDisable(true));
+    // driverController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
+
+    driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
+    driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
+
+
+
+    // testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
+
+    // testController.povLeft().whileTrue(Commands.startEnd(() ->shooter.setVelocity(15),() ->shooter.setVoltage(0.0)));
+
+
+
+
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,18).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));

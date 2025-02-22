@@ -25,5 +25,5 @@ public class ManipulatorConstants {
 
 
   public static final ManipulatorGains REAL_GAINS =
-      new ManipulatorGains(0.01, 0.0, 0, 0.0, 1.5, 0.0, 100.0, 0.2);
+      new ManipulatorGains(0.01, 0.0, 0, 0.0, 3, 0.0, 150.0, 0.2);
 }
