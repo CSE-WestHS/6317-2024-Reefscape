@@ -74,6 +74,7 @@ public class IndexerIOSparkMax implements IndexerIO {
           new SparkMaxConfig().follow(motors[0]).inverted(config.reversed()[i]),
           ResetMode.kNoResetSafeParameters,
           PersistMode.kNoPersistParameters);
+      
 
       motorAlerts[i] =
           new Alert(

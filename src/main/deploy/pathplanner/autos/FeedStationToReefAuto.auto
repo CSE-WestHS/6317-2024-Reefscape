@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "IndexerStart"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CycleShooterFeedStation"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IndexerStop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReefToFeedStation"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManipulatorShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ManipulatorStop"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
