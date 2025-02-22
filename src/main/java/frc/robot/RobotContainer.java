@@ -209,9 +209,9 @@ public class RobotContainer {
     ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
     ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-    indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
-    indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
-    AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
+    // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
+    // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
+    // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
 
     //set up path planner commands
     NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
@@ -241,14 +241,6 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // command definitions
-    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->!beamBreakMid.beamBreakTripped()).withTimeout(15);
-    ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-    // indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
-    // indexerStop = Commands.run(()->indexer.setVelocity(0));
-    // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -262,20 +254,28 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Main drive controls
-    rightXTrigger.whileFalse(
-        DriveCommands.joystickDriveAtAngle(drive,  () -> -driverController.getLeftY(),
-        () -> -driverController.getLeftX(), ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()))
-    ).whileTrue( DriveCommands.joystickDrive(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> -driverController.getRightX()));
+    //inverted activation for testing
+    rightXTrigger
+      .whileTrue(
+        DriveCommands.joystickDriveAtAngle(
+          drive,  
+          () -> -driverController.getLeftY(),
+          () -> -driverController.getLeftX(), 
+          () -> new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())))
+      .whileFalse(
+        DriveCommands.joystickDrive(
+          drive,
+          () -> -driverController.getLeftY(),
+          () -> -driverController.getLeftX(),
+          () -> -driverController.getRightX()));
 
     //trigger controls
     yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
     // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
+
+
     // Switch to X pattern when X button is pressed
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -296,7 +296,11 @@ public class RobotContainer {
                             : new Rotation2d())); // zero gyro
     // Reset gyro to 0° when B button is pressed
     
-    driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+    driverController.povUp().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+
+
+    
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
     // driverController.povLeft().whileTrue(new FunnelUp(funnel));
 
