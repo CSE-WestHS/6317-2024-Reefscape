@@ -33,6 +33,8 @@ public interface ElevatorIO {
 
   public default void setVoltage(double voltage) {}
 
+  public default void zeroPosition(){}
+
   public default String getName() {
     return "Elevator";
   }

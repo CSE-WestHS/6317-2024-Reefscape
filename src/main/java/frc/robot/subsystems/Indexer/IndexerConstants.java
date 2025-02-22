@@ -15,7 +15,7 @@ public class IndexerConstants {
       int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
 
   public static final IndexerHardwareConfig EXAMPLE_CONFIG =
-      new IndexerHardwareConfig(new int[] {10,20}, new boolean[] {false,true}, 2.0, "");
+      new IndexerHardwareConfig(new int[] {11,12}, new boolean[] {false,true}, 2.0, "");
 
   public static final IndexerGains SIM_GAINS =
       new IndexerGains(0.2, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);

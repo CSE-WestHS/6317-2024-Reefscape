@@ -45,14 +45,14 @@ public class ElevatorConstants {
       String canBus) {}
 
   public static final ElevatorGains EXAMPLE_GAINS =
-      new ElevatorGains(0.56, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 10.0, 20.0, 0.0, 1, 0.2);
+      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 3.0, 1.0, 0.0, 30, 0.2);
 
   public static final ElevatorHardwareConfig EXAMPLE_CONFIG =
       new ElevatorHardwareConfig(
-          new int[] {30,20},
-          new boolean[] {false,false},
-          85.33333 * 2 * Math.PI,
-          40,
+          new int[] {3,8},//{3,8}
+          new boolean[] {false,true},
+          1/( 2.8),//2.8 gives inches of travel //85.33333 * 2 * Math.PI
+          20,
           GravityType.CONSTANT,
           EncoderType.INTERNAL,
           9999, //TODO: ID

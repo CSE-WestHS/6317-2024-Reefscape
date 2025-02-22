@@ -74,7 +74,7 @@ public class ElevatorIONeo implements ElevatorIO {
     motorCurrents = new double[config.canIds().length];
     motorAlerts = new Alert[config.canIds().length];
 
-    motors[0] = new SparkMax(config.canIds()[0] = 5, MotorType.kBrushless);
+    motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
     leaderConfig =
         new SparkMaxConfig()
             .inverted(config.reversed()[0])
@@ -277,5 +277,10 @@ public class ElevatorIONeo implements ElevatorIO {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public void zeroPosition() {
+    motors[0].getEncoder().setPosition(8.0);
   }
 }

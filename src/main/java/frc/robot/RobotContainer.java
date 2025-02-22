@@ -82,6 +82,9 @@ public class RobotContainer {
   
   //buttonboard
   private static final CommandJoystick buttonboardController = new CommandJoystick(1);
+  
+  // Controller
+  private final CommandXboxController testController = new CommandXboxController(2);
 
   //triggers
   private final Trigger yIsPressed = new Trigger(driverController.y());
@@ -95,13 +98,13 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final Vision vision;
   private final Manipulator shooter;
-  private final Indexer indexer;
+  // private final Indexer indexer;
   @SuppressWarnings("unused")
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
-  private final Funnel funnel;
+  // private final Funnel funnel;
   private final Elevator elevator;
-  private final AlgaeArm algaeArm;
+  // private final AlgaeArm algaeArm;
   public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
   private Command ManipulatorShoot; 
@@ -133,11 +136,11 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
         shooter = new Manipulator(new ManipulatorIO() {}, ManipulatorConstants.REAL_GAINS);
-        indexer = new Indexer(new IndexerIO() {}, IndexerConstants.REAL_GAINS);
+        // indexer = new Indexer(new IndexerIO() {}, IndexerConstants.REAL_GAINS);
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
-        algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
+        // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
+        // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
@@ -165,11 +168,11 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
         shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
-        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+        // indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
-        algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+        // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
+        // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
@@ -188,11 +191,11 @@ public class RobotContainer {
                 null);
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
-        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+        // indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
         beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
         beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
-        algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+        // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
+        // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
         // led = new LEDS(60);
         elevator =
             new Elevator(
@@ -224,9 +227,9 @@ public class RobotContainer {
     ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->!beamBreakMid.beamBreakTripped()).withTimeout(15);
     ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-    indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
-    indexerStop = Commands.run(()->indexer.setVelocity(0));
-    AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
+    // indexerStart = Commands.run(()->indexer.setVelocity(10)).withTimeout(5);
+    // indexerStop = Commands.run(()->indexer.setVelocity(0));
+    // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
 
     // Configure the button bindings
     configureButtonBindings();
@@ -240,7 +243,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    //Main drive controlls
+    //Main drive controls
     rightXTrigger.whileFalse(
         DriveCommands.joystickDriveAtAngle(drive,  () -> -driverController.getLeftY(),
         () -> -driverController.getLeftX(), ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()))
@@ -252,7 +255,7 @@ public class RobotContainer {
 
     //trigger controls
     yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
-    povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
+    // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
@@ -276,9 +279,19 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.povRight().whileTrue(AlgaeArmPositionSet);
-    driverController.povLeft().whileTrue(new FunnelUp(funnel));
-    // ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // driverController.povRight().whileTrue(AlgaeArmPositionSet);
+    // driverController.povLeft().whileTrue(new FunnelUp(funnel));
+
+    // testController.a().whileTrue(Commands.startEnd(() ->indexer.setVoltage(4),() ->indexer.setVoltage(6)));
+    // testController.b().whileTrue(Commands.startEnd(() ->shooter.setVoltage(4),() ->shooter.setVoltage(6)));
+    // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
+    testController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)));
+    testController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
+    testController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)));
+    testController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
+
+
+    // ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(]\[InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,.75).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));

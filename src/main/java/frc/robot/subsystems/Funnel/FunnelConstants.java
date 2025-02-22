@@ -15,7 +15,7 @@ public class FunnelConstants {
       int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
 
   public static final FunnelHardwareConfig EXAMPLE_CONFIG =
-      new FunnelHardwareConfig(new int[] {31,32}, new boolean[] {false,true}, 2.0, "");
+      new FunnelHardwareConfig(new int[] {41,42}, new boolean[] {false,true}, 2.0, "");
 
   public static final FunnelGains SIM_GAINS =
       new FunnelGains(0.2, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);
