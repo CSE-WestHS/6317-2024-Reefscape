@@ -257,6 +257,7 @@ public class RobotContainer {
 
     //Main drive controls
     //inverted activation for testing
+    // TODO:reverse the activation logic
     rightXTrigger
       .whileTrue(
         DriveCommands.joystickDriveAtAngle(
@@ -299,7 +300,7 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povUp().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-
+    driverController.rightTrigger().whileTrue(Commands.startEnd(() ->shooter.setVelocity(driverController.getRightTriggerAxis()*10),() ->shooter.setVoltage(0.0)));
 
 
 
@@ -313,6 +314,13 @@ public class RobotContainer {
     testController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
     testController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)));
     testController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
+
+
+    testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
+
+    testController.povLeft().whileTrue(Commands.startEnd(() ->shooter.setVelocity(15),() ->shooter.setVoltage(0.0)));
+
+
 
 
     // ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(]\[InterruptionBehavior.kCancelSelf));
