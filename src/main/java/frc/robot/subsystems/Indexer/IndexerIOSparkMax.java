@@ -54,6 +54,7 @@ public class IndexerIOSparkMax implements IndexerIO {
     leaderConfig =
         new SparkMaxConfig()
             .inverted(config.reversed()[0])
+            .smartCurrentLimit(config.currentLimit())
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(1.0 / config.gearRatio())

@@ -12,13 +12,13 @@ public class ManipulatorConstants {
       double kTolerance) {}
 
   public record ManipulatorHardwareConfig(
-      int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
+      int[] canIds, boolean[] reversed, double gearRatio, int currentLimit, String canBus) {}
 
   public static final ManipulatorHardwareConfig EXAMPLE_CONFIG =
-      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 2.0, "");
+      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 2.0,10, "");
 
   public static final ManipulatorHardwareConfig CompBot_CONFIG =
-      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 3.8, "");
+      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 3.8, 10, "");
 
   public static final ManipulatorGains SIM_GAINS =
       new ManipulatorGains(0.6, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);

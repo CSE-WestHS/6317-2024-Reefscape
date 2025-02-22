@@ -79,6 +79,7 @@ public class ElevatorIONeo implements ElevatorIO {
         new SparkMaxConfig()
             .inverted(config.reversed()[0])
             .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(config.currentLimit())
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(config.gearRatio())
