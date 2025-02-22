@@ -281,6 +281,12 @@ public class ElevatorIONeo implements ElevatorIO {
 
   @Override
   public void zeroPosition() {
-    motors[0].getEncoder().setPosition(8.0);
+    for (int i = 0; i < motors.length; i++) {
+      motors[i].getEncoder().setPosition(0.0);
+    }
   }
+
+
+
+
 }
