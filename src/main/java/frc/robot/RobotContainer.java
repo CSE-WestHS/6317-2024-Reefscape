@@ -38,6 +38,8 @@ import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSparkMax;
+import frc.robot.subsystems.Pneumatics.Pneumatics;
+import frc.robot.subsystems.Pneumatics.PneumaticsIO;
 import frc.robot.subsystems.beam_break.BeamBreak;
 import frc.robot.subsystems.beam_break.BeamBreakConstants;
 import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
@@ -145,6 +147,7 @@ public class RobotContainer {
           indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+        //   pneumatics = new Pneumatics(new PneumaticsIO() );
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
           // led = new LEDS(60);
@@ -344,8 +347,8 @@ public class RobotContainer {
 
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,18).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
