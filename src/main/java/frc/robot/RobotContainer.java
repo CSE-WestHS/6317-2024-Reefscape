@@ -121,107 +121,110 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
+  
+  private Command ManipulatorVariable;
+  
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+      switch (Constants.currentMode) {
+        case REAL:
+          // Real robot, instantiate hardware IO implementations
+          drive =
+              new Drive(
+                  new GyroIONavX(),
+                  new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
+                  new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
+                  new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
+                  new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
+                  SparkOdometryThread.getInstance());
+          vision =
+              new Vision(
+                  drive::addVisionMeasurement,
+                  new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+          shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
+          indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
+          // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
+          // led = new LEDS(60);
+          elevator =
+              new Elevator(
+                  new ElevatorIONeo("Elevator", ElevatorConstants.CompBot_CONFIG),
+                 ElevatorConstants.CompBot_GAINS);
+  
+          break;
+  
+        case SIM:
+          // create a maple-sim swerve drive simulation instance
+          driveSimulation =
+              new SwerveDriveSimulation(
+                  DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+          // add the simulated drivetrain to the simulation field
+          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          // Sim robot, instantiate physics sim IO implementations
+          drive =
+              new Drive(
+                  new GyroIOSim(driveSimulation.getGyroSimulation()),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[0]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[1]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[2]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[3]),
+                  null);
+  
+          vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
+          indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
+          // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+          // led = new LEDS(60);
+          elevator =
+              new Elevator(
+                  new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
+          break;
+  
+        default:
+          // Replayed robot, disable IO implementations
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  null);
+          vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
+          indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
+          // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+          // led = new LEDS(60);
+          elevator =
+              new Elevator(
+                  new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
+          break;
+      }
+  
+      // command definitions
+      ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
+      ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    switch (Constants.currentMode) {
-      case REAL:
-        // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIONavX(),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
-                SparkOdometryThread.getInstance());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
-        indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
-        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
-        // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
-        // led = new LEDS(60);
-        elevator =
-            new Elevator(
-                new ElevatorIONeo("Elevator", ElevatorConstants.CompBot_CONFIG),
-               ElevatorConstants.CompBot_GAINS);
-
-        break;
-
-      case SIM:
-        // create a maple-sim swerve drive simulation instance
-        driveSimulation =
-            new SwerveDriveSimulation(
-                DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-        // add the simulated drivetrain to the simulation field
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                new ModuleIOSparkSim(driveSimulation.getModules()[0]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[1]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[2]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[3]),
-                null);
-
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
-        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
-        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
-        // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
-        // led = new LEDS(60);
-        elevator =
-            new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
-        break;
-
-      default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                null);
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
-        indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
-        beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-        beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-        // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
-        // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
-        // led = new LEDS(60);
-        elevator =
-            new Elevator(
-                new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
-        break;
-    }
-
-    // command definitions
-    ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
-    ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
     // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
 
     //set up path planner commands
-    NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
-    NamedCommands.registerCommand("ManipulatorShoot", ManipulatorShoot);
-    NamedCommands.registerCommand("IndexerStart", indexerStart);
-    NamedCommands.registerCommand("IndexerStop", indexerStop);
-    NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
-    NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
+    // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    // NamedCommands.registerCommand("ManipulatorShoot", ManipulatorShoot);
+    // NamedCommands.registerCommand("IndexerStart", indexerStart);
+    // NamedCommands.registerCommand("IndexerStop", indexerStop);
+    // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
+    // NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -300,7 +303,8 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povUp().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.rightTrigger().whileTrue(Commands.startEnd(() ->shooter.setVelocity(driverController.getRightTriggerAxis()*10),() ->shooter.setVoltage(0.0)));
+    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(3))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
 
 
 
