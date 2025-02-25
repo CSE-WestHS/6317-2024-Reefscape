@@ -5,6 +5,8 @@
 package frc.robot.util;
 
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+
 import java.util.List;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -12,10 +14,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
@@ -133,5 +138,22 @@ public class UtilitiesFieldSectioning {
                     ? drive.getRotation().plus(new Rotation2d(Math.PI))
                     : drive.getRotation());
             drive.runVelocity(speeds);
+    }
+    public static double getClosestSectionDistance(Pose2d currentPose) {
+        double currentDistanceFromPoint = 999999; //set high so that no element is auto selected - will probably delete later
+        double minDistance = currentDistanceFromPoint;
+        for (int i = 0; i < sectionsArr.length; ++i) {
+            // d = √(x2 - x1)2 + (y2 - y1)2
+            currentDistanceFromPoint = Math.sqrt(Math.pow(sectionsArr[i].getX() - currentPose.getX(),2) + Math.pow(sectionsArr[i].getY() - currentPose.getY(), 2));
+            if (currentDistanceFromPoint < minDistance) {
+                minDistance = currentDistanceFromPoint;
+            }
+        }
+        return minDistance;
+    }
+    public static void isCloseToReef(Pose2d currentPose) {
+        if (getClosestSectionDistance(currentPose) <= 2) {
+            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);
+        }
     }
 }

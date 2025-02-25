@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Elevator;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -16,16 +18,16 @@ import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.Elevator.ElevatorConstants.GravityType;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorHardwareConfig;
+import frc.robot.subsystems.Elevator.ElevatorConstants.GravityType;
 import frc.robot.util.TunableElevatorFeedforward;
 import frc.robot.util.encoder.AbsoluteCancoder;
 import frc.robot.util.encoder.AbsoluteMagEncoder;
 import frc.robot.util.encoder.IAbsoluteEncoder;
-import java.util.function.DoubleSupplier;
 
 public class ElevatorIONeo implements ElevatorIO {
   private final String name;
@@ -170,7 +172,7 @@ public class ElevatorIONeo implements ElevatorIO {
     for (int i = 1; i < config.canIds().length; i++) {
       motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
       motors[i].configure(
-          new SparkMaxConfig().follow(motors[0]).inverted(config.reversed()[i]),
+          new SparkMaxConfig().follow(motors[0],config.reversed()[i]),
           ResetMode.kNoResetSafeParameters,
           PersistMode.kNoPersistParameters);
 
@@ -283,10 +285,12 @@ public class ElevatorIONeo implements ElevatorIO {
   @Override
   public void zeroPosition() {
     for (int i = 0; i < motors.length; i++) {
-      motors[i].getEncoder().setPosition(1);
-    }
-  }
+      motors[i].getEncoder().setPosition(0.0);
+    //  motors[i].getEncoder().getPosition();
+    //  System.out.println( "Positions set??" + motors[i].getEncoder().getPosition());
 
+  }
+  }
 
 
 

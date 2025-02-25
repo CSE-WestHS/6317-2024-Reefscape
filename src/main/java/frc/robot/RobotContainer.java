@@ -335,9 +335,9 @@ public class RobotContainer {
 
 
     pneumaticClimbCommand = Commands.run(
-        ()->pneumatics.setSolenoid(Value.kForward))
+        ()->pneumatics.setMode(Value.kForward))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
-        .andThen(()->pneumatics.setSolenoid(Value.kReverse))
+        .andThen(()->pneumatics.setMode(Value.kReverse))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
     
     driverController.x().onTrue(pneumaticClimbCommand);

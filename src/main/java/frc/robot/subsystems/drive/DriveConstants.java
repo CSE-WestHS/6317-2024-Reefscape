@@ -35,7 +35,7 @@ public class DriveConstants {
   public static final double kSteerInertia = 0.004;
   public static final double kDriveInertia = 0.025;
 
-  public static final LinearVelocity maxSpeedAt12Volts =
+  public static LinearVelocity maxSpeedAt12Volts =
       FeetPerSecond.of(15); // MK4i 16.5 ft/s L3 Kraken FOC With 14t pinion
 
   // Drive motor configuration

@@ -141,7 +141,9 @@ public class Elevator extends SubsystemBase {
     return inputs.desiredPosition;
   }
 
-  public void zeroPosition(){}
+  public void zeroPosition() {
+      elevator.zeroPosition();
+  }
 
   public boolean isFinished() {
     return Math.abs(inputs.outputPosition - goal.position) < kTolerance.get() && inputs.outputPosition != goal.position;
