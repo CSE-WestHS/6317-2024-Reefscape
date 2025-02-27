@@ -52,7 +52,7 @@ public class DriveConstants {
 
   // Turn motor configuration
   public static final double steerMotorGearRatio = 150.0 / 7.0; // MK4i
-  public static final int turnMotorCurrentLimit = 20;
+  public static final int turnMotorCurrentLimit = 30;
   public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 
   // Turn encoder configuration

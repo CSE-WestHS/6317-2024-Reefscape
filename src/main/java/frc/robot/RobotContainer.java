@@ -331,7 +331,10 @@ public class RobotContainer {
     driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
+    driverController.rightBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
 
+    //Josh added a elevator zero utton
+    driverController.povRight().onTrue(Commands.runOnce(() ->elevator.zeroPosition()));
 
 
     pneumaticClimbCommand = Commands.run(

@@ -202,6 +202,7 @@ public class Drive extends SubsystemBase {
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+    Logger.recordOutput("SwerveChassisSpeeds/driveVelocity", setpointStates[0].speedMetersPerSecond);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
     // Send setpoints to modules

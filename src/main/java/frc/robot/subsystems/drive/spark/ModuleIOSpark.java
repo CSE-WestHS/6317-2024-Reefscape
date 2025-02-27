@@ -151,6 +151,12 @@ public class ModuleIOSpark implements ModuleIO {
             SparkMaxModuleConstants.driveKd,
             SparkMaxModuleConstants.driveKs,
             SparkMaxModuleConstants.driveKv,
+            0.0,
+            SparkMaxModuleConstants.turnKp,
+            0.0,
+            SparkMaxModuleConstants.turnKd,
+            SparkMaxModuleConstants.turnKs,
+            SparkMaxModuleConstants.turnKv,
             0.0);
   }
 
@@ -237,15 +243,25 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setGains(ModuleGains gains) {
     this.gains = gains;
-
+    
     tryUntilOk(
         driveSpark,
         5,
         () ->
             driveSpark.configure(
                 driveConfig.apply(
-                    new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), gains.kV())),
+                    new ClosedLoopConfig().pidf(gains.drivekP(), gains.drivekI(), gains.drivekD(), gains.drivekV())),
                 ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters));
+                PersistMode.kPersistParameters));
+    tryUntilOk(
+        turnSpark,
+        5,
+        () ->
+            turnSpark.configure(
+            turnConfig.apply(
+                new ClosedLoopConfig().pidf(gains.turnkP(), gains.turnkI(), gains.turnkD(), gains.turnkV())),
+            ResetMode.kNoResetSafeParameters,
+            PersistMode.kPersistParameters));
+    System.out.println("Value changed to: " + gains.turnkV());
   }
 }
