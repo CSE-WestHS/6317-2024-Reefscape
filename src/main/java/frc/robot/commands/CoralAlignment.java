@@ -39,7 +39,7 @@ public class CoralAlignment extends Command {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
-    beamStateSim = beamBreakBack.beamBreakTripped(); //TODO: get rid of once robot is finished
+    // beamStateSim = beamBreakBack.beamBreakTripped(); //TODO: get rid of once robot is finished
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,18 +50,18 @@ public class CoralAlignment extends Command {
       beamStateSim = false;//TODO: get rid of once robot is finished
       System.out.println("beamstate changed!");
     }
-    if (beamBreakBack.beamBreakTripped() == true && beamStateSim == true) { //TODO: get rid of beamstatesim check once robot is finished
-      shooter.setVelocity(10);
+    if (beamBreakBack.beamBreakTripped() == true ) { //TODO: get rid of beamstatesim check once robot is finished
+      System.out.println("Running shooter");
+      shooter.setVelocity(5);
     }
-    else if (beamStateSim == false) { shooter.setVelocity(0); } //TODO: get rid of once robot is finished
-    else if ((beamBreakBack.beamBreakTripped() == false || beamStateSim == false) && beamBreakMid.beamBreakTripped() == true) {
+    else if ((beamBreakBack.beamBreakTripped() == false )) {
       shooter.setVelocity(0);
     }
     else {
       shooter.setVelocity(0);
     }
   }
-
+// && beamBreakMid.beamBreakTripped() == true
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
