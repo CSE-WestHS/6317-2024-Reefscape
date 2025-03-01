@@ -44,14 +44,14 @@ public class AlgaeArmConstants {
       Rotation2d encoderOffset,
       String canBus) {}
 
-  public static final AlgaeArmGains EXAMPLE_GAINS =
+  public static final AlgaeArmGains FunnelArm_GAINS =
       new AlgaeArmGains(0.56, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 10.0, 20.0, 0.0, Math.PI, 0.2);
 
-  public static final AlgaeArmHardwareConfig EXAMPLE_CONFIG =
+  public static final AlgaeArmHardwareConfig FunnelArm_CONFIG =
       new AlgaeArmHardwareConfig(
-          new int[] {25},
-          new boolean[] {true},
-          85.33333 * 2 * Math.PI,
+          new int[] {13},
+          new boolean[] {false},
+          85.33333 * 2 * Math.PI, 
           40,
           GravityType.COSINE,
           EncoderType.EXTERNAL_CANCODER,

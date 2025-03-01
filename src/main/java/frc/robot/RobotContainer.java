@@ -119,7 +119,7 @@ public class RobotContainer {
   private final BeamBreak beamBreakMid;
   // private final Funnel funnel;
   private final Elevator elevator;
-  // private final AlgaeArm algaeArm;
+  private final AlgaeArm algaeArm;
   public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
   private Command ManipulatorShoot; 
@@ -138,7 +138,7 @@ public class RobotContainer {
   
   private Pneumatics pneumatics;
 
-  private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+  public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
 
   private ParallelRaceGroup pneumaticClimbCommand;
     
@@ -146,6 +146,7 @@ public class RobotContainer {
       public RobotContainer() {
         switch (Constants.currentMode) {
           case REAL:
+          System.out.println("NEW CODE");
             // Real robot, instantiate hardware IO implementations
             drive =
                 new Drive(
@@ -165,7 +166,7 @@ public class RobotContainer {
             beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
             pneumatics = new Pneumatics(new PneumaticsIO() {});
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
-          // algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.EXAMPLE_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
           elevator =
               new Elevator(
@@ -197,9 +198,9 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           pneumatics = new Pneumatics(new PneumaticsIO() {});
-
+          
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
-          // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
           elevator =
               new Elevator(
@@ -224,7 +225,7 @@ public class RobotContainer {
           pneumatics = new Pneumatics(new PneumaticsIO() {});
 
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
-          // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
           elevator =
               new Elevator(
@@ -268,9 +269,9 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-      compressor.enableDigital();
-
+    System.out.println("Compressor Code Running");
+    //compressor
+    compressor.enableDigital();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -335,21 +336,22 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    // driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
-    driverController.x().onTrue(new CoralAlignment(shooter, beamBreakMid, beamBreakBack).withTimeout(10));
+    driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
+    // driverController.x().onTrue(new CoralAlignment(shooter, beamBreakMid, beamBreakBack).withTimeout(10));
     // driverController.a().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
-    driverController.b().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
+    // driverController.b().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
+    // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
     pneumaticClimbCommand = Commands.run(
         ()->pneumatics.setMode(Value.kForward))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
         .andThen(()->pneumatics.setMode(Value.kReverse))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
     
-        driverController.x().onTrue(pneumaticClimbCommand);
-
+    driverController.x().onTrue(pneumaticClimbCommand);
+    driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
     // driverController.povLeft().whileTrue(new FunnelUp(funnel));
@@ -382,22 +384,19 @@ public class RobotContainer {
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    // ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator, 0.25)).whileFalse(new GoToPositionElevator(elevator, 0));
-    // ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator, 0.5)).whileFalse(new GoToPositionElevator(elevator, 0));
-    // ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator, 0.75)).whileFalse(new GoToPositionElevator(elevator, 0));
-    // ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator, 1)).whileFalse(new GoToPositionElevator(elevator, 0));
+    ButtonBoardButtons.FAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_RIGHT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R6).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_RIGHT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_CENTER_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R3).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.NEAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.R1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_LEFT_1.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L1).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_LEFT_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L2).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FAR_CENTER_2.whileTrue(drive.generatePath(UtilitiesFieldSectioning.L4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 

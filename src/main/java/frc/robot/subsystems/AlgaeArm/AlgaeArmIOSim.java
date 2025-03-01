@@ -53,7 +53,7 @@ public class AlgaeArmIOSim implements AlgaeArmIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(gearBox, 0.01, 1.0 / config.gearRatio()), gearBox);
 
-    controller = new PIDController(AlgaeArmConstants.EXAMPLE_GAINS.kP(), AlgaeArmConstants.EXAMPLE_GAINS.kI(), AlgaeArmConstants.EXAMPLE_GAINS.kD());
+    controller = new PIDController(AlgaeArmConstants.FunnelArm_GAINS.kP(), AlgaeArmConstants.FunnelArm_GAINS.kI(), AlgaeArmConstants.FunnelArm_GAINS.kD());
   }
 
   @Override
