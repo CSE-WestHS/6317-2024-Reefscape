@@ -20,12 +20,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AllignShooterCommand;
+import frc.robot.commands.CoralAlignment;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FunnelUp;
 import frc.robot.subsystems.AlgaeArm.AlgaeArm;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
+import frc.robot.subsystems.Compressor.CompresorIO;
+import frc.robot.subsystems.Compressor.Compresors;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
@@ -73,6 +77,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import frc.robot.commands.GoToPositionElevator;
+import frc.robot.commands.IndexerToShooter;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -124,6 +129,7 @@ public class RobotContainer {
   private Command indexerStart;
   private Command indexerStop;
   private Command AlgaeArmPositionSet;
+  private Command FeedandShoot;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -191,6 +197,7 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           pneumatics = new Pneumatics(new PneumaticsIO() {});
+
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
           // led = new LEDS(60);
@@ -215,6 +222,7 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           pneumatics = new Pneumatics(new PneumaticsIO() {});
+
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           // algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.EXAMPLE_CONFIG), AlgaeArmConstants.EXAMPLE_GAINS);
           // led = new LEDS(60);
@@ -227,7 +235,7 @@ public class RobotContainer {
       // command definitions
       ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
       ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-
+      FeedandShoot = Commands.run(()->new IndexerToShooter(indexer,beamBreakBack)).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
@@ -261,9 +269,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+      compressor.enableDigital();
 
-
-    compressor.enableDigital();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -328,22 +335,20 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
-    driverController.rightBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-
-    //Josh added a elevator zero utton
-    driverController.povRight().onTrue(Commands.runOnce(() ->elevator.zeroPosition()));
-
-
+    driverController.x().onTrue(new CoralAlignment(shooter, beamBreakMid, beamBreakBack).withTimeout(10));
+    // driverController.a().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
+    driverController.b().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
+    driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
     pneumaticClimbCommand = Commands.run(
         ()->pneumatics.setMode(Value.kForward))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
         .andThen(()->pneumatics.setMode(Value.kReverse))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
     
-    driverController.x().onTrue(pneumaticClimbCommand);
+        driverController.x().onTrue(pneumaticClimbCommand);
 
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);

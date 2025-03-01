@@ -39,7 +39,7 @@ public class DriveConstants {
       FeetPerSecond.of(15); // MK4i 16.5 ft/s L3 Kraken FOC With 14t pinion
 
   // Drive motor configuration
-  public static final int driveMotorCurrentLimit = 30;
+  public static final int driveMotorCurrentLimit = 50;
   public static final double driveMotorGearRatio =
       1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0)); // Mk4i L3 with 14t pinion
   public static final DCMotor driveGearbox = DCMotor.getNEO(1);

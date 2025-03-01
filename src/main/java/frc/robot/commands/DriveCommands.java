@@ -32,8 +32,8 @@ public class DriveCommands {
   public static final double DEADBAND = 0.1;
   public static double ANGLE_KP = 0.5;
   public static double ANGLE_KD = 0.0;
-  public static final double ANGLE_MAX_VELOCITY = 8.0;
-  public static final double ANGLE_MAX_ACCELERATION = 20.0;
+  public static final double ANGLE_MAX_VELOCITY = 2.0;
+  public static final double ANGLE_MAX_ACCELERATION = 2.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec

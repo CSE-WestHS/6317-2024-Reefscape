@@ -68,7 +68,7 @@ public class ElevatorConstants {
   public static final ElevatorHardwareConfig CompBot_CONFIG =
       new ElevatorHardwareConfig(
           new int[] {3,8},//{3,8}
-          new boolean[] {false,false},
+          new boolean[] {false,true},
           1/( 2.8),//2.8 gives inches of travel //85.33333 * 2 * Math.PI
           20,
           GravityType.CONSTANT,

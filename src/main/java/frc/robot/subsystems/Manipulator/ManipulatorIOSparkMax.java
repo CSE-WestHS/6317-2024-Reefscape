@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -53,7 +54,7 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
 
     motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
     leaderConfig =
-        new SparkMaxConfig()
+        new SparkMaxConfig().idleMode(IdleMode.kBrake)
             .inverted(config.reversed()[0])
             .smartCurrentLimit(config.currentLimit())
             .apply(
