@@ -136,11 +136,11 @@ public class RobotContainer {
   
   private Command ManipulatorVariable;
   
-  private Pneumatics pneumatics;
+  // private Pneumatics pneumatics;
 
-  public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+  // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
 
-  private ParallelRaceGroup pneumaticClimbCommand;
+  // private ParallelRaceGroup pneumaticClimbCommand;
     
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
       public RobotContainer() {
@@ -164,7 +164,7 @@ public class RobotContainer {
             indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
             beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
             beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-            pneumatics = new Pneumatics(new PneumaticsIO() {});
+            // pneumatics = new Pneumatics(new PneumaticsIO() {});
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
@@ -197,7 +197,7 @@ public class RobotContainer {
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-          pneumatics = new Pneumatics(new PneumaticsIO() {});
+          // pneumatics = new Pneumatics(new PneumaticsIO() {});
           
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
@@ -222,7 +222,7 @@ public class RobotContainer {
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-          pneumatics = new Pneumatics(new PneumaticsIO() {});
+          // pneumatics = new Pneumatics(new PneumaticsIO() {});
 
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
@@ -271,7 +271,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     System.out.println("Compressor Code Running");
     //compressor
-    compressor.enableDigital();
+    // compressor.enableDigital();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -344,13 +344,13 @@ public class RobotContainer {
     // driverController.a().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.b().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
     // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
-    pneumaticClimbCommand = Commands.run(
-        ()->pneumatics.setMode(Value.kForward))
-        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
-        .andThen(()->pneumatics.setMode(Value.kReverse))
-        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
+    // pneumaticClimbCommand = Commands.run(
+    //     ()->pneumatics.setMode(Value.kForward))
+    //     .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
+    //     .andThen(()->pneumatics.setMode(Value.kReverse))
+    //     .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
     
-    driverController.x().onTrue(pneumaticClimbCommand);
+    // driverController.x().onTrue(pneumaticClimbCommand);
     driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
