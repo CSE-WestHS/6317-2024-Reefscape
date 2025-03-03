@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -82,7 +83,7 @@ public class UtilitiesFieldSectioning {
          */
         public static void faceSpecificReef(Pose2d currentPose, Pose2d reefPose, Drive drive) {
             angleController.enableContinuousInput(-Math.PI, Math.PI);
-            angleController.setTolerance(0.349066);
+            angleController.setTolerance(Units.degreesToRadians(5));
             double omega = angleController.calculate(currentPose.getRotation().getRadians(), reefPose.getRotation().getRadians());
             ChassisSpeeds speeds = new ChassisSpeeds(0, 0, -omega);
             boolean isFlipped =

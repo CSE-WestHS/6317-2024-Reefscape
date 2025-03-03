@@ -75,6 +75,9 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+
+import java.util.function.DoubleSupplier;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -142,7 +145,8 @@ public class RobotContainer {
   private final LoggedNetworkNumber xOverride;
   
   private Command ManipulatorVariable;
-  
+  double x = 0;
+  double y = 0;
   // private Pneumatics pneumatics;
 
   // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
@@ -342,15 +346,16 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
+    // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
     // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
-    driverController.b().whileTrue(SetUpShooter);
-    driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
-    
+    // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
+    // driverController.b().whileTrue(SetUpShooter);
+    driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
+    // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceSpecificReef(drive.getPose(),UtilitiesFieldSectioning.F1, drive)));
+    driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
