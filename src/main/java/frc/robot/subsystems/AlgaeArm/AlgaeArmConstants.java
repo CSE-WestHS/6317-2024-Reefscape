@@ -54,7 +54,7 @@ public class AlgaeArmConstants {
           85.33333 * 2 * Math.PI, 
           40,
           GravityType.COSINE,
-          EncoderType.EXTERNAL_CANCODER,
+          EncoderType.INTERNAL,
           45,
           Rotation2d.fromRotations(0.5),
           "");

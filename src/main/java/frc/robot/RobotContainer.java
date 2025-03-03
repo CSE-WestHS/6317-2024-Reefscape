@@ -65,6 +65,10 @@ import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+import frc.robot.subsystems.funnelarm.funnelArm;
+import frc.robot.subsystems.funnelarm.funnelArmConstants;
+import frc.robot.subsystems.funnelarm.funnelArmIO;
+import frc.robot.subsystems.funnelarm.funnelArmIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -78,6 +82,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import frc.robot.commands.GoToPositionElevator;
 import frc.robot.commands.IndexerToShooter;
+import frc.robot.commands.ShootCoral;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -117,6 +122,7 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
+  private final funnelArm funnelArm;
   // private final Funnel funnel;
   private final Elevator elevator;
   private final AlgaeArm algaeArm;
@@ -165,6 +171,7 @@ public class RobotContainer {
             beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
             beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
             pneumatics = new Pneumatics(new PneumaticsIO() {});
+            funnelArm = new funnelArm(new funnelArmIO() {}, funnelArmConstants.REAL_GAINS);
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
@@ -198,7 +205,7 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           pneumatics = new Pneumatics(new PneumaticsIO() {});
-          
+          funnelArm = new funnelArm(new funnelArmIOSim("funnel", funnelArmConstants.CompBot_CONFIG) {}, funnelArmConstants.REAL_GAINS);
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
@@ -223,6 +230,7 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           pneumatics = new Pneumatics(new PneumaticsIO() {});
+          funnelArm = new funnelArm(new funnelArmIOSim("funnel", funnelArmConstants.CompBot_CONFIG) {}, funnelArmConstants.REAL_GAINS);
 
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
@@ -336,14 +344,16 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.a().onTrue(Commands.runOnce(() ->shooter.setVelocity(1))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // driverController.x().onTrue(new CoralAlignment(shooter, beamBreakMid, beamBreakBack).withTimeout(10));
     // driverController.a().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.b().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
+    driverController.rightBumper().whileTrue(Commands.run(()->funnelArm.setVelocity(1))).whileFalse(Commands.run(()->funnelArm.setVelocity(0)));
+    driverController.rightBumper().and(driverController.leftBumper()).whileTrue(Commands.run(()->funnelArm.setVelocity(-1))).whileFalse(Commands.run(()->funnelArm.setVelocity(0)));
+    driverController.b().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceClosestReef(drive.getPose(), drive)));
     pneumaticClimbCommand = Commands.run(
         ()->pneumatics.setMode(Value.kForward))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2)
@@ -351,7 +361,7 @@ public class RobotContainer {
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming).withTimeout(2);
     
     driverController.x().onTrue(pneumaticClimbCommand);
-    driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
+    // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2 * Math.PI / 3)));
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
     // driverController.povLeft().whileTrue(new FunnelUp(funnel));
@@ -380,7 +390,7 @@ public class RobotContainer {
 
 
 
-    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
