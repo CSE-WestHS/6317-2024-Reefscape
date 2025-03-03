@@ -27,7 +27,7 @@ public class AllignShooterCommand extends Command {
   @Override
   public void execute() {
     if (beamBreak.beamBreakTripped() == false) {
-      shooter.setVoltage(0);
+      shooter.setVelocity(0);
     }
     else if (beamBreak.beamBreakTripped() == true) {
       shooter.setVelocity(1);
@@ -43,6 +43,6 @@ public class AllignShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !beamBreak.beamBreakTripped();
   }
 }

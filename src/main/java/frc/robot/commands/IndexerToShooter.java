@@ -31,10 +31,10 @@ public class IndexerToShooter extends Command {
   @Override
   public void execute() {
     if (beambreakBack.beamBreakTripped() == false) {
-      indexer.setVelocity(1);
+      indexer.setVelocity(4);
     }
     else if (beambreakBack.beamBreakTripped() == true) {
-      indexer.setVoltage(0);
+      indexer.setVelocity(0);
     }
   }
 
@@ -47,6 +47,6 @@ public class IndexerToShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return beambreakBack.beamBreakTripped();
   }
 }
