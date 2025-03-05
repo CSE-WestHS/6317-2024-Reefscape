@@ -30,7 +30,7 @@ public class AllignShooterCommand extends Command {
       shooter.setVelocity(0);
     }
     else if (beamBreak.beamBreakTripped() == true) {
-      shooter.setVelocity(1);
+      shooter.setVelocity(1.5);
     }
   }
 

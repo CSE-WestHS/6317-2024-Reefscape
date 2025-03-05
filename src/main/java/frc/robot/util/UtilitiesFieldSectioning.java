@@ -18,7 +18,10 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.GoToPositionElevator;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 
@@ -49,6 +52,8 @@ public class UtilitiesFieldSectioning {
     //pid
     public static final ProfiledPIDController angleController = new ProfiledPIDController(0.075,0, 0.05, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
+    //auto tolerances
+    private static double tolerance = 0.2; 
 
     
         //array of positions
@@ -96,6 +101,20 @@ public class UtilitiesFieldSectioning {
             drive.runVelocity(speeds);
         }
 
+        /**
+         * 
+         * @param drive
+         * @param elevator
+         * @see .. This function takes current pose and based on pose changes elevator height
+         */
+        public static boolean changeElevatorHeightBasedOnPose(Drive drive, Elevator elevator) {
+            if (drive.getPose().nearest(List.of(sectionsArr)) == F1) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         /**
          * 
          * @param currentPose current pose of robot
