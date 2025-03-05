@@ -1,42 +1,43 @@
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AllignShooterCommand;
-import frc.robot.commands.CoralAlignment;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.FunnelUp;
+import frc.robot.commands.GoToPositionElevator;
+import frc.robot.commands.IndexerToShooter;
 import frc.robot.subsystems.AlgaeArm.AlgaeArm;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
-import frc.robot.subsystems.Compressor.CompresorIO;
-import frc.robot.subsystems.Compressor.Compresors;
+import frc.robot.subsystems.Clamps.Clamps;
+import frc.robot.subsystems.Clamps.ClampsConstants;
+import frc.robot.subsystems.Clamps.ClampsIOSim;
+import frc.robot.subsystems.Clamps.ClampsIOSparkMax;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator.ElevatorIONeo;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
-import frc.robot.subsystems.Funnel.Funnel;
-import frc.robot.subsystems.Funnel.FunnelConstants;
-import frc.robot.subsystems.Funnel.FunnelIOReplay;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerConstants;
 import frc.robot.subsystems.Indexer.IndexerIOSim;
@@ -46,15 +47,9 @@ import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Manipulator.ManipulatorIOSparkMax;
-import frc.robot.subsystems.Pneumatics.Pneumatics;
-import frc.robot.subsystems.Pneumatics.PneumaticsIO;
 import frc.robot.subsystems.beam_break.BeamBreak;
 import frc.robot.subsystems.beam_break.BeamBreakConstants;
 import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
-import frc.robot.subsystems.Funnel.FunnelIOSim;
-import frc.robot.subsystems.Funnel.FunnelIO;
-import frc.robot.subsystems.Indexer.IndexerIO;
-import frc.robot.subsystems.Manipulator.ManipulatorIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -65,27 +60,12 @@ import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-import frc.robot.subsystems.funnelarm.funnelArm;
-import frc.robot.subsystems.funnelarm.funnelArmConstants;
-import frc.robot.subsystems.funnelarm.funnelArmIO;
-import frc.robot.subsystems.funnelarm.funnelArmIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
-
-import java.util.function.DoubleSupplier;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-import frc.robot.commands.GoToPositionElevator;
-import frc.robot.commands.IndexerToShooter;
-import frc.robot.commands.ShootCoral;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -127,6 +107,7 @@ public class RobotContainer {
   private final BeamBreak beamBreakMid;
   // private final funnelArm funnelArm;
   // private final Funnel funnel;
+  private final Clamps Klamps;
   private final Elevator elevator;
   private final AlgaeArm algaeArm;
   public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
@@ -139,7 +120,7 @@ public class RobotContainer {
   private Command indexerStop;
   private Command AlgaeArmPositionSet;
   private Command FeedandShoot;
-  private Command SetUpShooter;
+  private SequentialCommandGroup SetUpShooter;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -179,6 +160,7 @@ public class RobotContainer {
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIO() {}, AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
+          Klamps = new Clamps( new ClampsIOSparkMax("Clamps", ClampsConstants.CompBot_CONFIG) , ClampsConstants.REAL_GAINS);
           elevator =
               new Elevator(
                   new ElevatorIONeo("Elevator", ElevatorConstants.CompBot_CONFIG),
@@ -208,7 +190,7 @@ public class RobotContainer {
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-          
+          Klamps = new Clamps(new ClampsIOSim("Klamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
@@ -236,6 +218,7 @@ public class RobotContainer {
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
           // led = new LEDS(60);
+          Klamps = new Clamps(new ClampsIOSim("Lamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
           elevator =
               new Elevator(
                   new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
@@ -247,7 +230,8 @@ public class RobotContainer {
       ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
       FeedandShoot = Commands.run(()->new IndexerToShooter(indexer,beamBreakBack)).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
     ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-      SetUpShooter = Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
+      SetUpShooter = new SequentialCommandGroup(new IndexerToShooter(indexer, beamBreakBack), new AllignShooterCommand(shooter, beamBreakBack));
+      //Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
     // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
@@ -279,9 +263,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    System.out.println("Compressor Code Running");
-    //compressor
-    // compressor.enableDigital();
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -353,9 +334,11 @@ public class RobotContainer {
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.b().whileTrue(SetUpShooter);
     driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    driverController.povRight().onTrue(SetUpShooter);
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
     // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceSpecificReef(drive.getPose(),UtilitiesFieldSectioning.F1, drive)));
     driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
     // driverController.povRight().whileTrue(AlgaeArmPositionSet);
@@ -375,14 +358,14 @@ public class RobotContainer {
 
     driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-
+    driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
 
 
     // testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
 
     // testController.povLeft().whileTrue(Commands.startEnd(() ->shooter.setVelocity(15),() ->shooter.setVoltage(0.0)));
 
-
+    
 
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
