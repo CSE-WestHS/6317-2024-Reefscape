@@ -31,7 +31,7 @@ public class ShootCoral extends Command {
       Shooter.setVelocity(1);
     }
     else {
-      Shooter.setVelocity(3);
+      Shooter.setVelocity(100);
     }
   }
 
