@@ -25,6 +25,7 @@ import frc.robot.commands.GoToPositionElevator;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.vision.Vision;
 
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
@@ -59,6 +60,7 @@ public class UtilitiesFieldSectioning {
     
         //array of positions
         public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
+        public static final Pose2d[] poseArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6};
         
         /***
          * 
@@ -116,6 +118,15 @@ public class UtilitiesFieldSectioning {
                 return false;
             }
         }
+
+        public static boolean shouldShoot(Drive drive) {
+            if (getClosestSectionDistance(drive.getPose()) < 100) {
+                return true;
+            }
+            return false;
+        }
+
+
         /**
          * 
          * @param currentPose current pose of robot
@@ -162,9 +173,9 @@ public class UtilitiesFieldSectioning {
     public static double getClosestSectionDistance(Pose2d currentPose) {
         double currentDistanceFromPoint = 999999; //set high so that no element is auto selected - will probably delete later
         double minDistance = currentDistanceFromPoint;
-        for (int i = 0; i < sectionsArr.length; ++i) {
+        for (int i = 0; i < poseArr.length; ++i) {
             // d = √(x2 - x1)2 + (y2 - y1)2
-            currentDistanceFromPoint = Math.sqrt(Math.pow(sectionsArr[i].getX() - currentPose.getX(),2) + Math.pow(sectionsArr[i].getY() - currentPose.getY(), 2));
+            currentDistanceFromPoint = Math.sqrt(Math.pow(poseArr[i].getX() - currentPose.getX(),2) + Math.pow(poseArr[i].getY() - currentPose.getY(), 2));
             if (currentDistanceFromPoint < minDistance) {
                 minDistance = currentDistanceFromPoint;
             }
@@ -175,5 +186,9 @@ public class UtilitiesFieldSectioning {
         if (getClosestSectionDistance(currentPose) <= 2) {
             DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);
         }
+        else {
+            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(12);
+        }
+        System.out.println(DriveConstants.maxSpeedAt12Volts);
     }
 }

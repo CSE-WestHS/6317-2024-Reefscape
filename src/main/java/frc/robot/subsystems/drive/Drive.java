@@ -203,7 +203,6 @@ public class Drive extends SubsystemBase {
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/driveVelocity", setpointStates[0].speedMetersPerSecond);
-    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -335,7 +334,6 @@ public class Drive extends SubsystemBase {
   }
   public Command generatePath(Pose2d targetPose) {
     PathConstraints constraints = new PathConstraints(2,1,Units.degreesToRadians(540),Units.degreesToRadians(720));
-    
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
 }
