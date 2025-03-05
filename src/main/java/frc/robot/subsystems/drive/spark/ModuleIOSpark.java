@@ -262,6 +262,5 @@ public class ModuleIOSpark implements ModuleIO {
                 new ClosedLoopConfig().pidf(gains.turnkP(), gains.turnkI(), gains.turnkD(), gains.turnkV())),
             ResetMode.kNoResetSafeParameters,
             PersistMode.kPersistParameters));
-    System.out.println("Value changed to: " + gains.turnkV());
   }
 }
