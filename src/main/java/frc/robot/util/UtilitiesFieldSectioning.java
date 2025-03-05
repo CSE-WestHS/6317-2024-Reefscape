@@ -15,11 +15,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.GoToPositionElevator;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -53,14 +58,12 @@ public class UtilitiesFieldSectioning {
     public static final Pose2d F1 = new Pose2d(1.858, 6.590,Rotation2d.fromDegrees(-48.832) ); //feed station
     //pid
     public static final ProfiledPIDController angleController = new ProfiledPIDController(0.075,0, 0.05, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
+    //limelight values
+    private static NetworkTable table  = NetworkTableInstance.getDefault().getTable("limelight");
     
-    //auto tolerances
-    private static double tolerance = 0.2; 
-
-    
-        //array of positions
-        public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
-        public static final Pose2d[] poseArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6};
+    //array of positions
+    public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
+    public static final Pose2d[] poseArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6};
         
         /***
          * 
@@ -155,20 +158,13 @@ public class UtilitiesFieldSectioning {
          * @param drive drive subsystem
          */
         public static void faceClosestReef(Pose2d currentPose, Drive drive) {
+            double c = table.getEntry("tx").getDouble(0);
+            System.out.println("tx: " + c );
+            if (Constants.currentMode == Mode.SIM) {
+                Commands.run(()->DriveCommands.joystickDriveAtAngle(drive, ()->RobotContainer.x, ()->RobotContainer.y,()-> F1.getRotation()));
+            }
             Pose2d closest = currentPose.nearest(List.of(sectionsArr));
-            angleController.enableContinuousInput(-Math.PI, Math.PI);
-            angleController.setTolerance(0.349066);
-            double omega = angleController.calculate(currentPose.getRotation().getRadians(), closest.getRotation().getRadians());
-            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, -omega);
-            boolean isFlipped =
-                  DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Red;
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                speeds,
-                isFlipped
-                    ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                    : drive.getRotation());
-            drive.runVelocity(speeds);
+            Commands.run(()->DriveCommands.joystickDriveAtAngle(drive, ()->RobotContainer.x, ()->RobotContainer.y, ()->closest.getRotation()));
     }
     public static double getClosestSectionDistance(Pose2d currentPose) {
         double currentDistanceFromPoint = 999999; //set high so that no element is auto selected - will probably delete later
@@ -181,6 +177,9 @@ public class UtilitiesFieldSectioning {
             }
         }
         return minDistance;
+    }
+    public static void getReadyToShoot(Drive drive) {
+        faceClosestReef(drive.getPose(), drive);
     }
     public static void isCloseToReef(Pose2d currentPose) {
         if (getClosestSectionDistance(currentPose) <= 2) {

@@ -132,8 +132,8 @@ public class RobotContainer {
   private final LoggedNetworkNumber xOverride;
   
   private Command ManipulatorVariable;
-  double x = 0;
-  double y = 0;
+  public static double x = 0;
+  public static double y = 0;
   // private Pneumatics pneumatics;
 
   // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
@@ -341,8 +341,8 @@ public class RobotContainer {
     // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // PathDone.whileTrue(new ShootCoral(shooter, elevator));
-
-    // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
+    driverController.povRight().whileTrue(Commands.run(()->UtilitiesFieldSectioning.getReadyToShoot(drive)).withTimeout(2).andThen(new ShootCoral(shooter, elevator)));
+    // driverController.rightBumper().while True(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.b().whileTrue(SetUpShooter);
     driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povRight().onTrue(SetUpShooter);

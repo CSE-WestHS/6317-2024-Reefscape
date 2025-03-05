@@ -32,7 +32,7 @@ public class SparkMaxModuleConstants {
   public static final double turnKd = 0.0;
   public static final double turnKs = 0.0;
   public static final double turnKv = 0.1;
-  public static final double turnSimP = 8.0;
+  public static final double turnSimP = 16.0;
   public static final double turnSimD = 0.0;
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
