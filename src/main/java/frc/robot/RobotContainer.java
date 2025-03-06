@@ -341,11 +341,9 @@ public class RobotContainer {
     driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
-    // driverController.povRight().whileTrue(AlgaeArmPositionSet);
-    // driverController.povLeft().whileTrue(new FunnelUp(funnel));
+    driv
+    
 
-    // testController.a().whileTrue(Commands.startEnd(() ->indexer.setVoltage(4),() ->indexer.setVoltage(6)));
-    // testController.b().whileTrue(Commands.startEnd(() ->shooter.setVoltage(4),() ->shooter.setVoltage(6)));
     // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
 
 
@@ -358,8 +356,8 @@ public class RobotContainer {
 
     driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-    driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
-
+    driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(-3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
+    
 
     // testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
 
