@@ -31,7 +31,7 @@ public class ShootCoral extends Command {
       Shooter.setVelocity(1);
     }
     else {
-      Shooter.setVelocity(3);
+      Shooter.setVelocity(100);
     }
   }
 
@@ -44,6 +44,7 @@ public class ShootCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Shooter.isFinished();//TODO: if second limelght - change to stop when mid is not tripped
+    
+    return Shooter.isFinished();//TODO: if second beambreak - change to stop when mid is not tripped
   }
 }

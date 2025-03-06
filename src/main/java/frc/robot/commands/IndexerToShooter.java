@@ -18,7 +18,6 @@ public class IndexerToShooter extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.indexer = indexer;
     this.beambreakBack = beamBreakBack;
-    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.

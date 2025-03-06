@@ -1,11 +1,14 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+import com.ctre.phoenix.Util;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +29,7 @@ import frc.robot.commands.AllignShooterCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.GoToPositionElevator;
 import frc.robot.commands.IndexerToShooter;
+import frc.robot.commands.ShootCoral;
 import frc.robot.subsystems.AlgaeArm.AlgaeArm;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
@@ -95,6 +99,7 @@ public class RobotContainer {
 //   private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
 //   private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
   private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
+  private static Trigger PathDone;
 //   private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
   //Subsystem Definitions
   private final Drive drive;
@@ -121,13 +126,14 @@ public class RobotContainer {
   private Command AlgaeArmPositionSet;
   private Command FeedandShoot;
   private SequentialCommandGroup SetUpShooter;
+  private Command LimelightSpeedControl;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
   
   private Command ManipulatorVariable;
-  double x = 0;
-  double y = 0;
+  public static double x = 0;
+  public static double y = 0;
   // private Pneumatics pneumatics;
 
   // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
@@ -186,7 +192,7 @@ public class RobotContainer {
                   null);
   
           vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
+          shooter = new Manipulator(new ManipulatorIOSim("shooterSim", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
@@ -229,8 +235,9 @@ public class RobotContainer {
       ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
       ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
       FeedandShoot = Commands.run(()->new IndexerToShooter(indexer,beamBreakBack)).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
-    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
+      ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
       SetUpShooter = new SequentialCommandGroup(new IndexerToShooter(indexer, beamBreakBack), new AllignShooterCommand(shooter, beamBreakBack));
+      LimelightSpeedControl = Commands.run(()->vision.defaultCommand(drive));
       //Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
@@ -263,6 +270,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    PathDone = new Trigger(()->UtilitiesFieldSectioning.shouldShoot(drive));
+    LimelightSpeedControl.addRequirements(vision);
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -291,7 +300,7 @@ public class RobotContainer {
     //       () -> -driverController.getLeftY(),
     //       () -> -driverController.getLeftX(),
     //       () -> -driverController.getRightX()));
-
+    vision.setDefaultCommand(LimelightSpeedControl);
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -327,18 +336,20 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
+    driverController.a().whileTrue(new ShootCoral(shooter, elevator).onlyIf(()->UtilitiesFieldSectioning.shouldShoot(drive)).withTimeout(10)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
     // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
+    // PathDone.whileTrue(new ShootCoral(shooter, elevator));
+    driverController.povRight().whileTrue(Commands.runOnce(()->DriveCommands.joystickDriveAtAngle(drive, ()->x, ()->y,()-> UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation())).andThen(Commands.run(()->System.out.println("First Command done"))).andThen(()->shooter.setVelocity(100)));
+    // driverController.rightBumper().while True(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.b().whileTrue(SetUpShooter);
     driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povRight().onTrue(SetUpShooter);
+    // driverController.povRight().onTrue(SetUpShooter);
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
     // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceSpecificReef(drive.getPose(),UtilitiesFieldSectioning.F1, drive)));
     driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
-    driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(2* Math.PI / 3)));
 
     driv
@@ -356,8 +367,13 @@ public class RobotContainer {
 
     driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
+<<<<<<< HEAD
     driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(-3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
     
+=======
+    // driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
+
+>>>>>>> c3911551628051ca67dfa8272af6f84d02e6d29d
 
     // testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
 
