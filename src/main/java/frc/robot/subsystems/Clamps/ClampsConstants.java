@@ -15,10 +15,10 @@ public class ClampsConstants {
       int[] canIds, boolean[] reversed, double gearRatio, int currentLimit, String canBus) {}
 
   public static final ClampsHardwareConfig EXAMPLE_CONFIG =
-      new ClampsHardwareConfig(new int[] {14}, new boolean[] {true}, 2.0,10, "");
+      new ClampsHardwareConfig(new int[] {35}, new boolean[] {true}, 2.0,10, "");
 
   public static final ClampsHardwareConfig CompBot_CONFIG =
-      new ClampsHardwareConfig(new int[] {14}, new boolean[] {false}, 3.8, 10, "");
+      new ClampsHardwareConfig(new int[] {34}, new boolean[] {false}, 3.8, 10, "");
 
   public static final ClampsGains SIM_GAINS =
       new ClampsGains(0.6, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);

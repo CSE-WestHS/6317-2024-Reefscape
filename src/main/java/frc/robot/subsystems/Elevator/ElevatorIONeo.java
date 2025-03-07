@@ -171,10 +171,14 @@ public class ElevatorIONeo implements ElevatorIO {
 
     for (int i = 1; i < config.canIds().length; i++) {
       motors[i] = new SparkMax(config.canIds()[i], MotorType.kBrushless);
-      motors[i].configure(
-          new SparkMaxConfig().follow(motors[0],config.reversed()[i]),
+      System.out.println("**************************************************************************************\nCanID: "  + config.canIds()[i] + "\n is Reversed: " + config.reversed()[i]);
+      motors[i].configure( 
+          new SparkMaxConfig().follow(motors[0],config.reversed()[i]).smartCurrentLimit(config.currentLimit()),
           ResetMode.kNoResetSafeParameters,
           PersistMode.kNoPersistParameters);
+      
+      System.out.println("**************************************************************************************\nCanID: "  + config.canIds()[i] + "\n is Reversed: " + config.reversed()[i]);
+
 
       motorAlerts[i] =
           new Alert(
@@ -290,6 +294,7 @@ public class ElevatorIONeo implements ElevatorIO {
     //  System.out.println( "Positions set??" + motors[i].getEncoder().getPosition());
 
   }
+  
   }
 
 

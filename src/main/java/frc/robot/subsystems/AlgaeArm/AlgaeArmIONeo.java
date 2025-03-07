@@ -76,7 +76,7 @@ public class AlgaeArmIONeo implements AlgaeArmIO {
     motorCurrents = new double[config.canIds().length];
     motorAlerts = new Alert[config.canIds().length];
 
-    motors[0] = new SparkMax(config.canIds()[0] = 5, MotorType.kBrushless);
+    motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
     leaderConfig =
         new SparkMaxConfig()
             .inverted(config.reversed()[0])
@@ -201,7 +201,7 @@ public class AlgaeArmIONeo implements AlgaeArmIO {
 
   @Override
   public void updateInputs(AlgaeArmIOInputs inputs) {
-    currentPosition = motors[0].getEncoder().getPosition();
+    currentPosition =  motors[0].getEncoder().getPosition();
     inputs.outputPosition = currentPosition;
 
     inputs.desiredPosition = positionSetpoint;
