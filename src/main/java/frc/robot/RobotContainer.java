@@ -245,6 +245,8 @@ public class RobotContainer {
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
     // NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
     NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
+    NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
+    NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

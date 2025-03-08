@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "topAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "takeOutAlgae"
           }
         },
@@ -20,6 +26,12 @@
           "type": "path",
           "data": {
             "pathName": "Algae2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "bottomAlgae"
           }
         },
         {
@@ -37,6 +49,12 @@
         {
           "type": "named",
           "data": {
+            "name": "topAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "takeOutAlgae"
           }
         },
@@ -49,6 +67,12 @@
         {
           "type": "named",
           "data": {
+            "name": "bottomAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "takeOutAlgae"
           }
         },
@@ -56,6 +80,12 @@
           "type": "path",
           "data": {
             "pathName": "Algae5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "topAlgae"
           }
         },
         {
@@ -74,6 +104,12 @@
           "type": "named",
           "data": {
             "name": "takeOutAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "bottomAlgae"
           }
         }
       ]
