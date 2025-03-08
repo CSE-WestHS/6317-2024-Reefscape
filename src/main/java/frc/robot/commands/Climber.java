@@ -5,49 +5,33 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.Indexer.Indexer;
-import frc.robot.subsystems.Manipulator.Manipulator;
-import frc.robot.subsystems.beam_break.BeamBreak;
-
+import frc.robot.subsystems.Clamps.*;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IndexerToShooter extends Command {
-  Indexer indexer;
-  BeamBreak beambreakBack;
-  /** Creates a new ShootCommand. */
-  public IndexerToShooter(Indexer indexer, BeamBreak beamBreakBack) {
+public class Climber extends Command {
+  Clamps lifter;
+  /** Creates a new Climber. */
+  public Climber(Clamps Lifter) {
+    this.lifter = Lifter;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.indexer = indexer;
-    this.beambreakBack = beamBreakBack;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    RobotContainer.hasShotCoral = false;
-    indexer.setVelocity(10);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (beambreakBack.beamBreakTripped() == false) {
-      indexer.setVelocity(4);
-    }
-    else if (beambreakBack.beamBreakTripped() == true) {
-      indexer.setVelocity(0);
-    }
+    lifter.setVelocity(4);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    indexer.setVoltage(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return beambreakBack.beamBreakTripped();
+    return false;
   }
 }

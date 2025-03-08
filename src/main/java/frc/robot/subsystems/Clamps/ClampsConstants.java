@@ -21,7 +21,7 @@ public class ClampsConstants {
       new ClampsHardwareConfig(new int[] {34}, new boolean[] {false}, 3.8, 10, "");
 
   public static final ClampsGains SIM_GAINS =
-      new ClampsGains(0.6, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);
+      new ClampsGains(0.2, 0.0, 0, 0.0, 0.01, 0.0, 10.0, 0.2);
 
 
   public static final ClampsGains REAL_GAINS =

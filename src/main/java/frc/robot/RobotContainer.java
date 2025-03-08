@@ -22,10 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AllignShooterCommand;
-import frc.robot.commands.DriveCommands;
-import frc.robot.commands.GoToPositionElevator;
-import frc.robot.commands.IndexerToShooter;
 import frc.robot.subsystems.AlgaeArm.AlgaeArm;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
@@ -107,8 +103,6 @@ public class RobotContainer {
   @SuppressWarnings("unused")
   private final BeamBreak beamBreakBack;
   private final BeamBreak beamBreakMid;
-  // private final funnelArm funnelArm;
-  // private final Funnel funnel;
   private final Clamps Klamps;
   private final Elevator elevator;
   private final AlgaeArm algaeArm;
@@ -123,14 +117,15 @@ public class RobotContainer {
   private Command AlgaeArmPositionSet;
   private Command FeedandShoot;
   private Command faceReef;
+  private Command takeOutAlgae;
   private SequentialCommandGroup SetUpShooter;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
   
-  private Command ManipulatorVariable;
   public static double x = 0;
   public static double y = 0;
+  public static boolean hasShotCoral = false;
   // private Pneumatics pneumatics;
 
   // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
@@ -229,12 +224,13 @@ public class RobotContainer {
       }
   
       // command definitions
-      ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
-      ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-      FeedandShoot = Commands.run(()->new IndexerToShooter(indexer,beamBreakBack)).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
-    ManipulatorClear = Commands.run(()->shooter.setVelocity(-10)).withTimeout(3).andThen(ManipulatorStop); //runs motor backwards to get rid of coral from manipulator
-      SetUpShooter = new SequentialCommandGroup(new IndexerToShooter(indexer, beamBreakBack), new AllignShooterCommand(shooter, beamBreakBack));
+      // ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
+      // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
+      FeedandShoot = new IndexerToShooter(indexer,beamBreakBack).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
       faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->x, ()->y, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
+      takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85)
+        .andThen(Commands.run(()->shooter.setVelocity(15))).andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0))
+        .alongWith(Commands.run(()->shooter.setVelocity(0)));
       //Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
@@ -339,7 +335,8 @@ public class RobotContainer {
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
     // driverController.b().whileTrue(SetUpShooter);t
     driverController.rightBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0));
-    driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 1.19));
+    // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
+    driverController.leftBumper().whileTrue(takeOutAlgae).whileFalse(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0).alongWith(Commands.run(()->shooter.setVelocity(0))));
     // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
@@ -348,9 +345,7 @@ public class RobotContainer {
     // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(5* Math.PI / 6)));
-
-    
-
+    driverController.x().whileTrue (new Climber(Klamps)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
     // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
 
 

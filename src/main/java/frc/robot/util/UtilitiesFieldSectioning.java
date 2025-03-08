@@ -191,7 +191,7 @@ public class UtilitiesFieldSectioning {
     }
 
     public static void isCloseToReef(Pose2d currentPose) {
-        if (getClosestSectionDistance(currentPose) <= 2) {
+        if (getClosestSectionDistance(currentPose) <= 0.305 && RobotContainer.hasShotCoral == false) {
             DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);
         }
         else {
