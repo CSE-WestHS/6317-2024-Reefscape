@@ -105,10 +105,6 @@ public class UtilitiesFieldSectioning {
             drive.runVelocity(speeds);
         }
 
-        public static boolean getPIDStatus() {
-            return angleController.atSetpoint();
-        }
-
         /**
          * 
          * @param drive
@@ -177,6 +173,11 @@ public class UtilitiesFieldSectioning {
             Commands.run(()->DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->closest.getRotation() ));
 
     }
+    /**
+     * 
+     * @param currentPose
+     * @return distance from the closest april tag pose
+     */
     public static double getClosestSectionDistance(Pose2d currentPose) {
         double currentDistanceFromPoint = 999999; //set high so that no element is auto selected - will probably delete later
         double minDistance = currentDistanceFromPoint;
@@ -189,7 +190,11 @@ public class UtilitiesFieldSectioning {
         }
         return minDistance;
     }
-
+    /**
+     * 
+     * @param currentPose
+     * @purpose If close to reef, makes max speed slow, otherwise normal speed
+     */
     public static void isCloseToReef(Pose2d currentPose) {
         if (getClosestSectionDistance(currentPose) <= 0.305 && RobotContainer.hasShotCoral == false) {
             DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);

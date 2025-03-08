@@ -49,7 +49,7 @@ public class AlgaeArmConstants {
 
   public static final AlgaeArmHardwareConfig FunnelArm_CONFIG =
       new AlgaeArmHardwareConfig(
-          new int[] {17},
+          new int[] {24},
           new boolean[] {true},
           1, 
           40,
