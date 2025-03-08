@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -228,9 +229,9 @@ public class RobotContainer {
       // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
       FeedandShoot = new IndexerToShooter(indexer,beamBreakBack).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
       faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->x, ()->y, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
-      takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85)
-        .andThen(Commands.run(()->shooter.setVelocity(15))).andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0))
-        .alongWith(Commands.run(()->shooter.setVelocity(0)));
+      takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
+        .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
+        .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
       //Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
     // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
     // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
@@ -243,6 +244,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("IndexerStop", indexerStop);
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
     // NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
+    NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
