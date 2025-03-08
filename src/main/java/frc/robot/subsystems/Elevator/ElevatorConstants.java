@@ -63,7 +63,7 @@ public class ElevatorConstants {
 
 
   public static final ElevatorGains CompBot_GAINS =
-      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 20.0, 30.0, 0.0, 30, 0.2);
+      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 75.0, 120.0, 0.0, 30, 0.2);
     
   public static final ElevatorHardwareConfig CompBot_CONFIG =
       new ElevatorHardwareConfig(

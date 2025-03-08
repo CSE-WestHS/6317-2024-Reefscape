@@ -332,20 +332,20 @@ public class RobotContainer {
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
-    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
     // driverController.b().whileTrue(SetUpShooter);t
     driverController.rightBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0));
-    driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 2 * Math.PI / 3));
+    driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 1.19));
     // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
     // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceSpecificReef(drive.getPose(),UtilitiesFieldSectioning.F1, drive)));
-    driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(5* Math.PI / 6)));
 
