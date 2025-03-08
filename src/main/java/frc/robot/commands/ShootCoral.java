@@ -37,10 +37,10 @@ public class ShootCoral extends Command {
   public void execute() {
     currentTime = Timer.getFPGATimestamp();
     if(Elevator.getPosition() < 0.3){
-      Shooter.setVelocity(1);
+      Shooter.setVelocity(5);
     }
     else {
-      Shooter.setVelocity(100);
+      Shooter.setVelocity(15);
     }
   }
 
@@ -54,7 +54,7 @@ public class ShootCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentTime - startTime > 5){
+    if (currentTime - startTime > 2){
       return true;
     }
     return Shooter.isFinished();//TODO: if second beambreak - change to stop when mid is not tripped
