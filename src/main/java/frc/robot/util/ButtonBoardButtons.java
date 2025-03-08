@@ -22,17 +22,17 @@ public class ButtonBoardButtons {
     public static final Trigger LEVEL_3 = RobotContainer.getButtonBoard().button(8); 
     public static final Trigger LEVEL_2 = RobotContainer.getButtonBoard().button(9); 
     public static final Trigger LEVEL_1 = RobotContainer.getButtonBoard().button(10);
-    public static final Trigger FAR_CENTER_1 = RobotContainer.getButtonBoard().button(3);
-    public static final Trigger FAR_RIGHT_1 = RobotContainer.getButtonBoard().button(6);
-    public static final Trigger FAR_RIGHT_2 = RobotContainer.getButtonBoard().button(5);
-    public static final Trigger NEAR_RIGHT_1 = RobotContainer.getButtonBoard().button(12);
-    public static final Trigger NEAR_RIGHT_2 = RobotContainer.getButtonBoard().button(11);
-    public static final Trigger NEAR_CENTER_1 = new Trigger(()->RobotContainer.getButtonBoard().getX() > 0.5); //FX
-    public static final Trigger NEAR_CENTER_2 = new Trigger(()->RobotContainer.getButtonBoard().getX() > -0.5); //BX
-    public static final Trigger NEAR_LEFT_1 = new Trigger(()->RobotContainer.getButtonBoard().getY() > -0.5); //BY
-    public static final Trigger NEAR_LEFT_2 = new Trigger(()->RobotContainer.getButtonBoard().getY() > 0.5); //FY
-    public static final Trigger FAR_LEFT_1 = RobotContainer.getButtonBoard().button(2);
-    public static final Trigger FAR_LEFT_2 = RobotContainer.getButtonBoard().button(1);
-    public static final Trigger FAR_CENTER_2 = RobotContainer.getButtonBoard().button(4);
+    public static final Trigger NearCenterRight = RobotContainer.getButtonBoard().button(3);
+    public static final Trigger NearLeftFar = RobotContainer.getButtonBoard().button(6);
+    public static final Trigger NearLeftNear = RobotContainer.getButtonBoard().button(5);
+    public static final Trigger FarLeftFar = RobotContainer.getButtonBoard().button(12);
+    public static final Trigger FarLeftNear = RobotContainer.getButtonBoard().button(11);
+    public static final Trigger FarCenterRight = new Trigger(()->RobotContainer.getButtonBoard().getX() > 0.5); //FX
+    public static final Trigger FarCenterLeft = new Trigger(()->RobotContainer.getButtonBoard().getX() > -0.5); //BX
+    public static final Trigger FarRightNear = new Trigger(()->RobotContainer.getButtonBoard().getY() > -0.5); //BY
+    public static final Trigger FarRightFar = new Trigger(()->RobotContainer.getButtonBoard().getY() > 0.5); //FY
+    public static final Trigger NearRightNear = RobotContainer.getButtonBoard().button(2);
+    public static final Trigger NearRightFar = RobotContainer.getButtonBoard().button(1);
+    public static final Trigger NearCenterLeft = RobotContainer.getButtonBoard().button(4);
      
 }

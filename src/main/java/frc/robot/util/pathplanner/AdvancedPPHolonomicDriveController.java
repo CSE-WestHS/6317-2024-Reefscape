@@ -52,6 +52,8 @@ public class AdvancedPPHolonomicDriveController implements PathFollowingControll
         new PIDController(rotationConstants.kP, rotationConstants.kI, rotationConstants.kD, period);
     this.rotationController.setIntegratorRange(-rotationConstants.iZone, rotationConstants.iZone);
     this.rotationController.enableContinuousInput(-Math.PI, Math.PI);
+    this.xController.setTolerance(0.02); //TODO: most likely cause for path generation error
+    this.yController.setTolerance(0.02); //TODO: most likely cause for path generation error
   }
 
   /**

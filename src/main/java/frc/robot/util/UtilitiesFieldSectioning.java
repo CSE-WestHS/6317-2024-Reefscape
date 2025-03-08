@@ -31,18 +31,18 @@ import frc.robot.subsystems.vision.Vision;
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
     //scoring positions
-    public static final Pose2d L1 = new Pose2d(4.936,5.074,Rotation2d.fromDegrees(-119.384));
-    public static final Pose2d L2 = new Pose2d(5.330,5.189,Rotation2d.fromDegrees(-119.384));
-    public static final Pose2d L3 = new Pose2d(5.956,4.179,Rotation2d.fromDegrees(178.122));
-    public static final Pose2d L4 = new Pose2d(5.956,3.833,Rotation2d.fromDegrees(178.122));
-    public static final Pose2d L5 = new Pose2d(5.359,2.842,  Rotation2d.fromDegrees(118.887));
-    public static final Pose2d L6 = new Pose2d(5.080,2.630, Rotation2d.fromDegrees(118.887));
-    public static final Pose2d R6 = new Pose2d(3.916, 2.688, Rotation2d.fromDegrees(62.526));
-    public static final Pose2d R5 = new Pose2d(3.916, 2.832, Rotation2d.fromDegrees(62.526));
-    public static final Pose2d R4 = new Pose2d(3.002, 3.871, Rotation2d.fromDegrees(-0.909));
-    public static final Pose2d R3 = new Pose2d(3.012, 4.179, Rotation2d.fromDegrees(-0.909));
-    public static final Pose2d R2 = new Pose2d(3.512, 5.276, Rotation2d.fromDegrees(-58.570));
-    public static final Pose2d R1 = new Pose2d(3.801, 5.516, Rotation2d.fromDegrees(-58.570));
+    public static final Pose2d NearCenterLeft = new Pose2d(2.915,4.190,Rotation2d.fromDegrees(1.169));
+    public static final Pose2d NearCenterRight = new Pose2d(2.870,3.845,Rotation2d.fromDegrees(1.169));
+    public static final Pose2d FarCenterLeft = new Pose2d(5.965,4.19,Rotation2d.fromDegrees(180));
+    public static final Pose2d FarCenterRight = new Pose2d(5.920,3.860,Rotation2d.fromDegrees(180));
+    public static final Pose2d NearLeftNear = new Pose2d(3.576,5.167,  Rotation2d.fromDegrees(-56.023));
+    public static final Pose2d NearLeftFar = new Pose2d(3.877,5.302, Rotation2d.fromDegrees(-56.023));
+    public static final Pose2d NearRightNear = new Pose2d(3.546, 2.778, Rotation2d.fromDegrees(58.325));
+    public static final Pose2d NearRightFar = new Pose2d(3.862, 2.643, Rotation2d.fromDegrees(58.325));
+    public static final Pose2d FarLeftNear = new Pose2d(5.109, 5.377, Rotation2d.fromDegrees(-119.249));
+    public static final Pose2d FarLeftFar = new Pose2d(5.364, 5.242, Rotation2d.fromDegrees(-119.249));
+    public static final Pose2d FarRightNear = new Pose2d(5.094, 2.703, Rotation2d.fromDegrees(123.024));
+    public static final Pose2d FarRightFar = new Pose2d(5.409, 2.808, Rotation2d.fromDegrees(123.024));
 
     //sections
     public static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(-114.228)); //section 1
@@ -60,8 +60,8 @@ public class UtilitiesFieldSectioning {
 
     
         //array of positions
-        public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
-        public static final Pose2d[] poseArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6};
+        public static final Pose2d[] sectionsArr = {FarCenterLeft,FarCenterRight,NearCenterLeft,NearCenterRight,FarLeftFar,FarLeftNear,FarRightFar,FarRightNear,NearRightFar,NearRightNear,NearLeftFar,NearRightNear,F1};
+        public static final Pose2d[] poseArr = {FarCenterLeft,FarCenterRight,NearCenterLeft,NearCenterRight,FarLeftFar,FarLeftNear,FarRightFar,FarRightNear,NearRightFar,NearRightNear,NearLeftFar,NearRightNear,F1};
         
         /***
          * 
