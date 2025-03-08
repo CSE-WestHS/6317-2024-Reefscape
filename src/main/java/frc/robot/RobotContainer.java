@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -95,6 +97,7 @@ public class RobotContainer {
 //   private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
   private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
 //   private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
+  private final Trigger leftTriggerPressed = new Trigger(driverController.leftTrigger());
   //Subsystem Definitions
   private final Drive drive;
   @SuppressWarnings("unused")
@@ -125,11 +128,6 @@ public class RobotContainer {
   private final LoggedNetworkNumber xOverride;
   
   public static boolean hasShotCoral = false;
-  // private Pneumatics pneumatics;
-
-  // public static final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
-
-  // private ParallelRaceGroup pneumaticClimbCommand;
     
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
       public RobotContainer() {
@@ -335,7 +333,7 @@ public class RobotContainer {
     driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     driverController.x().whileTrue (new Climber(Klamps)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
-
+    driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(15))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(12)));
     driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
     driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(-3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));

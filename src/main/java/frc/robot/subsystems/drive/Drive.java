@@ -35,6 +35,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
@@ -140,6 +141,7 @@ public class Drive extends SubsystemBase {
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      
     }
 
     // Update odometry
