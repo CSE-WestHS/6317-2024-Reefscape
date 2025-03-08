@@ -27,6 +27,9 @@ import frc.robot.util.TunableElevatorFeedforward;
 import frc.robot.util.encoder.AbsoluteCancoder;
 import frc.robot.util.encoder.AbsoluteMagEncoder;
 import frc.robot.util.encoder.IAbsoluteEncoder;
+
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.function.DoubleSupplier;
 
 public class AlgaeArmIONeo implements AlgaeArmIO {

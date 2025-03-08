@@ -174,7 +174,7 @@ public class UtilitiesFieldSectioning {
             //         ? drive.getRotation().plus(new Rotation2d(Math.PI))
             //         : drive.getRotation());
             // drive.runVelocity(speeds);
-            Commands.run(()->DriveCommands.joystickDriveAtAngle(drive, ()->RobotContainer.x, ()->RobotContainer.y, ()->closest.getRotation() ));
+            Commands.run(()->DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->closest.getRotation() ));
 
     }
     public static double getClosestSectionDistance(Pose2d currentPose) {

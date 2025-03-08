@@ -103,7 +103,7 @@ public class RobotContainer {
   private final Indexer indexer;
   @SuppressWarnings("unused")
   private final BeamBreak beamBreakBack;
-  private final BeamBreak beamBreakMid;
+  private final BeamBreak beamBreakTop;
   private final Clamps Klamps;
   private final Elevator elevator;
   private final AlgaeArm algaeArm;
@@ -124,8 +124,6 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
   
-  public static double x = 0;
-  public static double y = 0;
   public static boolean hasShotCoral = false;
   // private Pneumatics pneumatics;
 
@@ -154,7 +152,7 @@ public class RobotContainer {
             shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
             indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
             beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-            beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+            beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
             // pneumatics = new Pneumatics(new PneumaticsIO() {});
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIONeo("algae arm", AlgaeArmConstants.FunnelArm_CONFIG) {}, AlgaeArmConstants.FunnelArm_GAINS);
@@ -188,7 +186,7 @@ public class RobotContainer {
           shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           Klamps = new Clamps(new ClampsIOSim("Klamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
           // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
@@ -212,7 +210,7 @@ public class RobotContainer {
           shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
           indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
-          beamBreakMid = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
 
           // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
@@ -225,25 +223,15 @@ public class RobotContainer {
       }
   
       // command definitions
-      // ManipulatorShoot = Commands.run(()->shooter.setVelocity(10)).until(()->(!beamBreakMid.beamBreakTripped() || shooter.isFinished()));
       // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
       FeedandShoot = new IndexerToShooter(indexer,beamBreakBack).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
-      faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->x, ()->y, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
+      faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
       takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
         .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
         .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
-      //Commands.runOnce(()->new IndexerToShooter(indexer, beamBreakBack).withTimeout(5).andThen(new AllignShooterCommand(shooter, beamBreakBack).withTimeout(5)));
-    // indexerStart = Commands.run(()->indexer.setVelocity(1500)).until(()->indexer.isFinished()).withTimeout(5);
-    // indexerStop = Commands.run(()->indexer.setVelocity(0)).until(()->indexer.isFinished());
-    // AlgaeArmPositionSet = Commands.run(()->algaeArm.setPosition(Math.PI / 2)).until(()->algaeArm.isFinished());
 
     //set up path planner commands
-    // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
-    // NamedCommands.registerCommand("ManipulatorShoot", ManipulatorShoot);
-    // NamedCommands.registerCommand("IndexerStart", indexerStart);
-    // NamedCommands.registerCommand("IndexerStop", indexerStop);
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
-    // NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
     NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
     NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
     NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
@@ -333,11 +321,10 @@ public class RobotContainer {
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
-    // driverController.b().whileTrue(SetUpShooter);t
+    // driverController.b().whileTrue(SetUpShooter);
     driverController.rightBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0));
     // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
     driverController.leftBumper().whileTrue(takeOutAlgae).whileFalse(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0).alongWith(Commands.run(()->shooter.setVelocity(0))));
@@ -345,30 +332,13 @@ public class RobotContainer {
     // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    // driverController.a().whileTrue(Commands.run(()->UtilitiesFieldSectioning.faceSpecificReef(drive.getPose(),UtilitiesFieldSectioning.F1, drive)));
-    // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->x, ()->y,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    // driverController.rightBumper().whileTrue(Commands.run(()->algaeArm.setPosition(5* Math.PI / 6)));
     driverController.x().whileTrue (new Climber(Klamps)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
-    // testController.x().whileTrue(Commands.startEnd(() ->elevator.setVoltage(testController.getLeftY()),() ->elevator.setVoltage(testController.getLeftY())));
-
-
-
-
-    // driverController.x().whileTrue(Commands.runOnce(() ->elevator.setPosition(15)).ignoringDisable(true));
-    // driverController.y().whileTrue(Commands.runOnce(() ->elevator.setPosition(9)).ignoringDisable(true));
-    // driverController.a().whileTrue(Commands.runOnce(() ->elevator.setPosition(3)).ignoringDisable(true));
-    // driverController.b().whileTrue(Commands.runOnce(() ->elevator.zeroPosition()).ignoringDisable(true));
 
     driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
     driverController.a().whileTrue(Commands.runOnce(() -> Klamps.setVelocity(-3))).whileFalse(Commands.runOnce(()->Klamps.setVelocity(0)));
-    
-
-    // testController.povRight().whileTrue(Commands.startEnd(() ->indexer.setVelocity(15),() ->indexer.setVoltage(0.0)));
-
-    // testController.povLeft().whileTrue(Commands.startEnd(() ->shooter.setVelocity(15),() ->shooter.setVoltage(0.0)));
-
     
 
 
