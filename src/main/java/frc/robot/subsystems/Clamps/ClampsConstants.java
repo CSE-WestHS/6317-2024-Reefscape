@@ -18,7 +18,7 @@ public class ClampsConstants {
       new ClampsHardwareConfig(new int[] {35}, new boolean[] {true}, 2.0,10, "");
 
   public static final ClampsHardwareConfig CompBot_CONFIG =
-      new ClampsHardwareConfig(new int[] {34}, new boolean[] {false}, 3.8, 10, "");
+      new ClampsHardwareConfig(new int[] {13}, new boolean[] {false}, 3.8, 10, "");
 
   public static final ClampsGains SIM_GAINS =
       new ClampsGains(0.2, 0.0, 0, 0.0, 0.01, 0.0, 10.0, 0.2);
