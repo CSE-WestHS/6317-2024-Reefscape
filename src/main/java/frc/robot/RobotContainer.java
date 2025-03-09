@@ -222,7 +222,7 @@ public class RobotContainer {
   
       // command definitions
       // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-      FeedandShoot = new IndexerToShooter(indexer,beamBreakBack).andThen(new AllignShooterCommand(shooter, beamBreakBack).andThen(()->shooter.setVelocity(20)).withTimeout(5));
+      FeedandShoot = new IndexerToShooter(indexer,beamBreakBack).andThen(new AllignShooterCommand(shooter, beamBreakBack,indexer));
       faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
       takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
         .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
@@ -320,6 +320,7 @@ public class RobotContainer {
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
     driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
+    driverController.rightTrigger().whileTrue(FeedandShoot);
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
     // driverController.b().whileTrue(SetUpShooter);
@@ -333,11 +334,11 @@ public class RobotContainer {
     driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     driverController.x().whileTrue (new Climber(Klamps)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
-    driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(12)));
+    driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(8)));
     // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-    driverController.povUp().whileTrue(Commands.runOnce(() -> Klamps.setVoltage(0.3))).whileFalse(Commands.runOnce(()->Klamps.setVoltage(0)));
-    driverController.povDown().whileTrue(Commands.runOnce(() -> Klamps.setVoltage(0.3))).whileFalse(Commands.runOnce(()->Klamps.setVoltage(0)));
+    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)));
+    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(6)));
 
     
 

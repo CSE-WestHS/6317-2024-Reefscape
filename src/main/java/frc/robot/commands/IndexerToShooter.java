@@ -25,14 +25,14 @@ public class IndexerToShooter extends Command {
   @Override
   public void initialize() {
     RobotContainer.hasShotCoral = false;
-    indexer.setVelocity(10);
+    // indexer.setVelocity(10);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (beambreakBack.beamBreakTripped() == false) {
-      indexer.setVelocity(4);
+      indexer.setVelocity(6);
     }
     else if (beambreakBack.beamBreakTripped() == true) {
       indexer.setVelocity(0);

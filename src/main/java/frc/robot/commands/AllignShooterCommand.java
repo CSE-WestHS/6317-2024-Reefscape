@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Manipulator.Manipulator;
 import frc.robot.subsystems.beam_break.BeamBreak;
 
@@ -12,25 +13,34 @@ import frc.robot.subsystems.beam_break.BeamBreak;
 public class AllignShooterCommand extends Command {
   BeamBreak beamBreak;
   Manipulator shooter;
+  Indexer indexer;
   /** Creates a new ShooterCommand. */
-  public AllignShooterCommand(Manipulator Shooter, BeamBreak BeamBreak) {
+  public AllignShooterCommand(Manipulator Shooter, BeamBreak BeamBreak,Indexer Indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.beamBreak = BeamBreak;
     this.shooter = Shooter;
+    this.indexer = Indexer;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    while (!beamBreak.beamBreakTripped()) {
+      indexer.setVelocity(10);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (beamBreak.beamBreakTripped() == false) {
       shooter.setVelocity(0);
+      indexer.setVelocity(0);
     }
     else if (beamBreak.beamBreakTripped() == true) {
-      shooter.setVelocity(1.5);
+      
+      shooter.setVelocity(6);
+      indexer.setVelocity(2);
     }
   }
 
