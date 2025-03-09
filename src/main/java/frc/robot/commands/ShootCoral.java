@@ -37,10 +37,10 @@ public class ShootCoral extends Command {
   public void execute() {
     currentTime = Timer.getFPGATimestamp();
     if(Elevator.getPosition() < 0.3){
-      Shooter.setVelocity(5);
+      Shooter.setVelocity(8);
     }
     else {
-      Shooter.setVelocity(15);
+      Shooter.setVelocity(8);
     }
   }
 

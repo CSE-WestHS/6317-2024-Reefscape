@@ -14,45 +14,65 @@ public class AllignShooterCommand extends Command {
   BeamBreak beamBreak;
   Manipulator shooter;
   Indexer indexer;
+  public boolean seenCoral = false;
+  public boolean commandDone = false;
   /** Creates a new ShooterCommand. */
   public AllignShooterCommand(Manipulator Shooter, BeamBreak BeamBreak,Indexer Indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.beamBreak = BeamBreak;
     this.shooter = Shooter;
     this.indexer = Indexer;
+    
   }
+
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    while (!beamBreak.beamBreakTripped()) {
-      indexer.setVelocity(10);
-    }
+    indexer.setVoltage(6);
+    seenCoral = false;
+    commandDone = false;
+    System.out.println("Initialized");
+    // while (!beamBreak.beamBreakTripped()) {
+    //   indexer.setVoltage(6);
+    // }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (beamBreak.beamBreakTripped() == false) {
-      shooter.setVelocity(0);
-      indexer.setVelocity(0);
+    if (beamBreak.beamBreakTripped() == true){
+      seenCoral = true;
+      System.out.println("Coral seen");
     }
-    else if (beamBreak.beamBreakTripped() == true) {
-      
-      shooter.setVelocity(6);
-      indexer.setVelocity(2);
+
+    if(seenCoral){
+      shooter.setVoltage(6);
+      indexer.setVoltage(3);
+      System.out.println("shooter and indexer");
+
+      if(beamBreak.beamBreakTripped()==false){
+        shooter.setVoltage(0);
+        indexer.setVoltage(0);
+        commandDone = true;
+        System.out.println("command done");
+      }
+    }
+    else{
+      indexer.setVoltage(6);
+      System.out.println("else statement");
     }
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setVelocity(0);
+    shooter.setVoltage(0);
+    indexer.setVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !beamBreak.beamBreakTripped();
+    return commandDone;
   }
 }
