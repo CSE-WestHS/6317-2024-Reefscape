@@ -45,7 +45,7 @@ public class AlgaeArmConstants {
       String canBus) {}
 
   public static final AlgaeArmGains FunnelArm_GAINS =
-      new AlgaeArmGains(0.75, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 5.0, 2.0, 0.0, Math.PI, 0.2);
+      new AlgaeArmGains(0.25, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 5.0, 2.0, 0.0, Math.PI, 0.2);
 
   public static final AlgaeArmHardwareConfig FunnelArm_CONFIG =
       new AlgaeArmHardwareConfig(

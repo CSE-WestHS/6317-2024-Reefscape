@@ -15,10 +15,10 @@ public class ManipulatorConstants {
       int[] canIds, boolean[] reversed, double gearRatio, int currentLimit, String canBus) {}
 
   public static final ManipulatorHardwareConfig EXAMPLE_CONFIG =
-      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 2.0,10, "");
+      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {true}, 2.0,25, "");
 
   public static final ManipulatorHardwareConfig CompBot_CONFIG =
-      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {false}, 3.8, 10, "");
+      new ManipulatorHardwareConfig(new int[] {14}, new boolean[] {false}, 3.8, 25, "");
 
   public static final ManipulatorGains SIM_GAINS =
       new ManipulatorGains(0.6, 0.0, 0, 0.0, 0.035, 0.0, 10.0, 0.2);

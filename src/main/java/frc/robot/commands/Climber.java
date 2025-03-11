@@ -6,12 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Clamps.*;
+import frc.robot.subsystems.beam_break.BeamBreak;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Climber extends Command {
   Clamps lifter;
+  private BeamBreak chainbeambreak;
   /** Creates a new Climber. */
-  public Climber(Clamps Lifter) {
+  public Climber(Clamps Lifter, BeamBreak chainBeamBreak) {
     this.lifter = Lifter;
+    this.chainbeambreak = chainBeamBreak;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -22,16 +25,19 @@ public class Climber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lifter.setVelocity(4);
+    lifter.setVoltage(6);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    lifter.setVoltage(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return chainbeambreak.beamBreakTripped();
   }
 }

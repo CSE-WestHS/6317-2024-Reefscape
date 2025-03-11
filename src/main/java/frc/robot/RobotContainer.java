@@ -334,12 +334,12 @@ public class RobotContainer {
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
     driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.x().whileTrue (new Climber(Klamps)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
+    driverController.x().whileTrue (new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
     driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(8)));
     // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
     driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(6)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(10)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     
 
