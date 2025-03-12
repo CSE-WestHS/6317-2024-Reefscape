@@ -351,18 +351,18 @@ public class RobotContainer {
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterLeft).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterRight).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterLeft).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterRight).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftNear).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftFar).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightNear).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightFar).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearRightFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightFar).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightNear).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftNear).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.NearLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftFar).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.FarCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterLeft));
+    ButtonBoardButtons.FarCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterRight));
+    ButtonBoardButtons.NearCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterLeft));
+    ButtonBoardButtons.NearCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterRight));
+    ButtonBoardButtons.FarLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftNear));
+    ButtonBoardButtons.FarLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftFar));
+    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightNear));
+    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightFar));
+    ButtonBoardButtons.NearRightFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightFar));
+    ButtonBoardButtons.NearRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightNear));
+    ButtonBoardButtons.NearLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftNear));
+    ButtonBoardButtons.NearLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftFar));
     
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }

@@ -55,7 +55,7 @@ public class ManipulatorIOSparkMax implements ManipulatorIO {
     motors[0] = new SparkMax(config.canIds()[0], MotorType.kBrushless);
     leaderConfig =
         new SparkMaxConfig().idleMode(IdleMode.kBrake)
-            .inverted(config.reversed()[0]).idleMode(IdleMode.kBrake)
+            .inverted(config.reversed()[0])
             .smartCurrentLimit(config.currentLimit())
             .apply(
                 new EncoderConfig()
