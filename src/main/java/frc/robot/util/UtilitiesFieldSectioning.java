@@ -200,7 +200,7 @@ public class UtilitiesFieldSectioning {
             DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);
         }
         else {
-            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(8);
+            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(6);
         }
         System.out.println(DriveConstants.maxSpeedAt12Volts);
     }

@@ -88,7 +88,7 @@ public class AlgaeArmIONeo implements AlgaeArmIO {
                 new EncoderConfig()
                     .positionConversionFactor(config.gearRatio())
                     .velocityConversionFactor(config.gearRatio()));
-
+    
     switch (config.encoderType()) {
       case INTERNAL:
         externalEncoder = new IAbsoluteEncoder() {};
@@ -282,6 +282,9 @@ public class AlgaeArmIONeo implements AlgaeArmIO {
         PersistMode.kNoPersistParameters);
 
     System.out.println(name + " gains set to " + gains);
+  }
+  public void setArmZero() {
+    motors[0].getEncoder().setPosition(0);
   }
 
   @Override

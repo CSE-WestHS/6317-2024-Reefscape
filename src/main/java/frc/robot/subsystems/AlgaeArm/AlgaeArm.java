@@ -140,7 +140,9 @@ public class AlgaeArm extends SubsystemBase {
   public double getDesiredPosition() {
     return inputs.desiredPosition;
   }
-
+  public void setArmZero() {
+    algaeArm.setArmZero();
+  }
   public boolean isFinished() {
     return Math.abs(inputs.outputPosition - goal.position) < kTolerance.get();
   }

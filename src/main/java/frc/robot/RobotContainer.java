@@ -67,6 +67,7 @@ import frc.robot.util.ButtonBoardButtons;
 import frc.robot.util.UtilitiesFieldSectioning;
 import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import frc.robot.commands.*;
+import frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -219,7 +220,8 @@ public class RobotContainer {
                   new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
           break;
       }
-  
+      //zero algae arm
+      algaeArm.setArmZero();
       // command definitions
       // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
       FeedandShoot = new AllignShooterCommand(shooter, beamBreakBack,indexer);
@@ -281,7 +283,7 @@ public class RobotContainer {
     //       () -> -driverController.getLeftY(),
     //       () -> -driverController.getLeftX(),
     //       () -> -driverController.getRightX()));
-
+    algaeArm.setDefaultCommand(new AlgaeArmPositionCommand(algaeArm, 0.142));
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -318,28 +320,29 @@ public class RobotContainer {
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
-    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // driverController.rightTrigger().whileTrue(new );
-    driverController.rightTrigger().whileTrue(FeedandShoot.andThen(new ShootCoral(shooter, elevator)));
+    driverController.rightTrigger().whileTrue(FeedandShoot.andThen(new ShootCoral(shooter, elevator).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)));
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
     // driverController.b().whileTrue(SetUpShooter);
-    driverController.rightBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0));
+    driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
     // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
-    driverController.leftBumper().whileTrue(takeOutAlgae).whileFalse(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0).alongWith(Commands.run(()->shooter.setVelocity(0))));
+    driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(4))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
     // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
     // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.x().whileTrue (new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVelocity(0)));
+    driverController.b().whileTrue(new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVoltage(0)));
+    driverController.x().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.142));
     driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(8)));
     // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(10)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(10)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     
 

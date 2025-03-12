@@ -45,17 +45,17 @@ public class AlgaeArmConstants {
       String canBus) {}
 
   public static final AlgaeArmGains FunnelArm_GAINS =
-      new AlgaeArmGains(0.25, 0.0, 5.6, 0.5, 1.0, 2.0, 0.0, 5.0, 2.0, 0.0, Math.PI, 0.2);
+      new AlgaeArmGains(0.05, 0.0, 5.6, 0.5, 1.0, 0.5, 0.0, 5.0, 2.0, 0.0, Math.PI, 0.73);
 
   public static final AlgaeArmHardwareConfig FunnelArm_CONFIG =
       new AlgaeArmHardwareConfig(
           new int[] {24},
-          new boolean[] {true},
+          new boolean[] {false},
           1, 
           40,
           GravityType.COSINE,
           EncoderType.INTERNAL,
           45,
-          Rotation2d.fromRotations(0),
+          Rotation2d.fromRadians(0),
           "");
 }

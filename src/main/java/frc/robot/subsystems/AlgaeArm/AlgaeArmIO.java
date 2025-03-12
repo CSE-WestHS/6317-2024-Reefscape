@@ -32,7 +32,7 @@ public interface AlgaeArmIO {
   public default void setGains(AlgaeArmGains gains) {}
 
   public default void setVoltage(double voltage) {}
-
+  public default void setArmZero() {}
   public default String getName() {
     return "Position Joint";
   }
