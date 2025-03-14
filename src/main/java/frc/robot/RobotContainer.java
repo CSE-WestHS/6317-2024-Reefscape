@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -235,11 +236,16 @@ public class RobotContainer {
     // NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
     // NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
     // NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
+    // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    NamedCommands.registerCommand("ScoreL3", (new GoToPositionElevator(elevator,27).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75))));
+    NamedCommands.registerCommand("ScoreL2", (new GoToPositionElevator(elevator,9.5).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75))));
+    NamedCommands.registerCommand("IntakeCoral", (new AllignShooterCommand(shooter, beamBreakBack, indexer)));
+    NamedCommands.registerCommand("ResetElevator", (new GoToPositionElevator(elevator, 0)));
+    // Set up auto routines
 
     // // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
-
     // Set up SysId routines
     autoChooser.addOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -255,6 +261,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption("TOP 3P; L3L2L1", new PathPlannerAuto("TOP 3P; L3L2L1"));
     // Configure the button bindings
     configureButtonBindings();
   }
