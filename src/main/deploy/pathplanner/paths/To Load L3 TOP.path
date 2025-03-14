@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Loading Pos"
+      "linkedName": "TOP Loading Pos"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.88065915052027
+    "rotation": -53.88065915052028
   },
   "reversed": false,
   "folder": null,

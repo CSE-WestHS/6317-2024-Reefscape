@@ -8,33 +8,38 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.001973684210526,
-        "y": 5.824259868421052
+        "x": 2.4439144736842104,
+        "y": 5.622203947368421
       },
       "isLocked": false,
       "linkedName": "TOP Loading Pos"
     },
     {
       "anchor": {
-        "x": 3.6658717105263157,
-        "y": 5.1411184210526315
+        "x": 3.1174342105263158,
+        "y": 4.188569078947368
       },
       "prevControl": {
-        "x": 3.2713815789473686,
-        "y": 5.535608552631579
+        "x": 2.8865131578947363,
+        "y": 4.717763157894736
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef L2"
+      "linkedName": "Reef L1"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -50.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "ScoreL3",
-      "waypointRelativePos": 0.7989228007181328,
+      "waypointRelativePos": 0.7989228007181335,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.25511870305777
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

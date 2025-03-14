@@ -232,10 +232,10 @@ public class RobotContainer {
 
     //set up path planner commands
     NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
-    NamedCommands.registerCommand("ScoreL3", new GoToPositionElevator(elevator,27).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75)));
-    NamedCommands.registerCommand("ScoreL2", new GoToPositionElevator(elevator,9.5).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75)));
-    NamedCommands.registerCommand("IntakeCoral", new AllignShooterCommand(shooter, beamBreakBack, indexer));
-    NamedCommands.registerCommand("ResetElevator", new GoToPositionElevator(elevator, 0));
+    NamedCommands.registerCommand("ScoreL3", (new GoToPositionElevator(elevator,27).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75))));
+    NamedCommands.registerCommand("ScoreL2", (new GoToPositionElevator(elevator,9.5).andThen(new ShootCoral(shooter, elevator).withTimeout(1.75))));
+    NamedCommands.registerCommand("IntakeCoral", (new AllignShooterCommand(shooter, beamBreakBack, indexer)));
+    NamedCommands.registerCommand("ResetElevator", (new GoToPositionElevator(elevator, 0)));
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
