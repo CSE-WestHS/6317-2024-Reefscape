@@ -231,10 +231,12 @@ public class RobotContainer {
         .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
 
     //set up path planner commands
+    // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    // NamedCommands.registerCommand("ManipulatorShoot", ManipulatorShoot);
+    // NamedCommands.registerCommand("IndexerStart", indexerStart);
+    // NamedCommands.registerCommand("IndexerStop", indexerStop);
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
-    NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
-    NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
-    NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
+    // NamedCommands.registerCommand("ElevatorPosition", new GoToPositionElevator(elevator,1));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -287,8 +289,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
+            () -> -driverController.getLeftY()*0.85,
+            () -> -driverController.getLeftX()*0.85,
             () -> -driverController.getRightX()*0.5));
 
     //trigger controls
@@ -320,16 +322,14 @@ public class RobotContainer {
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
-    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    // driverController.rightTrigger().whileTrue(new );
-    driverController.rightTrigger().whileTrue(FeedandShoot.andThen(new ShootCoral(shooter, elevator).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(20))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.leftBumper().onTrue(Commands.runOnce(() ->indexer.setVelocity(5))).onFalse(Commands.runOnce(() ->indexer.setVelocity(0)));
+    driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-1))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
     // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
-    // driverController.b().whileTrue(SetUpShooter);
-    driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
-    // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
-    driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(4))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
+    // driverController.b().whileTrue(SetUpShooter);t
+    driverController.rightBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0));
+    driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 2 * Math.PI / 3));
     // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
     // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
