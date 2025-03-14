@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.656,
-        "y": 5.068
+        "x": 3.945,
+        "y": 2.75
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.497252086288162,
-        "y": 5.266763624429847
+        "x": 2.8962335526315792,
+        "y": 2.01875
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef R3"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.6453125,
+        "y": 0.7728618421052635
       },
       "prevControl": {
-        "x": 1.836122987775979,
-        "y": 7.188797046757962
+        "x": 2.3765625,
+        "y": 1.1865953947368415
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BOTTOM Loading Pos"
     }
   ],
   "rotationTargets": [],
@@ -34,21 +34,21 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 55.55606224646741
   },
   "reversed": false,
-  "folder": "Top Side Auto",
+  "folder": "Bottom Side Auto",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": false
 }
