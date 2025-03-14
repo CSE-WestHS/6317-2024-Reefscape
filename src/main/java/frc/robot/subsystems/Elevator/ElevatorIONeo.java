@@ -186,7 +186,6 @@ public class ElevatorIONeo implements ElevatorIO {
               name + " Follower Motor " + i + " Disconnected! CAN ID: " + config.canIds()[i],
               AlertType.kError);
     }
-
     if (config.gravity() == GravityType.CONSTANT) {
       feedforward = new TunableElevatorFeedforward();
       feedforward_position_addition = 0.0;

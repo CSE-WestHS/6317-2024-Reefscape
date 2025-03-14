@@ -31,7 +31,7 @@ public class GoToPositionElevator extends Command {
   public void execute() {
     Elevator.setPosition(position);
     
-    System.out.println("Elevator GOING");
+    // System.out.println("Elevator GOING");
   }
 
   // Called once the command ends or is interrupted.

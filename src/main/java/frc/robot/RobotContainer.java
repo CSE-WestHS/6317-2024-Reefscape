@@ -111,19 +111,19 @@ public class RobotContainer {
   private final Clamps Klamps;
   private final Elevator elevator;
   private final AlgaeArm algaeArm;
-  public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
+  // public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
-  private Command ManipulatorShoot; 
-  private Command ManipulatorStop;
-  @SuppressWarnings("unused")
-  private Command ManipulatorClear;
-  private Command indexerStart;
-  private Command indexerStop;
-  private Command AlgaeArmPositionSet;
-  private Command FeedandShoot;
-  private Command faceReef;
-  private Command takeOutAlgae;
-  private SequentialCommandGroup SetUpShooter;
+  // private Command ManipulatorShoot; 
+  // private Command ManipulatorStop;
+  // @SuppressWarnings("unused")
+  // private Command ManipulatorClear;
+  // private Command indexerStart;
+  // private Command indexerStop;
+  // private Command AlgaeArmPositionSet;
+  // private Command FeedandShoot;
+  // private Command faceReef;
+  // private Command takeOutAlgae;
+  // private SequentialCommandGroup SetUpShooter;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
@@ -134,7 +134,7 @@ public class RobotContainer {
       public RobotContainer() {
         switch (Constants.currentMode) {
           case REAL:
-          System.out.println("NEW CODE");
+          System.out.println("NEW  V");
             // Real robot, instantiate hardware IO implementations
             drive =
                 new Drive(
@@ -152,10 +152,10 @@ public class RobotContainer {
             indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
             beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
             beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
-            // pneumatics = new Pneumatics(new PneumaticsIO() {});
+            // // pneumatics = new Pneumatics(new PneumaticsIO() {});
           // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIONeo("algae arm", AlgaeArmConstants.FunnelArm_CONFIG) {}, AlgaeArmConstants.FunnelArm_GAINS);
-          // led = new LEDS(60);
+          // // led = new LEDS(60);
           Klamps = new Clamps( new ClampsIOSparkMax("Clamps", ClampsConstants.CompBot_CONFIG) , ClampsConstants.REAL_GAINS);
           elevator =
               new Elevator(
@@ -166,12 +166,12 @@ public class RobotContainer {
   
         case SIM:
           // create a maple-sim swerve drive simulation instance
-          driveSimulation =
-              new SwerveDriveSimulation(
-                  DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-          // add the simulated drivetrain to the simulation field
-          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-          // Sim robot, instantiate physics sim IO implementations
+          // driveSimulation =
+          //     new SwerveDriveSimulation(
+          //         DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+          // // add the simulated drivetrain to the simulation field
+          // SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          // // Sim robot, instantiate physics sim IO implementations
           drive =
               new Drive(
                   new GyroIOSim(driveSimulation.getGyroSimulation()),
@@ -187,9 +187,9 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
           Klamps = new Clamps(new ClampsIOSim("Klamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
-          // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
+          // // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
-          // led = new LEDS(60);
+          // // led = new LEDS(60);
           elevator =
               new Elevator(
                   new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
@@ -211,9 +211,9 @@ public class RobotContainer {
           beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
           beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
 
-          // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
+          // // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
           algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
-          // led = new LEDS(60);
+          // // led = new LEDS(60);
           Klamps = new Clamps(new ClampsIOSim("Lamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
           elevator =
               new Elevator(
@@ -221,22 +221,22 @@ public class RobotContainer {
           break;
       }
       //zero algae arm
-      algaeArm.setArmZero();
+      // algaeArm.setArmZero();
       // command definitions
       // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
-      FeedandShoot = new AllignShooterCommand(shooter, beamBreakBack,indexer);
-      faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
-      takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
-        .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
-        .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
-
+      // FeedandShoot = new AllignShooterCommand(shooter, beamBreakBack,indexer);
+      // faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
+      // takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
+      //   .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
+      //   .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
+      
     //set up path planner commands
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
-    NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
-    NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
-    NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
+    // NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
+    // NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
+    // NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
 
-    // Set up auto routines
+    // // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
 
@@ -316,53 +316,53 @@ public class RobotContainer {
                                 ? new Rotation2d(Math.PI)
                                 : new Rotation2d())
                             : new Rotation2d())); // zero gyro
-    // Reset gyro to 0° when B button is pressed
+    // // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     // driverController.a().whileTrue(new ShootCoral(shooter, elevator).withTimeout(2)).whileFalse(Commands.run(()->shooter.setVelocity(0)));
-    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    // driverController.rightTrigger().whileTrue(new );
-    driverController.rightTrigger().whileTrue(FeedandShoot.andThen(new ShootCoral(shooter, elevator).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)));
-    // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
-    // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
-    // driverController.b().whileTrue(SetUpShooter);
+    // // driverController.rightTrigger().whileTrue(new );
+    // driverController.rightTrigger().whileTrue(FeedandShoot.andThen(new ShootCoral(shooter, elevator).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)));
+    // // driverController.rightBumper().whileTrue(new IndexerToShooter(indexer, beamBreakBack)); //TODO: fix
+    // // driverController.povRight().whileTrue(faceReef.until(()->faceReef.isFinished()).andThen(()->System.out.println("First Command done")).andThen(()->shooter.setVelocity(100)));
+    // // driverController.b().whileTrue(SetUpShooter);
     driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
-    // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
+    // // driverController.leftBumper().whileTrue(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85));
     driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(4))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
-    // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    // driverController.povRight().onTrue(SetUpShooter);
+    // // driverController.rightBumper().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
+    // // driverController.povRight().onTrue(SetUpShooter);
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
-    // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
-    // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
-    // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    driverController.b().whileTrue(new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVoltage(0)));
-    driverController.x().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.142));
+    // // driverController.leftBumper().whileTrue(new AllignShooterCommand(shooter, beamBreakBack));
+    // // driverController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    // // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.b().whileTrue(new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVoltage(0)));
+    // driverController.x().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.142));
     driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(8)));
-    // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
-    // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
+    // // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
+    // // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
     driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(10)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     
 
 
-    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterLeft));
-    ButtonBoardButtons.FarCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterRight));
-    ButtonBoardButtons.NearCenterLeft.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterLeft));
-    ButtonBoardButtons.NearCenterRight.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterRight));
-    ButtonBoardButtons.FarLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftNear));
-    ButtonBoardButtons.FarLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftFar));
-    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightNear));
-    ButtonBoardButtons.FarRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightFar));
-    ButtonBoardButtons.NearRightFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightFar));
-    ButtonBoardButtons.NearRightNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightNear));
-    ButtonBoardButtons.NearLeftNear.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftNear));
-    ButtonBoardButtons.NearLeftFar.whileTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftFar));
+    ButtonBoardButtons.FarCenterLeft.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterLeft));
+    ButtonBoardButtons.FarCenterRight.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterRight));
+    ButtonBoardButtons.NearCenterLeft.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterLeft));
+    ButtonBoardButtons.NearCenterRight.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterRight));
+    ButtonBoardButtons.FarLeftNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftNear));
+    ButtonBoardButtons.FarLeftFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftFar));
+    ButtonBoardButtons.FarRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightNear));
+    ButtonBoardButtons.FarRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightFar));
+    ButtonBoardButtons.NearRightFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightFar));
+    ButtonBoardButtons.NearRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightNear));
+    ButtonBoardButtons.NearLeftNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftNear));
+    ButtonBoardButtons.NearLeftFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftFar));
     
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
@@ -381,7 +381,7 @@ public class RobotContainer {
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
-    driveSimulation.setSimulationWorldPose(drive.getPose());
+    // driveSimulation.setSimulationWorldPose(drive.getPose());
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 

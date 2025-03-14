@@ -65,6 +65,7 @@ public class Elevator extends SubsystemBase {
 
     goal = new TrapezoidProfile.State(getPosition(), 0);
     setpoint = goal;
+    elevator.setGains(ElevatorConstants.CompBot_GAINS);
   }
 
   @Override
@@ -76,44 +77,44 @@ public class Elevator extends SubsystemBase {
 
     elevator.setPosition(setpoint.position, setpoint.velocity);
 
-    LoggedTunableNumber.ifChanged(
-        hashCode(),
-        (values) -> {
-          elevator.setGains(
-              new ElevatorGains(
-                  values[0],
-                  values[1],
-                  values[2],
-                  values[3],
-                  values[4],
-                  values[5],
-                  values[6],
-                  values[7],
-                  values[8],
-                  values[9],
-                  values[10],
-                  values[11]));
+    // LoggedTunableNumber.ifChanged(
+    //     hashCode(),
+    //     (values) -> {
+    //       elevator.setGains(
+    //           new ElevatorGains(
+    //               values[0],
+    //               values[1],
+    //               values[2],
+    //               values[3],
+    //               values[4],
+    //               values[5],
+    //               values[6],
+    //               values[7],
+    //               values[8],
+    //               values[9],
+    //               values[10],
+    //               values[11]));
 
-          goal =
-              new TrapezoidProfile.State(
-                  MathUtil.clamp(values[12], kMinPosition.get(), kMaxPosition.get()), 0);
+        //   goal =
+        //       new TrapezoidProfile.State(
+        //           MathUtil.clamp(values[12], kMinPosition.get(), kMaxPosition.get()), 0);
 
-          constraints = new TrapezoidProfile.Constraints(values[7], values[8]);
-          profile = new TrapezoidProfile(constraints);
-        },
-        kP,
-        kI,
-        kD,
-        kS,
-        kG,
-        kV,
-        kA,
-        kMaxVelo,
-        kMaxAccel,
-        kMinPosition,
-        kMaxPosition,
-        kTolerance,
-        kSetpoint);
+        //   constraints = new TrapezoidProfile.Constraints(values[7], values[8]);
+        //   profile = new TrapezoidProfile(constraints);
+        // },
+        // kP,
+        // kI,
+        // kD,
+        // kS,
+        // kG,
+        // kV,
+        // kA,
+        // kMaxVelo,
+        // kMaxAccel,
+        // kMinPosition,
+        // kMaxPosition,
+        // kTolerance,
+        // kSetpoint);
 
     Logger.recordOutput(name + "/isFinished", isFinished());
   }
@@ -122,7 +123,7 @@ public class Elevator extends SubsystemBase {
     goal =
         new TrapezoidProfile.State(
             MathUtil.clamp(position, kMinPosition.get(), kMaxPosition.get()), 0);
-            System.out.println("Ran setPosition on Elevator...");
+            // System.out.println("Ran setPosition on Elevator...");
   }
 
   public void incrementPosition(double deltaPosition) {

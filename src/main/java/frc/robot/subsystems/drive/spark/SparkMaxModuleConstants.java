@@ -110,5 +110,12 @@ public class SparkMaxModuleConstants {
       
   public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(7, 6, 17, Rotations.of(0.156982), true, true);
   public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(4, 5, 18, Rotations.of( 0.265625), true, true);
-     
+
+
+//   public static final ModuleSpecificConfiguration frontLeft = new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(-0.152832), true, true);
+//   public static final ModuleSpecificConfiguration frontRight = new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.005859), true, true);
+      
+//   public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(-0.055176), true, true);
+      
+//   public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.350830), true, true);
 }

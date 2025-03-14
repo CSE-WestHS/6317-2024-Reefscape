@@ -176,15 +176,15 @@ public class Drive extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       
     }
-    //log drive commands pid values
-    SmartDashboard.putNumber("kp", DriveCommands.ANGLE_KP);
-    SmartDashboard.putNumber("kd", DriveCommands.ANGLE_KD);
-    LoggedTunableNumber.ifChanged(2000,() -> {
-      DriveCommands.setDriveConstantPID(DriveCommands.Kd.get(),DriveCommands.Kp.get());
-      },
-      DriveCommands.Kp,DriveCommands.Kd);
-    //run LEDS
-    RobotContainer.led.runLEDS();
+    // //log drive commands pid values
+    // SmartDashboard.putNumber("kp", DriveCommands.ANGLE_KP);
+    // SmartDashboard.putNumber("kd", DriveCommands.ANGLE_KD);
+    // LoggedTunableNumber.ifChanged(2000,() -> {
+    //   DriveCommands.setDriveConstantPID(DriveCommands.Kd.get(),DriveCommands.Kp.get());
+    //   },
+    //   DriveCommands.Kp,DriveCommands.Kd);
+    // //run LEDS
+    // RobotContainer.led.runLEDS();
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
