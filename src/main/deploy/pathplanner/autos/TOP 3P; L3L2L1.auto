@@ -15,16 +15,15 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ScoreL3"
-                      }
-                    }
-                  ]
+                  "name": "ScoreL3"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": []
                 }
               }
             ]
@@ -66,13 +65,19 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 1.0
                       }
                     },
                     {
                       "type": "path",
                       "data": {
                         "pathName": "Load to L3 TOP"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ScoreL3"
                       }
                     }
                   ]
@@ -94,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "To Load L3 TOP"
+                  "pathName": "to Load L3 TOP"
                 }
               }
             ]
@@ -125,6 +130,12 @@
                       "data": {
                         "pathName": "Load to L2 TOP"
                       }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ScoreL3"
+                      }
                     }
                   ]
                 }
@@ -145,7 +156,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "To Load L2 TOP"
+                  "pathName": "to Load L2 TOP"
                 }
               }
             ]
@@ -175,6 +186,12 @@
                       "type": "path",
                       "data": {
                         "pathName": "Load to L1 TOP"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ScoreL3"
                       }
                     }
                   ]

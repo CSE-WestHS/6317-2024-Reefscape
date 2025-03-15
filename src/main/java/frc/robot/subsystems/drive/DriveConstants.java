@@ -36,8 +36,9 @@ public class DriveConstants {
   public static final double kDriveInertia = 0.025;
 
   public static LinearVelocity maxSpeedAt12Volts =
-      FeetPerSecond.of(6); // MK4i 16.5 ft/s L3 Kraken FOC With 14t pinion
-
+      FeetPerSecond.of(16); // MK4i 16.5 ft/s L3 Kraken FOC With 14t pinion
+      public static LinearVelocity maxSpeedAt12VoltsPathPlanner =
+      FeetPerSecond.of(16); // MK4i 16.5 ft/s L3 Kraken FOC With 14t pinion
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 40;
   public static final double driveMotorGearRatio =
@@ -62,7 +63,7 @@ public class DriveConstants {
       (2 * Math.PI) / 60.0 / steerMotorGearRatio; // RPM -> Rad/Sec
 
   // PathPlanner configuration
-  public static final double robotMassKg = 74.088;
+  public static final double robotMassKg = 68.03886;
   public static final double robotMOI = 6.883;
   public static final double wheelCOF = 1.2;
   public static final RobotConfig ppConfig =
@@ -71,7 +72,7 @@ public class DriveConstants {
           robotMOI,
           new ModuleConfig(
               driveWheelRadiusMeters,
-              maxSpeedAt12Volts.in(MetersPerSecond),
+              maxSpeedAt12VoltsPathPlanner.in(MetersPerSecond),
               wheelCOF,
               driveGearbox.withReduction(driveMotorGearRatio),
               driveMotorCurrentLimit,

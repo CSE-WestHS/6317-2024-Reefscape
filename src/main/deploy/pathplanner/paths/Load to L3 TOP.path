@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.9449013157894735,
-        "y": 5.3046875
+        "x": 3.875,
+        "y": 5.375
       },
       "prevControl": {
-        "x": 3.5504111842105264,
-        "y": 5.699177631578947
+        "x": 3.480509868421053,
+        "y": 5.769490131578947
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,14 +34,14 @@
   "eventMarkers": [
     {
       "name": "ScoreL3",
-      "waypointRelativePos": 0.8043087971274673,
+      "waypointRelativePos": 0.75,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -57,5 +57,5 @@
     "velocity": 0,
     "rotation": -53.88065915052028
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -47,7 +47,7 @@ public class AllignShooterCommand extends Command {
     }
 
     if(seenCoral){
-      shooter.setVoltage(6);
+      shooter.setVoltage(4);
       indexer.setVoltage(3);
       System.out.println("shooter and indexer");
 
@@ -55,12 +55,12 @@ public class AllignShooterCommand extends Command {
         shooter.setVoltage(0);
         indexer.setVoltage(0);
         commandDone = true;
-        System.out.println("command done");
+        // System.out.println("command done");
       }
     }
     else{
       indexer.setVoltage(6);
-      System.out.println("else statement");
+      // System.out.println("else statement");
     }
   }
   // Called once the command ends or is interrupted.

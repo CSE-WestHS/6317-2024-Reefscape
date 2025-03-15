@@ -3,9 +3,12 @@ package frc.robot.subsystems.AlgaeArm;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants.AlgaeArmGains;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
 
 public class AlgaeArm extends SubsystemBase {
   private final AlgaeArmIO algaeArm;

@@ -91,7 +91,7 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig.inverted(constants.invertDrive());
     tryUntilOk(
         driveSpark,
-        5,
+        50,
         () ->
             driveSpark.configure(
                 driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
@@ -113,7 +113,7 @@ public class ModuleIOSpark implements ModuleIO {
     
     tryUntilOk(
         turnSpark,
-        5,
+        50,
         () ->
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));

@@ -18,18 +18,18 @@ import frc.robot.subsystems.drive.DriveConstants;
 
 public class SparkMaxModuleConstants {
   // Drive PID configuration
-  public static final double driveKp = 0.0;
-  public static final double driveKd = 0.0;
-  public static final double driveKs = 0.16511;
-  public static final double driveKv = 0.88455;
+  public static final double driveKp = 0.012;
+  public static final double driveKd = 0.002;
+  public static final double driveKs = 0;
+  public static final double driveKv = 0.012;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.0;
   public static final double driveSimKv = 0.0789;
 
   // Turn PID configuration
-  public static final double turnKp = 5.0;
-  public static final double turnKd = 0.0;
+  public static final double turnKp = 1.5;
+  public static final double turnKd = 0.15;
   public static final double turnKs = 0.0;
   public static final double turnKv = 0.1;
   public static final double turnSimP = 16.0;

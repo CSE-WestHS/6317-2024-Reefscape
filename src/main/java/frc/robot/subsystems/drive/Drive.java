@@ -7,6 +7,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -38,7 +40,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
-import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -91,9 +92,10 @@ public class Drive extends SubsystemBase {
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
+        // () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new AdvancedPPHolonomicDriveController(
-            new PIDConstants(3.0, 0.0, 0.0), new PIDConstants(3.0, 0.0, 0.0)),
+            new PIDConstants(6.0, 2, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
         DriveConstants.ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -200,12 +202,13 @@ public class Drive extends SubsystemBase {
         speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, 0.2);
 
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
+    Logger.recordOutput("SwerveStates/preDesaturate", setpointStates);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.maxSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/driveVelocity", setpointStates[0].speedMetersPerSecond);
-
+    Logger.recordOutput("SwerveStates/MaxSpeed", DriveConstants.maxSpeedAt12Volts);
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       modules[i].runSetpoint(setpointStates[i]);
@@ -335,7 +338,7 @@ public class Drive extends SubsystemBase {
     return DriveConstants.moduleTranslations;
   }
   public Command generatePath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(2,1,Units.degreesToRadians(540),Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(DriveConstants.maxSpeedAt12VoltsPathPlanner.in(MetersPerSecond),DriveConstants.maxSpeedAt12VoltsPathPlanner.in(MetersPerSecond),Units.degreesToRadians(540),Units.degreesToRadians(720));
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
 }
