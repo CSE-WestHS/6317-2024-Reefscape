@@ -95,10 +95,10 @@ public class RobotContainer {
   //triggers
 //   private final Trigger yIsPressed = new Trigger(driverController.y());
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
-//   private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
-//   private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
+  // private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
+  // private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
   private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
-//   private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
+  // private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
   private final Trigger leftTriggerPressed = new Trigger(driverController.leftTrigger());
   //Subsystem Definitions
   private final Drive drive;
@@ -294,7 +294,15 @@ public class RobotContainer {
         //   () -> -driverController.getLeftY(),
         //   () -> -driverController.getLeftX(),
         //   () -> -driverController.getRightX()));
-    drive.setDefaultCommand(DriveCommands.joystickDrive(drive, ()->-driverController.getLeftY(), ()->-driverController.getLeftX(),()-> -driverController.getRightX()));
+    // drive.setDefaultCommand(DriveCommands.joystickDrive(drive, ()->-driverController.getLeftY(), ()->-driverController.getLeftX(),()-> -driverController.getRightX()));
+    rightXTrigger.whileTrue(DriveCommands.joystickDrive(drive, 
+        ()->-driverController.getLeftY(), 
+        ()->-driverController.getLeftX(),
+        ()-> -driverController.getRightX()))
+    .whileFalse(DriveCommands.joystickDriveAtAngle(drive,
+      ()->-driverController.getLeftY(), 
+      ()->-driverController.getLeftX(),
+      ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
     algaeArm.setDefaultCommand(new AlgaeArmPositionCommand(algaeArm, 0.142));
     // 
 
@@ -326,41 +334,43 @@ public class RobotContainer {
     // // Reset gyro to 0° when B button is pressed
     
     driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
     driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    // driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
-    // driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(4))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
+    driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
+    driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(7))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
     // driverController.leftBumper().whileTrue(new ShootCoral(shooter, elevator).withTimeout(3));
     driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
-    // driverController.rightBumper().whileTrue(DriveCommands.joystickDriveAtAngle(drive,()->0, ()->0,()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
-    driverController.leftBumper().onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
+    driverController.rightTrigger().onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
+    driverController.x().whileTrue(Commands.run(()->UtilitiesFieldSectioning.isCloseToReef(drive.getPose())));
     // // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
-    // driverController.b().whileTrue(new Climber(Klamps,beamBreakTop)).whileFalse(Commands.run(()->Klamps.setVoltage(0)));
+    // driverController.b().whileTrue(new Climber(Klamps,beamBreakTop).withInterruptBehavior(InterruptionBehavior.kCancelSelf)).onFalse(Commands.run(()->Klamps.setVoltage(0)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)));
     // // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
     // // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(10)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-
+    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(8)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    // driverController.a().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     
+    driverController.b().and(()->!beamBreakTop.beamBreakTripped()).whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).andThen(Commands.run(()->Klamps.setVoltage(0))));
+
 
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.FarCenterLeft.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterLeft));
-    ButtonBoardButtons.FarCenterRight.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarCenterRight));
-    ButtonBoardButtons.NearCenterLeft.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterLeft));
-    ButtonBoardButtons.NearCenterRight.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearCenterRight));
-    ButtonBoardButtons.FarLeftNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftNear));
-    ButtonBoardButtons.FarLeftFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarLeftFar));
-    ButtonBoardButtons.FarRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightNear));
-    ButtonBoardButtons.FarRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.FarRightFar));
-    ButtonBoardButtons.NearRightFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightFar));
-    ButtonBoardButtons.NearRightNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearRightNear));
-    ButtonBoardButtons.NearLeftNear.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftNear));
-    ButtonBoardButtons.NearLeftFar.onTrue(drive.generatePath(UtilitiesFieldSectioning.NearLeftFar));
+    ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
+    ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
+    ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
+    ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
+    ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
+    ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
+    ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
+    ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
+    ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
+    ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
+    ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
+    ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
     
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }

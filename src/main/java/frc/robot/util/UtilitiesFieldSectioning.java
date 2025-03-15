@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.FeetPerSecond;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,18 +33,18 @@ import frc.robot.subsystems.vision.Vision;
 /** Add your docs here. */
 public class UtilitiesFieldSectioning {
     //scoring positions
-    public static final Pose2d NearCenterLeft = new Pose2d(2.915,4.190,Rotation2d.fromDegrees(1.169));
-    public static final Pose2d NearCenterRight = new Pose2d(2.870,3.845,Rotation2d.fromDegrees(1.169));
-    public static final Pose2d FarCenterLeft = new Pose2d(5.965,4.19,Rotation2d.fromDegrees(180));
-    public static final Pose2d FarCenterRight = new Pose2d(5.920,3.860,Rotation2d.fromDegrees(180));
-    public static final Pose2d NearLeftNear = new Pose2d(3.576,5.167,  Rotation2d.fromDegrees(-56.023));
-    public static final Pose2d NearLeftFar = new Pose2d(3.877,5.302, Rotation2d.fromDegrees(-56.023));
-    public static final Pose2d NearRightNear = new Pose2d(3.546, 2.778, Rotation2d.fromDegrees(58.325));
-    public static final Pose2d NearRightFar = new Pose2d(3.862, 2.643, Rotation2d.fromDegrees(58.325));
-    public static final Pose2d FarLeftNear = new Pose2d(5.109, 5.377, Rotation2d.fromDegrees(-119.249));
-    public static final Pose2d FarLeftFar = new Pose2d(5.364, 5.242, Rotation2d.fromDegrees(-119.249));
-    public static final Pose2d FarRightNear = new Pose2d(5.094, 2.703, Rotation2d.fromDegrees(123.024));
-    public static final Pose2d FarRightFar = new Pose2d(5.409, 2.808, Rotation2d.fromDegrees(123.024));
+    public static final Pose2d L1 = new Pose2d(3.2,4.180,Rotation2d.fromDegrees(0));
+    public static final Pose2d R1 = new Pose2d(3.19,3.89,Rotation2d.fromDegrees(0));
+    public static final Pose2d L6 = new Pose2d(5.99,4.16,Rotation2d.fromDegrees(-180));
+    public static final Pose2d R6 = new Pose2d(5.920,3.860,Rotation2d.fromDegrees(180));
+    public static final Pose2d L2 = new Pose2d(3.53,5.09,  Rotation2d.fromDegrees(-60));
+    public static final Pose2d L3 = new Pose2d(3.95,5.34, Rotation2d.fromDegrees(-60));
+    public static final Pose2d R2 = new Pose2d(3.63, 3.09, Rotation2d.fromDegrees(60));
+    public static final Pose2d R3 = new Pose2d(3.96, 2.9, Rotation2d.fromDegrees(60));
+    public static final Pose2d R4 = new Pose2d(5.02, 2.8, Rotation2d.fromDegrees(120));
+    public static final Pose2d L5 = new Pose2d(5.34, 4.97, Rotation2d.fromDegrees(-120));
+    public static final Pose2d L4 = new Pose2d(5.08, 5.29, Rotation2d.fromDegrees(-120));
+    public static final Pose2d R5 = new Pose2d(5.4, 3.01, Rotation2d.fromDegrees(123.024));
 
     //sections
     public static final Pose2d S1 = new Pose2d(5.359,5.559,Rotation2d.fromDegrees(-114.228)); //section 1
@@ -51,7 +53,7 @@ public class UtilitiesFieldSectioning {
     public static final Pose2d S4 = new Pose2d(3.333,2.563,Rotation2d.fromDegrees(62.904)); //section 4
     public static final Pose2d S5 = new Pose2d(2.493,4.049,Rotation2d.fromDegrees(7.883)); //section 5
     public static final Pose2d S6 = new Pose2d(3.488,5.428,Rotation2d.fromDegrees(-55.886)); //section 6
-    public static final Pose2d F1 = new Pose2d(1.858, 6.590,Rotation2d.fromDegrees(-48.832) ); //feed station
+    public static final Pose2d F1 = new Pose2d(0.28, 8,Rotation2d.fromDegrees(-48.832) ); //feed station
     //pid
     public static final ProfiledPIDController angleController = new ProfiledPIDController(0.5,0, 0, new Constraints(DriveCommands.ANGLE_MAX_VELOCITY, DriveCommands.ANGLE_MAX_ACCELERATION));
     
@@ -60,8 +62,8 @@ public class UtilitiesFieldSectioning {
 
     
         //array of positions
-        public static final Pose2d[] sectionsArr = {FarCenterLeft,FarCenterRight,NearCenterLeft,NearCenterRight,FarLeftFar,FarLeftNear,FarRightFar,FarRightNear,NearRightFar,NearRightNear,NearLeftFar,NearRightNear,F1};
-        public static final Pose2d[] poseArr = {FarCenterLeft,FarCenterRight,NearCenterLeft,NearCenterRight,FarLeftFar,FarLeftNear,FarRightFar,FarRightNear,NearRightFar,NearRightNear,NearLeftFar,NearRightNear,F1};
+        public static final Pose2d[] sectionsArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
+        public static final Pose2d[] poseArr = {L1,L2,L3,L4,L5,L6,R1,R2,R3,R4,R5,R6,F1};
         
         /***
          * 
@@ -80,6 +82,7 @@ public class UtilitiesFieldSectioning {
                     currentClosest = sectionsArr[i];
                 }
             }
+            Logger.recordOutput("Drive/AutoPoseNumbers", currentClosest);
             return currentClosest;
         }
 
@@ -195,13 +198,14 @@ public class UtilitiesFieldSectioning {
      * @param currentPose
      * @purpose If close to reef, makes max speed slow, otherwise normal speed
      */
+    // && RobotContainer.hasShotCoral == false
     public static void isCloseToReef(Pose2d currentPose) {
-        if (getClosestSectionDistance(currentPose) <= 0.305 && RobotContainer.hasShotCoral == false) {
-            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2);
+        if (getClosestSectionDistance(currentPose) <= 0.6) {
+            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(4);
         }
         else {
-            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(6);
+            DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16);
         }
-        System.out.println(DriveConstants.maxSpeedAt12Volts);
+        
     }
 }

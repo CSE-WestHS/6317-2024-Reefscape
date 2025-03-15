@@ -95,7 +95,7 @@ public class Drive extends SubsystemBase {
         // () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new AdvancedPPHolonomicDriveController(
-            new PIDConstants(6.0, 2, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(5.0, 2, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
         DriveConstants.ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -338,7 +338,7 @@ public class Drive extends SubsystemBase {
     return DriveConstants.moduleTranslations;
   }
   public Command generatePath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(DriveConstants.maxSpeedAt12VoltsPathPlanner.in(MetersPerSecond),DriveConstants.maxSpeedAt12VoltsPathPlanner.in(MetersPerSecond),Units.degreesToRadians(540),Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(Units.feetToMeters(8),Units.feetToMeters(4),Units.degreesToRadians(240),Units.degreesToRadians(120));
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
 }

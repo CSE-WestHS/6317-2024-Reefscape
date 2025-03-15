@@ -30,14 +30,14 @@ import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 
 public class DriveCommands {
   public static final double DEADBAND = 0.1;
-  public static double ANGLE_KP = 0.5;
+  public static double ANGLE_KP = 5;
   public static double ANGLE_KD = 0.0;
-  public static final double ANGLE_MAX_VELOCITY = 2.0;
-  public static final double ANGLE_MAX_ACCELERATION = 2.0;
+  public static final double ANGLE_MAX_VELOCITY = 20.0;
+  public static final double ANGLE_MAX_ACCELERATION = 10.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
-  private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 4; // Rad/Sec
+  private static final double WHEEL_RADIUS_RAMP_RATE = 0.5; // Rad/Sec^2
   public static LoggedTunableNumber Kp = new LoggedTunableNumber("kp drive cmd",ANGLE_KP);
  // private final LoggedTunableNumber Ki;
   public static LoggedTunableNumber Kd = new LoggedTunableNumber("Kd drive cmd",ANGLE_KD);

@@ -25,7 +25,7 @@ public class Climber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lifter.setVoltage(6);
+    lifter.setVoltage(8);
 
   }
 

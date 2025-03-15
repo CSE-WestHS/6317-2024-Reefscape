@@ -23,7 +23,7 @@ public class DriveConstants {
   public static final double trackWidth = Units.inchesToMeters(26.5);
   public static final double wheelBase = Units.inchesToMeters(26.5);
   public static final double driveBaseRadius = Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
-  public static final double driveWheelRadiusMeters = Units.inchesToMeters(2);
+  public static final double driveWheelRadiusMeters = Units.inchesToMeters(1.95);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
         new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
@@ -64,7 +64,7 @@ public class DriveConstants {
 
   // PathPlanner configuration
   public static final double robotMassKg = 68.03886;
-  public static final double robotMOI = 6.883;
+  public static final double robotMOI = 1.011;
   public static final double wheelCOF = 1.2;
   public static final RobotConfig ppConfig =
       new RobotConfig(
