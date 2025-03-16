@@ -23,7 +23,7 @@ public class GoToPositionElevator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Elevator command is running...");
+    // System.out.println("Elevator command is running...");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

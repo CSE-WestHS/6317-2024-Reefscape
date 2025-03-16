@@ -93,11 +93,12 @@ public class RobotContainer {
 //   private final CommandXboxController testController = new CommandXboxController(2);
 
   //triggers
-//   private final Trigger yIsPressed = new Trigger(driverController.y());
+  private final Trigger yIsPressed = new Trigger(driverController.y());
   private final Trigger povDownisPressed = new Trigger(driverController.povDown());
   // private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
   // private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
   private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
+  private final Trigger rightXAndYTrigger = new Trigger(()->yIsPressed.getAsBoolean() || rightXTrigger.getAsBoolean());
   // private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
   private final Trigger leftTriggerPressed = new Trigger(driverController.leftTrigger());
   //Subsystem Definitions
@@ -136,7 +137,6 @@ public class RobotContainer {
       public RobotContainer() {
         switch (Constants.currentMode) {
           case REAL:
-          System.out.println("NEW  V");
             // Real robot, instantiate hardware IO implementations
             drive =
                 new Drive(
@@ -238,34 +238,56 @@ public class RobotContainer {
     // NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
     // NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
     // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    
+    // NamedCommands.registerCommand("ScoreL3", 
+    //   (new GoToPositionElevator(elevator,27).until(()->elevator.isFinished())
+    //     .andThen(shootCoralReg)));
     NamedCommands.registerCommand("ScoreL3", 
       (new GoToPositionElevator(elevator,27).until(()->elevator.isFinished())
-        .andThen(shootCoralReg.withTimeout(2))));
-    NamedCommands.registerCommand("ScoreL2", (new GoToPositionElevator(elevator,9.5).andThen(new ShootCoral(shooter, elevator).withTimeout(3))));
+        .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
+    NamedCommands.registerCommand("ScoreL2", 
+      (new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished())
+        .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
+    // // NamedCommands.registerCommand("ScoreL2", 
+    //   (new GoToPositionElevator(elevator,10).until(()->elevator.isFinished())
+    //     .andThen(shootCoralReg.withTimeout(2))));
+
+    // NamedCommands.registerCommand("ScoreL2", 
+    // (new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished())
+    //   .andThen(shootCoralReg)));
+    
+    NamedCommands.registerCommand("TOP De-algify",
+    (new AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(2)
+    .andThen(Commands.run(()->shooter.setVoltage(7)).withTimeout(1.5)
+    .alongWith(new GoToPositionElevator(elevator, 27)
+    ))));
+
     NamedCommands.registerCommand("IntakeCoral", (new AllignShooterCommand(shooter, beamBreakBack, indexer)));
     NamedCommands.registerCommand("ResetElevator", (new GoToPositionElevator(elevator, 0)));
     NamedCommands.registerCommand("shootCoral", shootCoralReg);
+    NamedCommands.registerCommand("ScoreTrough", shootCoralReg);
     // Set up auto routines
 
     // // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption("TOP 3P; L3L2L1", new PathPlannerAuto("TOP 3P; L3L2L1"));
+    autoChooser.addOption("PUSH Trough", new PathPlannerAuto("PUSH Trough"));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -279,40 +301,22 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Main drive controls
-    //inverted activation for testing
-    // TODO:reverse the activation logic
-    // rightXTrigger
-    //   .whileTrue(
-    //     DriveCommands.joystickDriveAtAngle(
-    //       drive,  
-    //       () -> -driverController.getLeftY(),
-    //       () -> -driverController.getLeftX(), 
-    //       () -> new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())))
-    //   .whileFalse(
-        // DriveCommands.joystickDrive(
-        //   drive,
-        //   () -> -driverController.getLeftY(),
-        //   () -> -driverController.getLeftX(),
-        //   () -> -driverController.getRightX()));
-    // drive.setDefaultCommand(DriveCommands.joystickDrive(drive, ()->-driverController.getLeftY(), ()->-driverController.getLeftX(),()-> -driverController.getRightX()));
-    rightXTrigger.whileTrue(DriveCommands.joystickDrive(drive, 
-        ()->-driverController.getLeftY(), 
-        ()->-driverController.getLeftX(),
-        ()-> -driverController.getRightX()))
+    // drive.setDefaultCommand(DriveCommands.joystickDrive(drive, 
+    //   ()->-driverController.getLeftY(), 
+    //   ()->-driverController.getLeftX(),
+    //   ()-> -driverController.getRightX()));
+    
+    rightXAndYTrigger.whileTrue(DriveCommands.joystickDrive(drive, 
+      ()->-driverController.getLeftY(), 
+      ()->-driverController.getLeftX(),
+      ()-> -driverController.getRightX()))
     .whileFalse(DriveCommands.joystickDriveAtAngle(drive,
       ()->-driverController.getLeftY(), 
       ()->-driverController.getLeftX(),
       ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    
     algaeArm.setDefaultCommand(new AlgaeArmPositionCommand(algaeArm, 0.142));
-    // 
 
-    //trigger controls
-    // yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
-    // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
-
-
-    // Switch to X pattern when X button is pressed
-    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -331,34 +335,77 @@ public class RobotContainer {
                                 ? new Rotation2d(Math.PI)
                                 : new Rotation2d())
                             : new Rotation2d())); // zero gyro
-    // // Reset gyro to 0° when B button is pressed
     
-    driverController.povLeft().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+    //Gyro reset - Reset gyro to 0° when button is pressed
+    driverController.back()
+        .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+    //Shoot
+    driverController.rightBumper()
+        .onTrue(Commands.runOnce(()->shooter.setVelocity(-5)))
+        .onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
+    
+    //Full Algae thing
+    driverController.leftBumper()
+        .whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.85)
+          .andThen(Commands.run(()->shooter.setVoltage(7))))
+        .whileFalse(Commands.run(()->shooter.setVelocity(0)));
+
+    //Intake
+    driverController.rightTrigger()
+        .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
+
+    //Arm movement
+    driverController.povUp()
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(-12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    driverController.povDown()
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(8)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    //Turbo
+    driverController.leftTrigger()
+        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)))
+        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(4)));
+    
+    //Auto Climb
+    driverController.b().and(()->!beamBreakTop.beamBreakTripped())
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+          .andThen(Commands.run(()->Klamps.setVoltage(0))));
+
+
+
+
+
+    //Test Commands:
+
+    // driverController.a().whileTrue(new AlgaeArmPositionCommand(algaeArm, 1.8));
+    // driverController.x().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.14));
     // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
-    driverController.y().onTrue(Commands.runOnce(()->shooter.setVelocity(-5))).onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
-    driverController.rightBumper().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0));
-    driverController.leftBumper().onTrue(new AlgaeArmPositionCommand(algaeArm, 0.85).andThen(Commands.run(()->shooter.setVoltage(7))).withTimeout(10)).onFalse(Commands.run(()->shooter.setVelocity(0)));
     // driverController.leftBumper().whileTrue(new ShootCoral(shooter, elevator).withTimeout(3));
-    driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
-    driverController.rightTrigger().onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
-    driverController.x().whileTrue(Commands.run(()->UtilitiesFieldSectioning.isCloseToReef(drive.getPose())));
-    // // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
     // driverController.b().whileTrue(new Climber(Klamps,beamBreakTop).withInterruptBehavior(InterruptionBehavior.kCancelSelf)).onFalse(Commands.run(()->Klamps.setVoltage(0)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)));
-    // // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
-    // // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
-    driverController.povUp().whileTrue(Commands.run(() -> Klamps.setVoltage(-12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    driverController.povDown().whileTrue(Commands.run(() -> Klamps.setVoltage(8)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    // driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)));
+    // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
+    // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
     // driverController.a().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
     
-    driverController.b().and(()->!beamBreakTop.beamBreakTripped()).whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming).andThen(Commands.run(()->Klamps.setVoltage(0))));
+    // Elevator Zero
+    // driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
+    // driverController.x().whileTrue(Commands.run(()->UtilitiesFieldSectioning.isCloseToReef(drive.getPose())));
+
+    //trigger controls
+    // yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
+    // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
+
+
+    // Switch to X pattern when X button is pressed
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
 
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,27).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
     ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
     ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));

@@ -1,10 +1,11 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.889,
+  "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
     "AlgaeAuto",
     "Bottom Side Auto",
+    "Push Auto",
     "Top Side Auto"
   ],
   "autoFolders": [],
@@ -16,7 +17,7 @@
   "robotMass": 74.088,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.048,
+  "driveWheelRadius": 0.0495,
   "driveGearing": 5.143,
   "maxDriveSpeed": 5.45,
   "driveMotorType": "NEO",

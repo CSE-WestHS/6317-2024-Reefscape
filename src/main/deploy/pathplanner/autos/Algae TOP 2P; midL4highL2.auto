@@ -15,19 +15,38 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
+                "data": {
+                  "name": "ScoreL2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "De-algae L4 TOP"
+                }
+              },
+              {
+                "type": "race",
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 1.0
+                        "name": "TOP De-algify"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "ScoreL2"
+                        "waitTime": 3.5
                       }
                     }
                   ]
@@ -41,15 +60,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "To Load L4 TOP"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "ResetElevator"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "To Load L4 TOP"
                 }
               }
             ]
@@ -72,7 +91,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -129,7 +148,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 2.0
                       }
                     },
                     {
@@ -177,31 +196,6 @@
                 "type": "named",
                 "data": {
                   "name": "IntakeCoral"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Load to L1 TOP"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ScoreL2"
-                      }
-                    }
-                  ]
                 }
               }
             ]

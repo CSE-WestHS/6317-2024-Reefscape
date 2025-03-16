@@ -32,7 +32,7 @@ public class AllignShooterCommand extends Command {
     indexer.setVoltage(6);
     seenCoral = false;
     commandDone = false;
-    System.out.println("Initialized");
+    // System.out.println("Initialized");
     // while (!beamBreak.beamBreakTripped()) {
     //   indexer.setVoltage(6);
     // }
@@ -43,13 +43,13 @@ public class AllignShooterCommand extends Command {
   public void execute() {
     if (beamBreak.beamBreakTripped() == true){
       seenCoral = true;
-      System.out.println("Coral seen");
+      // System.out.println("Coral seen");
     }
 
     if(seenCoral){
-      shooter.setVoltage(4);
+      shooter.setVoltage(3);
       indexer.setVoltage(3);
-      System.out.println("shooter and indexer");
+      // System.out.println("shooter and indexer");
 
       if(beamBreak.beamBreakTripped()==false){
         shooter.setVoltage(0);
