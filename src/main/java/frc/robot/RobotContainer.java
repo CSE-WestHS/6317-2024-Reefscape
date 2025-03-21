@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -168,11 +169,11 @@ public class RobotContainer {
   
         case SIM:
           // create a maple-sim swerve drive simulation instance
-          // driveSimulation =
-          //     new SwerveDriveSimulation(
-          //         DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-          // // add the simulated drivetrain to the simulation field
-          // SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          driveSimulation =
+              new SwerveDriveSimulation(
+                  DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+          // add the simulated drivetrain to the simulation field
+          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
           // // Sim robot, instantiate physics sim IO implementations
           drive =
               new Drive(
@@ -418,6 +419,38 @@ public class RobotContainer {
     ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
     ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
     ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,27).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    if (DriverStation.getAlliance().isPresent()
+    && DriverStation.getAlliance().get() == Alliance.Blue){
+      ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
+      ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
+      ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
+      ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
+      ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
+      ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
+      ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
+      ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
+      ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
+      ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
+      ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
+      ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
+    }
+    else if (DriverStation.getAlliance().isPresent()
+    && DriverStation.getAlliance().get() == Alliance.Red) {
+      ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1Red));
+      ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2Red));
+      ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3Red));
+      ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4Red));
+      ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5Red));
+      ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6Red));
+      ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1Red));
+      ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2Red));
+      ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3Red));
+      ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4Red));
+      ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5Red));
+      ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6Red));
+    }
     
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
@@ -436,7 +469,7 @@ public class RobotContainer {
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
-    // driveSimulation.setSimulationWorldPose(drive.getPose());
+    driveSimulation.setSimulationWorldPose(drive.getPose());
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 
