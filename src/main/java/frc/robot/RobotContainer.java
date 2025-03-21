@@ -358,9 +358,9 @@ public class RobotContainer {
 
     //Arm movement
     driverController.povUp()
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(-20)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(-25)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     driverController.povDown()
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(18)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     //Turbo
     driverController.leftTrigger()
