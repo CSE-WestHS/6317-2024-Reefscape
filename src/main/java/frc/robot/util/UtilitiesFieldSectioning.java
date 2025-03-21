@@ -74,6 +74,13 @@ public class UtilitiesFieldSectioning {
             Pose2d currentClosest = new Pose2d();
             double currentDistanceFromPoint = 999999; //set high so that no element is auto selected - will probably delete later
             double minDistance = currentDistanceFromPoint;
+
+            // sectionsArr = DriverStation.getAlliance().isPresent()
+            //                 ? (DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+            //                     ? sectionsArrBlue
+            //                     : sectionsArrRed);
+
+
             for (int i = 0; i < sectionsArr.length; ++i) {
                 // d = √(x2 - x1)2 + (y2 - y1)2
                 currentDistanceFromPoint = Math.sqrt(Math.pow(sectionsArr[i].getX() - currentPose.getX(),2) + Math.pow(sectionsArr[i].getY() - currentPose.getY(), 2));

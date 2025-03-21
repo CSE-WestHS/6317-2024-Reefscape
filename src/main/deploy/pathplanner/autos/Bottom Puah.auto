@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "START to Trough PUSH"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "After Push to Trough"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "pathName": "Push Bottom"
           }
         },
         {
@@ -32,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Bottom Autos",
   "choreoAuto": false
 }

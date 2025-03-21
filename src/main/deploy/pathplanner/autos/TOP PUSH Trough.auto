@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "START to Trough PUSH"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "After Push to Trough"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreTrough"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "TOP Autos",
+  "choreoAuto": false
+}

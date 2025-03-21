@@ -1,0 +1,150 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.29,
+        "y": 5.05
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.290000000000001,
+        "y": 5.05
+      },
+      "isLocked": false,
+      "linkedName": "TOP Starting Pos"
+    },
+    {
+      "anchor": {
+        "x": 3.13,
+        "y": 4.16
+      },
+      "prevControl": {
+        "x": 3.379998019388484,
+        "y": 4.160995139103327
+      },
+      "nextControl": {
+        "x": 2.8800019806115156,
+        "y": 4.159004860896673
+      },
+      "isLocked": false,
+      "linkedName": "Reef L1"
+    },
+    {
+      "anchor": {
+        "x": 3.63,
+        "y": 5.15
+      },
+      "prevControl": {
+        "x": 3.7750691515600785,
+        "y": 4.9463951344745425
+      },
+      "nextControl": {
+        "x": 3.484930848439925,
+        "y": 5.353604865525458
+      },
+      "isLocked": false,
+      "linkedName": "Reef L2"
+    },
+    {
+      "anchor": {
+        "x": 3.85,
+        "y": 5.29
+      },
+      "prevControl": {
+        "x": 4.09999791750378,
+        "y": 5.2910204135304335
+      },
+      "nextControl": {
+        "x": 3.60000208249622,
+        "y": 5.288979586469567
+      },
+      "isLocked": false,
+      "linkedName": "Reef L3"
+    },
+    {
+      "anchor": {
+        "x": 5.01,
+        "y": 5.29
+      },
+      "prevControl": {
+        "x": 5.259997770051494,
+        "y": 5.288944078942087
+      },
+      "nextControl": {
+        "x": 4.760002229948506,
+        "y": 5.291055921057913
+      },
+      "isLocked": false,
+      "linkedName": "Reef L4"
+    },
+    {
+      "anchor": {
+        "x": 5.2875,
+        "y": 5.175
+      },
+      "prevControl": {
+        "x": 5.537497456183495,
+        "y": 5.17612778623041
+      },
+      "nextControl": {
+        "x": 5.037502543816505,
+        "y": 5.17387221376959
+      },
+      "isLocked": false,
+      "linkedName": "Reef L5"
+    },
+    {
+      "anchor": {
+        "x": 5.85,
+        "y": 4.21
+      },
+      "prevControl": {
+        "x": 6.099996677922846,
+        "y": 4.208711191425942
+      },
+      "nextControl": {
+        "x": 5.6000033220771535,
+        "y": 4.211288808574058
+      },
+      "isLocked": false,
+      "linkedName": "Reef L6"
+    },
+    {
+      "anchor": {
+        "x": 1.32,
+        "y": 7.22
+      },
+      "prevControl": {
+        "x": 0.3200000000000003,
+        "y": 7.22
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "TOP Loading Pos"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -53.88065915052028
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

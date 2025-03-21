@@ -1,0 +1,150 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.25,
+        "y": 2.67
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.25,
+        "y": 2.67
+      },
+      "isLocked": false,
+      "linkedName": "BOTTOM Starting Pos"
+    },
+    {
+      "anchor": {
+        "x": 3.16,
+        "y": 3.84
+      },
+      "prevControl": {
+        "x": 3.4099966863409508,
+        "y": 3.838712825363695
+      },
+      "nextControl": {
+        "x": 2.9100033136590495,
+        "y": 3.841287174636305
+      },
+      "isLocked": false,
+      "linkedName": "Reef R1"
+    },
+    {
+      "anchor": {
+        "x": 3.77,
+        "y": 2.93
+      },
+      "prevControl": {
+        "x": 4.019994321589676,
+        "y": 2.9316849845452326
+      },
+      "nextControl": {
+        "x": 3.520005678410324,
+        "y": 2.9283150154547686
+      },
+      "isLocked": false,
+      "linkedName": "Reef R2"
+    },
+    {
+      "anchor": {
+        "x": 3.98,
+        "y": 2.78
+      },
+      "prevControl": {
+        "x": 3.8665023750651133,
+        "y": 2.5572483689529077
+      },
+      "nextControl": {
+        "x": 4.093497624934886,
+        "y": 3.002751631047092
+      },
+      "isLocked": false,
+      "linkedName": "Reef R3"
+    },
+    {
+      "anchor": {
+        "x": 5.04,
+        "y": 2.76
+      },
+      "prevControl": {
+        "x": 5.165,
+        "y": 2.54349364905389
+      },
+      "nextControl": {
+        "x": 4.915,
+        "y": 2.9765063509461096
+      },
+      "isLocked": false,
+      "linkedName": "Reef R4"
+    },
+    {
+      "anchor": {
+        "x": 5.04,
+        "y": 2.75
+      },
+      "prevControl": {
+        "x": 5.165,
+        "y": 2.53349364905389
+      },
+      "nextControl": {
+        "x": 4.915,
+        "y": 2.96650635094611
+      },
+      "isLocked": false,
+      "linkedName": "Reef R5"
+    },
+    {
+      "anchor": {
+        "x": 5.9,
+        "y": 3.83
+      },
+      "prevControl": {
+        "x": 5.9,
+        "y": 4.08
+      },
+      "nextControl": {
+        "x": 5.9,
+        "y": 3.58
+      },
+      "isLocked": false,
+      "linkedName": "Reef R6"
+    },
+    {
+      "anchor": {
+        "x": 1.5,
+        "y": 0.69
+      },
+      "prevControl": {
+        "x": 0.5000000000000002,
+        "y": 0.6900000000000001
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BOTTOM Loading Pos"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 55.55606224646741
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 146.92932217723833
+  },
+  "useDefaultConstraints": true
+}

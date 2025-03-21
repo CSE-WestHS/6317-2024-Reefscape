@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "START Top to L4"
+                  "pathName": "START Bottom to R4"
                 }
               },
               {
@@ -21,7 +21,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.875
                       }
                     },
                     {
@@ -43,7 +43,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "To Load L4 TOP"
+                  "pathName": "to Load R4 Bottom"
                 }
               },
               {
@@ -78,7 +78,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Load to L3 TOP"
+                        "pathName": "Load to R3 Bottom"
                       }
                     },
                     {
@@ -106,7 +106,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "to Load L3 TOP"
+                  "pathName": "to Load R3 Bottom"
                 }
               }
             ]
@@ -135,7 +135,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Load to L2 TOP"
+                        "pathName": "Load to R2 Bottom"
                       }
                     },
                     {
@@ -163,7 +163,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "to Load L2 TOP"
+                  "pathName": "to Load R2 Bottom"
                 }
               }
             ]
@@ -192,7 +192,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Load to L1 TOP"
+                        "pathName": "Load to R1 Bottom"
                       }
                     },
                     {
@@ -211,6 +211,6 @@
     }
   },
   "resetOdom": false,
-  "folder": null,
+  "folder": "Bottom Autos",
   "choreoAuto": false
 }

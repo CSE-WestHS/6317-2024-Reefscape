@@ -341,34 +341,34 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
     //Shoot
-    driverController.rightBumper()
+    driverController.leftBumper()
         .onTrue(Commands.runOnce(()->shooter.setVelocity(-5)))
         .onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
     
     //Full Algae thing
-    driverController.leftBumper()
+    driverController.rightBumper()
         .whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.85)
           .andThen(Commands.run(()->shooter.setVoltage(7))))
         .whileFalse(Commands.run(()->shooter.setVelocity(0)));
 
     //Intake
-    driverController.rightTrigger()
+    driverController.a()
         .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
 
     //Arm movement
     driverController.povUp()
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(-12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(-20)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     driverController.povDown()
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(8)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     //Turbo
     driverController.leftTrigger()
-        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)))
+        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(20)))
         .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(4)));
     
     //Auto Climb
     driverController.b().and(()->!beamBreakTop.beamBreakTripped())
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(12)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(18)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
           .andThen(Commands.run(()->Klamps.setVoltage(0))));
 
 
@@ -404,8 +404,8 @@ public class RobotContainer {
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,27).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,11).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
     ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
     ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
