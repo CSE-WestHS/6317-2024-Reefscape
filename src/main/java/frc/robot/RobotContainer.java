@@ -287,8 +287,8 @@ public class RobotContainer {
     //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
     //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("TOP 3P; L3L2L1", new PathPlannerAuto("TOP 3P; L3L2L1"));
-    autoChooser.addOption("PUSH Trough", new PathPlannerAuto("PUSH Trough"));
+    // autoChooser.addOption("TOP 3P; L3L2L1", new PathPlannerAuto("TOP 3P; L3L2L1"));
+    // autoChooser.addOption("PUSH Trough", new PathPlannerAuto("PUSH Trough"));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -353,23 +353,23 @@ public class RobotContainer {
         .whileFalse(Commands.run(()->shooter.setVelocity(0)));
 
     //Intake
-    driverController.a()
+    driverController.y()
         .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
 
     //Arm movement
-    driverController.povUp()
+    driverController.a()
         .whileTrue(Commands.run(() -> Klamps.setVoltage(-25)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     driverController.povDown()
         .whileTrue(Commands.run(() -> Klamps.setVoltage(18)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     //Turbo
     driverController.leftTrigger()
-        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(20)))
-        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(7)));
+        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(23)))
+        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(10)));
     
     //Auto Climb
     driverController.b().and(()->!beamBreakTop.beamBreakTripped())
-        .whileTrue(Commands.run(() -> Klamps.setVoltage(18)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(21)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
           .andThen(Commands.run(()->Klamps.setVoltage(0))));
 
 
@@ -407,20 +407,6 @@ public class RobotContainer {
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,11).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
-    ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
-    ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
-    ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
-    ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
-    ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
-    ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
-    ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
-    ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
-    ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
-    ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
-    ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
-    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,9.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,27).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     if (DriverStation.getAlliance().isPresent()
     && DriverStation.getAlliance().get() == Alliance.Blue){
       ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));

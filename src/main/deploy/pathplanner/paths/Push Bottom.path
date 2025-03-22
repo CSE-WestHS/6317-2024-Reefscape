@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.25,
-        "y": 2.67
+        "y": 1.875
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.2397203947368425,
-        "y": 0.37041118421052666
+        "y": -0.4245888157894733
       },
       "isLocked": false,
       "linkedName": "BOTTOM Starting Pos"
@@ -45,7 +45,7 @@
     "rotation": 157.55724663470565
   },
   "reversed": false,
-  "folder": "Bottom Side Auto",
+  "folder": "Processpor Side Auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 146.92932217723833

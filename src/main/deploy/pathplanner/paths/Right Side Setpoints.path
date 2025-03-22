@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.25,
-        "y": 2.67
+        "y": 1.875
       },
       "prevControl": null,
       "nextControl": {
         "x": 8.25,
-        "y": 2.67
+        "y": 1.875
       },
       "isLocked": false,
       "linkedName": "BOTTOM Starting Pos"
@@ -113,11 +113,11 @@
     {
       "anchor": {
         "x": 1.5,
-        "y": 0.69
+        "y": 0.775
       },
       "prevControl": {
         "x": 0.5000000000000002,
-        "y": 0.6900000000000001
+        "y": 0.7750000000000001
       },
       "nextControl": null,
       "isLocked": false,
