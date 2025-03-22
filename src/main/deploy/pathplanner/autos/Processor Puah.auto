@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Bottom Autos",
+  "folder": "Processor Autos",
   "choreoAuto": false
 }

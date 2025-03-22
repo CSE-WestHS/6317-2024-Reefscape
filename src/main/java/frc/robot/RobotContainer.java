@@ -365,7 +365,7 @@ public class RobotContainer {
     //Turbo
     driverController.leftTrigger()
         .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(20)))
-        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(4)));
+        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(7)));
     
     //Auto Climb
     driverController.b().and(()->!beamBreakTop.beamBreakTripped())
