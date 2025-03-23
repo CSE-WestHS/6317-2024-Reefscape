@@ -3,14 +3,13 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "AlgaeAuto",
     "Processpor Side Auto",
     "Push Auto",
-    "Top Side Auto"
+    "Not proc Side Auto"
   ],
   "autoFolders": [
     "Processor Autos",
-    "TOP Autos"
+    "Non-Processor Autos"
   ],
   "defaultMaxVel": 2.5,
   "defaultMaxAccel": 3.0,

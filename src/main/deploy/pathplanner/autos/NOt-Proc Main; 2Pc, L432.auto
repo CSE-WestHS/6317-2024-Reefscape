@@ -21,7 +21,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.875
+                        "waitTime": 1.5
                       }
                     },
                     {
@@ -72,7 +72,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -96,7 +96,7 @@
                                       {
                                         "type": "wait",
                                         "data": {
-                                          "waitTime": 0.875
+                                          "waitTime": 0.75
                                         }
                                       },
                                       {
@@ -238,6 +238,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "TOP Autos",
+  "folder": "Non-Processor Autos",
   "choreoAuto": false
 }

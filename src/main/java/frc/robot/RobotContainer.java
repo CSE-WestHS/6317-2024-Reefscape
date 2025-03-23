@@ -353,7 +353,7 @@ public class RobotContainer {
         .whileFalse(Commands.run(()->shooter.setVelocity(0)));
 
     //Intake
-    driverController.y()
+    driverController.x()
         .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
 
     //Arm movement
@@ -364,8 +364,8 @@ public class RobotContainer {
 
     //Turbo
     driverController.leftTrigger()
-        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(23)))
-        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(10)));
+        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(27.5)))
+        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(7.5)));
     
     //Auto Climb
     driverController.b().and(()->!beamBreakTop.beamBreakTripped())
