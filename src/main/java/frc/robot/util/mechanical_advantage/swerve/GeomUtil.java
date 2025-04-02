@@ -27,7 +27,16 @@ public class GeomUtil {
   public static Transform2d toTransform2d(Translation2d translation) {
     return new Transform2d(translation, new Rotation2d());
   }
-
+   /**
+   * Creates a pure translating transform
+   *
+   * @param x The x coordinate of the translation
+   * @param y The y coordinate of the translation
+   * @return The resulting transform
+   */
+  public static Transform2d toTransform2d(double x, double y) {
+    return new Transform2d(x, y, Rotation2d.kZero);
+  }
   /**
    * Creates a pure rotating transform
    *
