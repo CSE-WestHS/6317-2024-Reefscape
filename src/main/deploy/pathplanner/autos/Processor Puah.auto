@@ -13,7 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreTrough"
+            "name": "ScoreL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetElevator"
           }
         }
       ]

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -117,6 +118,7 @@ public class RobotContainer {
   // public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
   //commands
   private Command shootCoralReg;
+  private Command indexdef;
   // private Command ManipulatorShoot; 
   // private Command ManipulatorStop;
   // @SuppressWarnings("unused")
@@ -233,7 +235,7 @@ public class RobotContainer {
       //   .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
       //   .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
       shootCoralReg = Commands.run(()->shooter.setVoltage(4));
-    //set up path planner commands
+      //set up path planner commands
     // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
     // NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
     // NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
@@ -244,10 +246,10 @@ public class RobotContainer {
     //   (new GoToPositionElevator(elevator,27).until(()->elevator.isFinished())
     //     .andThen(shootCoralReg)));
     NamedCommands.registerCommand("ScoreL3", 
-      (new GoToPositionElevator(elevator,27).until(()->elevator.isFinished())
+      ((new GoToPositionElevator(elevator,27).until(()->elevator.isFinished()))
         .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
     NamedCommands.registerCommand("ScoreL2", 
-      (new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished())
+      ((new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished()))
         .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
     // // NamedCommands.registerCommand("ScoreL2", 
     //   (new GoToPositionElevator(elevator,10).until(()->elevator.isFinished())
@@ -266,7 +268,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeCoral", (new AllignShooterCommand(shooter, beamBreakBack, indexer)));
     NamedCommands.registerCommand("ResetElevator", (new GoToPositionElevator(elevator, 0)));
     NamedCommands.registerCommand("shootCoral", shootCoralReg);
-    NamedCommands.registerCommand("ScoreTrough", shootCoralReg);
+    NamedCommands.registerCommand("ScoreTrough", (Commands.run(()->shooter.setVoltage(7)).withTimeout(1.5)));
     // Set up auto routines
 
     // // Set up auto routines
@@ -300,7 +302,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     //Main drive controls
     // drive.setDefaultCommand(DriveCommands.joystickDrive(drive, 
     //   ()->-driverController.getLeftY(), 
@@ -354,7 +355,7 @@ public class RobotContainer {
 
     //Intake
     driverController.x()
-        .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4));
+        .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4)).whileFalse(Commands.run(()->indexer.setVoltage(0)));
 
     //Arm movement
     driverController.a()
@@ -371,6 +372,8 @@ public class RobotContainer {
     driverController.b().and(()->!beamBreakTop.beamBreakTripped())
         .whileTrue(Commands.run(() -> Klamps.setVoltage(21)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
           .andThen(Commands.run(()->Klamps.setVoltage(0))));
+
+    //Climb override
 
 
 

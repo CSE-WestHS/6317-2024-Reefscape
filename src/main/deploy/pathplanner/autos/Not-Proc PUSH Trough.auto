@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "START to Trough PUSH"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "After Push to Trough"
+            "pathName": "Not Proc Push"
           }
         },
         {
@@ -25,7 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ScoreTrough"
+            "name": "ScoreL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetElevator"
           }
         }
       ]

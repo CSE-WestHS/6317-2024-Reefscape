@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5,
-        "y": 0.775
+        "x": 7.986,
+        "y": 5.754
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1350756578947365,
-        "y": 1.2753289473684206
+        "x": 6.638980263157894,
+        "y": 3.168667763157895
       },
       "isLocked": false,
-      "linkedName": "BOTTOM Loading Pos"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.741,
-        "y": 2.57
+        "x": 5.243832236842105,
+        "y": 5.218092105263159
       },
       "prevControl": {
-        "x": 3.2886809210526313,
-        "y": 2.1610361842105257
+        "x": 5.975154605263158,
+        "y": 5.939720394736843
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef R3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 59.99999999999999
+    "velocity": 0,
+    "rotation": -129.47245984834373
   },
   "reversed": false,
-  "folder": "Processpor Side Auto",
+  "folder": "Push Auto",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 55.55606224646741
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

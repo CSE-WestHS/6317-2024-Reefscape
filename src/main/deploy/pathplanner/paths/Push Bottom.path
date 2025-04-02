@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.25,
-        "y": 1.875
+        "x": 7.986019736842104,
+        "y": 2.2642269736842104
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.2397203947368425,
-        "y": -0.4245888157894733
+        "x": 6.16751644737175,
+        "y": 4.948684210526103
       },
       "isLocked": false,
-      "linkedName": "BOTTOM Starting Pos"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.465131578947368,
-        "y": 2.8607730263157896
+        "x": 4.9936677631578945,
+        "y": 2.6779605263157897
       },
       "prevControl": {
-        "x": 4.9359375,
-        "y": 0.6189144736842103
+        "x": 6.138651315792804,
+        "y": 2.7934210526313668
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 157.55724663470565
+    "rotation": 126.86989764584399
   },
   "reversed": false,
   "folder": "Processpor Side Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 146.92932217723833
+    "rotation": 137.72631099390622
   },
   "useDefaultConstraints": true
 }
