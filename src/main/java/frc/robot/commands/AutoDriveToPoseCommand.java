@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.littletonrobotics.frc2025.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,7 +30,7 @@ import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
 import frc.robot.util.mechanical_advantage.swerve.GeomUtil;
 import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
-
+import frc.robot.subsystems.Elevator.*;
 public class AutoDriveToPoseCommand extends Command {
   private static final LoggedTunableNumber drivekP = new LoggedTunableNumber("DriveToPose/DrivekP");
   private static final LoggedTunableNumber drivekD = new LoggedTunableNumber("DriveToPose/DrivekD");
@@ -118,7 +118,7 @@ public class AutoDriveToPoseCommand extends Command {
 
   private final Drive drive;
   private final Supplier<Pose2d> target;
-
+  private final Elevator elevator;
   private TrapezoidProfile driveProfile;
   private final PIDController driveController =
       new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
@@ -133,23 +133,23 @@ public class AutoDriveToPoseCommand extends Command {
   private double driveErrorAbs = 0.0;
   private double thetaErrorAbs = 0.0;
   @Getter private boolean running = false;
-  private Supplier<Pose2d> robot = ()->drive.getPose();
+  private Supplier<Pose2d> robot = ()->new Pose2d();
 
   private Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
   private DoubleSupplier omegaFF = () -> 0.0;
 
-  public AutoDriveToPoseCommand(Drive drive, Supplier<Pose2d> target) {
+  public AutoDriveToPoseCommand(Drive drive, Supplier<Pose2d> target, Elevator Elevator) {
     this.drive = drive;
     this.target = target;
-
+    this.elevator = Elevator;
     // Enable continuous input for theta controller
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(drive);
   }
 
-  public AutoDriveToPoseCommand(Drive drive, Supplier<Pose2d> target, Supplier<Pose2d> robot) {
-    this(drive, target);
+  public AutoDriveToPoseCommand(Drive drive, Supplier<Pose2d> target, Supplier<Pose2d> robot,Elevator Elevator) {
+    this(drive, target,Elevator);
     this.robot = robot;
   }
 
@@ -157,9 +157,10 @@ public class AutoDriveToPoseCommand extends Command {
       Drive drive,
       Supplier<Pose2d> target,
       Supplier<Pose2d> robot,
+      Elevator Elevator,
       Supplier<Translation2d> linearFF,
       DoubleSupplier omegaFF) {
-    this(drive, target, robot);
+    this(drive, target, robot,Elevator);
     this.linearFF = linearFF;
     this.omegaFF = omegaFF;
   }
@@ -221,10 +222,11 @@ public class AutoDriveToPoseCommand extends Command {
                   : new TrapezoidProfile.Constraints(
                       driveMaxVelocity.get(), driveMaxAcceleration.get()));
     }
+    
     double extensionS =
         MathUtil.clamp(
-            (RobotState.getInstance().getElevatorExtensionPercent() - elevatorMinExtension.get())
-                / (1.0 - elevatorMinExtension.get()),
+            ((elevator.getPosition() / ElevatorConstants.CompBot_GAINS.kMaxPosition()) - ElevatorConstants.CompBot_GAINS.kMinPosition())
+                / (1.0 - ElevatorConstants.CompBot_GAINS.kMinPosition()),
             0.0,
             1.0);
     thetaController.setConstraints(
