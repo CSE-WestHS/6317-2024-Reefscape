@@ -16,6 +16,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -352,7 +353,7 @@ public class RobotContainer {
         .whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.85)
           .andThen(Commands.run(()->shooter.setVoltage(7))))
         .whileFalse(Commands.run(()->shooter.setVelocity(0)));
-
+    //driverController.leftStick().whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.F1, elevator));
     //Intake
     driverController.x()
         .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4)).whileFalse(Commands.run(()->indexer.setVoltage(0)));
@@ -405,6 +406,9 @@ public class RobotContainer {
     // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
 
+    
+
+    //driverController.leftStick().whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.F1, elevator));
 
     ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
@@ -412,34 +416,37 @@ public class RobotContainer {
     ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     if (DriverStation.getAlliance().isPresent()
     && DriverStation.getAlliance().get() == Alliance.Blue){
-      ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
-      ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2));
-      ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3));
-      ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4));
-      ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
-      ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
-      ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
-      ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
-      ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
-      ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
-      ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
-      ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
+      // ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
+      ButtonBoardButtons.L2.onTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L3, ()->drive.getPose(), elevator, () ->
+      DriveCommands.getLinearVelocityFromJoysticks(
+        driverController.getLeftX(), driverController.getLeftY()),//TODO: make work with red
+        () -> driverController.getRightX()));
+      ButtonBoardButtons.L3.whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L3, elevator));
+      ButtonBoardButtons.L4.whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L4, elevator));
+      // ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
+      // ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
+      // ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
+      // ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
+      // ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
+      // ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
+      // ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
+      // ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
     }
-    else if (DriverStation.getAlliance().isPresent()
-    && DriverStation.getAlliance().get() == Alliance.Red) {
-      ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1Red));
-      ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2Red));
-      ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3Red));
-      ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4Red));
-      ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5Red));
-      ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6Red));
-      ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1Red));
-      ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2Red));
-      ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3Red));
-      ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4Red));
-      ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5Red));
-      ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6Red));
-    }
+    // else if (DriverStation.getAlliance().isPresent()
+    // && DriverStation.getAlliance().get() == Alliance.Red) {
+    //   ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1Red));
+    //   ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2Red));
+    //   ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3Red));
+    //   ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4Red));
+    //   ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5Red));
+    //   ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6Red));
+    //   ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1Red));
+    //   ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2Red));
+    //   ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3Red));
+    //   ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4Red));
+    //   ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5Red));
+    //   ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6Red));
+    // }
     
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }

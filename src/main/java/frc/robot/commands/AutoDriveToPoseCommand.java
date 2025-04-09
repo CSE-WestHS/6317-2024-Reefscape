@@ -89,12 +89,12 @@ public class AutoDriveToPoseCommand extends Command {
     thetakP.initDefault(4.0);
     thetakD.initDefault(0.0);
 
-    driveMaxVelocity.initDefault(3.8);
-    driveMaxAcceleration.initDefault(3.0);
-    driveMaxVelocityAuto.initDefault(3.8);
-    driveMaxAccelerationAuto.initDefault(3.0);
+    driveMaxVelocity.initDefault(3);
+    driveMaxAcceleration.initDefault(3);
+    driveMaxVelocityAuto.initDefault(3);
+    driveMaxAccelerationAuto.initDefault(3);
 
-    thetaMaxVelocity.initDefault(Units.degreesToRadians(360.0));
+    thetaMaxVelocity.initDefault(Units.degreesToRadians(360));//360
     thetaMaxVelocityTop.initDefault(Units.degreesToRadians(200.0));
     thetaMaxAcceleration.initDefault(8.0);
     thetaMaxAccelerationTop.initDefault(6.0);
@@ -116,16 +116,15 @@ public class AutoDriveToPoseCommand extends Command {
     minThetaFFSReset.initDefault(0.1);
   }
 
-  private final Drive drive;
+  private Drive drive;
   private final Supplier<Pose2d> target;
   private final Elevator elevator;
   private TrapezoidProfile driveProfile;
   private final PIDController driveController =
-      new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
+      new PIDController(drivekP.get(), 0.0, drivekD.get(), Constants.loopPeriodSecs);
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          0.0, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0), Constants.loopPeriodSecs);
-
+          thetakP.get(), 0.0, drivekD.get(), new TrapezoidProfile.Constraints(0.0, 0.0), Constants.loopPeriodSecs);
   private Translation2d lastSetpointTranslation = Translation2d.kZero;
   private Translation2d lastSetpointVelocity = Translation2d.kZero;
   private Rotation2d lastGoalRotation = Rotation2d.kZero;
@@ -133,7 +132,7 @@ public class AutoDriveToPoseCommand extends Command {
   private double driveErrorAbs = 0.0;
   private double thetaErrorAbs = 0.0;
   @Getter private boolean running = false;
-  private Supplier<Pose2d> robot = ()->new Pose2d();
+  private Supplier<Pose2d> robot = ()->drive.getPose();
 
   private Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
   private DoubleSupplier omegaFF = () -> 0.0;
@@ -167,6 +166,7 @@ public class AutoDriveToPoseCommand extends Command {
 
   @Override
   public void initialize() {
+    
     Pose2d currentPose = robot.get();
     Pose2d targetPose = target.get();
     ChassisSpeeds fieldVelocity = drive.getChassisSpeeds();
@@ -193,7 +193,6 @@ public class AutoDriveToPoseCommand extends Command {
   @Override
   public void execute() {
     running = true;
-
     // Update from tunable numbers
     if (driveTolerance.hasChanged(hashCode())
         || thetaTolerance.hasChanged(hashCode())
@@ -265,6 +264,8 @@ public class AutoDriveToPoseCommand extends Command {
     // Calculate drive velocity
     // Calculate setpoint velocity towards target pose
     var direction = targetPose.getTranslation().minus(lastSetpointTranslation).toVector();
+    Logger.recordOutput("DriveToPose/lastSetpointTranslation", new Pose2d(lastSetpointTranslation,new Rotation2d(0.0)));
+    Logger.recordOutput("DriveToPose/DirectionNorm", direction.norm());
     double setpointVelocity =
         direction.norm()
                 <= minDistanceVelocityCorrection
@@ -281,6 +282,8 @@ public class AutoDriveToPoseCommand extends Command {
     double driveVelocityScalar =
         driveController.calculate(driveErrorAbs, driveSetpoint.position)
             + driveSetpoint.velocity * linearFFScaler;
+    Logger.recordOutput("DriveToPose/driveVelocityScalar", driveVelocityScalar);
+
     if (driveErrorAbs < driveController.getErrorTolerance()) driveVelocityScalar = 0.0;
     Rotation2d targetToCurrentAngle =
         currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle();
