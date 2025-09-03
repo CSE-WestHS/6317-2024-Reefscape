@@ -52,6 +52,10 @@ public class AdvancedPPHolonomicDriveController implements PathFollowingControll
         new PIDController(rotationConstants.kP, rotationConstants.kI, rotationConstants.kD, period);
     this.rotationController.setIntegratorRange(-rotationConstants.iZone, rotationConstants.iZone);
     this.rotationController.enableContinuousInput(-Math.PI, Math.PI);
+    // this.xController.setTolerance(0.02); //TODO: most likely cause for path generation error
+    // this.yController.setTolerance(0.02); //TODO: most likely cause for path generation error
+    this.rotationController.setTolerance(0.02);
+    
   }
 
   /**
@@ -98,8 +102,8 @@ public class AdvancedPPHolonomicDriveController implements PathFollowingControll
   @Override
   public ChassisSpeeds calculateRobotRelativeSpeeds(
       Pose2d currentPose, PathPlannerTrajectoryState targetState) {
-    double xFF = targetState.fieldSpeeds.vxMetersPerSecond;
-    double yFF = targetState.fieldSpeeds.vyMetersPerSecond;
+    double xFF = targetState.fieldSpeeds.vxMetersPerSecond*2.25;
+    double yFF = targetState.fieldSpeeds.vyMetersPerSecond*2.25;
 
     if (!this.isEnabled) {
       return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, 0, currentPose.getRotation());
@@ -121,7 +125,7 @@ public class AdvancedPPHolonomicDriveController implements PathFollowingControll
         rotationController.calculate(
             currentPose.getRotation().getRadians(),
             targetRotation.getRadians() + rotSetpointIncrement.getAsDouble());
-    double rotationFF = targetState.fieldSpeeds.omegaRadiansPerSecond;
+    double rotationFF = targetState.fieldSpeeds.omegaRadiansPerSecond*3;
 
     if (xFeedbackOverride != null) {
       xFeedback = xFeedbackOverride.getAsDouble();

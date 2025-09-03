@@ -1,51 +1,77 @@
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorGains;
-import frc.robot.subsystems.LEDS.LEDS;
-import frc.robot.subsystems.Elevator.ElevatorIONeo;
-import frc.robot.subsystems.Elevator.ElevatorIOSim;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIONavX;
-// import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.GyroIOSim;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.spark.ModuleIOSpark;
-import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
-import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
-import frc.robot.subsystems.drive.spark.SparkOdometryThread;
-// import frc.robot.subsystems.drive.talon.ModuleIOTalonFX;
-// import frc.robot.subsystems.drive.talon.PhoenixOdometryThread;
-// import frc.robot.subsystems.drive.talon.TalonFXModuleConstants;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
-import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
-import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.FeetPerSecond;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.AlgaeArm.AlgaeArm;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmConstants;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIO;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIONeo;
+import frc.robot.subsystems.AlgaeArm.AlgaeArmIOSim;
+import frc.robot.subsystems.Clamps.Clamps;
+import frc.robot.subsystems.Clamps.ClampsConstants;
+import frc.robot.subsystems.Clamps.ClampsIOSim;
+import frc.robot.subsystems.Clamps.ClampsIOSparkMax;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.Elevator.ElevatorIONeo;
+import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerConstants;
+import frc.robot.subsystems.Indexer.IndexerIOSim;
+import frc.robot.subsystems.Indexer.IndexerIOSparkMax;
+import frc.robot.subsystems.LEDS.LEDS;
+import frc.robot.subsystems.Manipulator.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorConstants;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.Manipulator.ManipulatorIOSparkMax;
+import frc.robot.subsystems.beam_break.BeamBreak;
+import frc.robot.subsystems.beam_break.BeamBreakConstants;
+import frc.robot.subsystems.beam_break.BeamBreakIODigitialInput;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.spark.ModuleIOSpark;
+import frc.robot.subsystems.drive.spark.ModuleIOSparkSim;
+import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants;
+import frc.robot.subsystems.drive.spark.SparkOdometryThread;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.ButtonBoardButtons;
+import frc.robot.util.UtilitiesFieldSectioning;
+import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+import frc.robot.commands.*;
+import frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -54,128 +80,218 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
 //   private final Elevator elevator;
 //   private final LEDS led;
-  @SuppressWarnings("unused")
-  private final Vision vision;
+  
   // Simulation
   private SwerveDriveSimulation driveSimulation = null;
 
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
+  
+  //buttonboard
+  private static final CommandJoystick buttonboardController = new CommandJoystick(1);
+  
+  // Controller
+//   private final CommandXboxController testController = new CommandXboxController(2);
 
+  //triggers
+  private final Trigger yIsPressed = new Trigger(driverController.y());
+  private final Trigger povDownisPressed = new Trigger(driverController.povDown());
+  // private final Trigger leftXTrigger = new Trigger(()->(Math.abs(driverController.getLeftX()))>DriveCommands.DEADBAND);
+  // private final Trigger leftYTrigger = new Trigger(()->(Math.abs(driverController.getLeftY()))>DriveCommands.DEADBAND);
+  private final Trigger rightXTrigger = new Trigger(()->(Math.abs(driverController.getRightX()))>DriveCommands.DEADBAND);
+  private final Trigger rightXAndYTrigger = new Trigger(()->yIsPressed.getAsBoolean() || rightXTrigger.getAsBoolean());
+  // private final Trigger allTrigger = new Trigger(()->leftXTrigger.getAsBoolean() || leftYTrigger.getAsBoolean() || rightXTrigger.getAsBoolean());
+  private final Trigger leftTriggerPressed = new Trigger(driverController.leftTrigger());
+  //Subsystem Definitions
+  private final Drive drive;
+  @SuppressWarnings("unused")
+  private final Vision vision;
+  private final Manipulator shooter;
+  private final Indexer indexer;
+  @SuppressWarnings("unused")
+  private final BeamBreak beamBreakBack;
+  private final BeamBreak beamBreakTop;
+  private final Clamps Klamps;
+  private final Elevator elevator;
+  private final AlgaeArm algaeArm;
+  // public static final LEDS led = new LEDS(10); //TODO: Change length based on new robot leds
+  //commands
+  private Command shootCoralReg;
+  private Command indexdef;
+  // private Command ManipulatorShoot; 
+  // private Command ManipulatorStop;
+  // @SuppressWarnings("unused")
+  // private Command ManipulatorClear;
+  // private Command indexerStart;
+  // private Command indexerStop;
+  // private Command AlgaeArmPositionSet;
+  // private Command FeedandShoot;
+  // private Command faceReef;
+  // private Command takeOutAlgae;
+  // private SequentialCommandGroup SetUpShooter;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedNetworkNumber xOverride;
+  
+  public static boolean hasShotCoral = false;
+    
+      /** The container for the robot. Contains subsystems, OI devices, and commands. */
+      public RobotContainer() {
+        switch (Constants.currentMode) {
+          case REAL:
+            // Real robot, instantiate hardware IO implementations
+            drive =
+                new Drive(
+                    new GyroIONavX(),
+                    new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
+                    new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
+                    new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
+                    new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
+                    SparkOdometryThread.getInstance());
+            vision =
+                new Vision(
+                    drive::addVisionMeasurement,
+                    new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
+            shooter = new Manipulator(new ManipulatorIOSparkMax("Manipulator",ManipulatorConstants.CompBot_CONFIG) {}, ManipulatorConstants.REAL_GAINS);
+            indexer = new Indexer(new IndexerIOSparkMax("Indexer",IndexerConstants.CompBot_CONFIG) {}, IndexerConstants.REAL_GAINS);
+            beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+            beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+            // // pneumatics = new Pneumatics(new PneumaticsIO() {});
+          // funnel = new Funnel(new FunnelIO() {}, FunnelConstants.REAL_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIONeo("algae arm", AlgaeArmConstants.FunnelArm_CONFIG) {}, AlgaeArmConstants.FunnelArm_GAINS);
+          // // led = new LEDS(60);
+          Klamps = new Clamps( new ClampsIOSparkMax("Clamps", ClampsConstants.CompBot_CONFIG) , ClampsConstants.REAL_GAINS);
+          elevator =
+              new Elevator(
+                  new ElevatorIONeo("Elevator", ElevatorConstants.CompBot_CONFIG),
+                 ElevatorConstants.CompBot_GAINS);
+  
+          break;
+  
+        case SIM:
+          // create a maple-sim swerve drive simulation instance
+          driveSimulation =
+              new SwerveDriveSimulation(
+                  DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+          // add the simulated drivetrain to the simulation field
+          SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+          // // Sim robot, instantiate physics sim IO implementations
+          drive =
+              new Drive(
+                  new GyroIOSim(driveSimulation.getGyroSimulation()),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[0]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[1]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[2]),
+                  new ModuleIOSparkSim(driveSimulation.getModules()[3]),
+                  null);
+  
+          vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG), ManipulatorConstants.SIM_GAINS);
+          indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
+          Klamps = new Clamps(new ClampsIOSim("Klamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
+          // // funnel = new Funnel(new FunnelIOSim("funnelSim", FunnelConstants.EXAMPLE_CONFIG), FunnelConstants.SIM_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
+          // // led = new LEDS(60);
+          elevator =
+              new Elevator(
+                  new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
+          break;
+  
+        default:
+          // Replayed robot, disable IO implementations
+          drive =
+              new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  null);
+          vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+          shooter = new Manipulator(new ManipulatorIOSim("shooter", ManipulatorConstants.EXAMPLE_CONFIG) {}, ManipulatorConstants.SIM_GAINS);
+          indexer = new Indexer(new IndexerIOSim("indexerSim",IndexerConstants.EXAMPLE_CONFIG) {}, IndexerConstants.SIM_GAINS);
+          beamBreakBack = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak1",BeamBreakConstants.CONFIG_BEAM_BREAK_1) {});
+          beamBreakTop = new BeamBreak(new BeamBreakIODigitialInput("BeamBreak2",BeamBreakConstants.CONFIG_BEAM_BREAK_2) {});
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    switch (Constants.currentMode) {
-      case REAL:
-        // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIONavX(),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.frontRight),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearLeft),
-                new ModuleIOSpark(SparkMaxModuleConstants.rearRight),
-                SparkOdometryThread.getInstance());
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOLimelight("limelight", () -> drive.getPose().getRotation()));
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIONeo("Elevator", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
+          // // funnel = new Funnel(new FunnelIOReplay("funnelReplay"), FunnelConstants.SIM_GAINS);
+          algaeArm = new AlgaeArm(new AlgaeArmIOSim("AlgaeArm Sim", AlgaeArmConstants.FunnelArm_CONFIG), AlgaeArmConstants.FunnelArm_GAINS);
+          // // led = new LEDS(60);
+          Klamps = new Clamps(new ClampsIOSim("Lamps", ClampsConstants.EXAMPLE_CONFIG), ClampsConstants.SIM_GAINS);
+          elevator =
+              new Elevator(
+                  new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),ElevatorConstants.EXAMPLE_GAINS);
+          break;
+      }
+      //zero algae arm
+      // algaeArm.setArmZero();
+      // command definitions
+      // ManipulatorStop = Commands.run(()->shooter.setVelocity(0));
+      // FeedandShoot = new AllignShooterCommand(shooter, beamBreakBack,indexer);
+      // faceReef = DriveCommands.joystickDriveAtAngle(drive, ()->0, ()->0, ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians()));
+      // takeOutAlgae = new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(1)
+      //   .andThen(Commands.run(()->shooter.setVelocity(15))).withTimeout(1). andThen(new frc.robot.commands.AlgaeArmCommands.AlgaeArmPositionCommand(algaeArm,0)).withTimeout(1)
+      //   .alongWith(Commands.run(()->shooter.setVelocity(0))).withTimeout(1);
+      shootCoralReg = Commands.run(()->shooter.setVoltage(4));
+      //set up path planner commands
+    // NamedCommands.registerCommand("ManipulatorStop", ManipulatorStop);
+    // NamedCommands.registerCommand("takeOutAlgae", takeOutAlgae);
+    // NamedCommands.registerCommand("bottomAlgae", new GoToPositionElevator(elevator,0));
+    // NamedCommands.registerCommand("topAlgae", new GoToPositionElevator(elevator,4));
+    // NamedCommands.registerCommand("AlgaeArmPosition", AlgaeArmPositionSet);
+    
+    // NamedCommands.registerCommand("ScoreL3", 
+    //   (new GoToPositionElevator(elevator,27).until(()->elevator.isFinished())
+    //     .andThen(shootCoralReg)));
+    NamedCommands.registerCommand("ScoreL3", 
+      ((new GoToPositionElevator(elevator,27).until(()->elevator.isFinished()))
+        .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
+    NamedCommands.registerCommand("ScoreL2", 
+      ((new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished()))
+        .andThen(Commands.run(()->shooter.setVoltage(4)).withTimeout(0.5))));
+    // // NamedCommands.registerCommand("ScoreL2", 
+    //   (new GoToPositionElevator(elevator,10).until(()->elevator.isFinished())
+    //     .andThen(shootCoralReg.withTimeout(2))));
 
-        break;
+    // NamedCommands.registerCommand("ScoreL2", 
+    // (new GoToPositionElevator(elevator,9.5).until(()->elevator.isFinished())
+    //   .andThen(shootCoralReg)));
+    
+    NamedCommands.registerCommand("TOP De-algify",
+    (new AlgaeArmPositionCommand(algaeArm, 0.85).withTimeout(2)
+    .andThen(Commands.run(()->shooter.setVoltage(7)).withTimeout(1.5)
+    .alongWith(new GoToPositionElevator(elevator, 27)
+    ))));
 
-      case SIM:
-        // create a maple-sim swerve drive simulation instance
-        driveSimulation =
-            new SwerveDriveSimulation(
-                DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-        // add the simulated drivetrain to the simulation field
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        // Sim robot, instantiate physics sim IO implementations
-        drive =
-            new Drive(
-                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                new ModuleIOSparkSim(driveSimulation.getModules()[0]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[1]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[2]),
-                new ModuleIOSparkSim(driveSimulation.getModules()[3]),
-                null);
-
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOLimelight("", ()->new Rotation2d()));
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
-        break;
-
-      default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                null);
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        // led = new LEDS(60);
-        // elevator =
-        //     new Elevator(
-        //         new ElevatorIOSim("ElevatorSim", ElevatorConstants.EXAMPLE_CONFIG),
-        //         new ElevatorGains(
-        //             ElevatorConstants.EXAMPLE_GAINS.kP(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kI(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kD(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kS(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kV(),
-        //             ElevatorConstants.EXAMPLE_GAINS.kA()));
-        break;
-    }
-
+    NamedCommands.registerCommand("IntakeCoral", (new AllignShooterCommand(shooter, beamBreakBack, indexer)));
+    NamedCommands.registerCommand("ResetElevator", (new GoToPositionElevator(elevator, 0)));
+    NamedCommands.registerCommand("shootCoral", shootCoralReg);
+    NamedCommands.registerCommand("ScoreTrough", (Commands.run(()->shooter.setVoltage(7)).withTimeout(1.5)));
     // Set up auto routines
+
+    // // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     xOverride = new LoggedNetworkNumber("/PPOverrides", 0.0);
-
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // led.runLEDS();
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption("TOP 3P; L3L2L1", new PathPlannerAuto("TOP 3P; L3L2L1"));
+    // autoChooser.addOption("PUSH Trough", new PathPlannerAuto("PUSH Trough"));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -187,26 +303,23 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
-            () -> -driverController.getRightX()));
+    //Main drive controls
+    // drive.setDefaultCommand(DriveCommands.joystickDrive(drive, 
+    //   ()->-driverController.getLeftY(), 
+    //   ()->-driverController.getLeftX(),
+    //   ()-> -driverController.getRightX()));
+    
+    rightXAndYTrigger.whileTrue(DriveCommands.joystickDrive(drive, 
+      ()->-driverController.getLeftY(), 
+      ()->-driverController.getLeftX(),
+      ()-> -driverController.getRightX()))
+    .whileFalse(DriveCommands.joystickDriveAtAngle(drive,
+      ()->-driverController.getLeftY(), 
+      ()->-driverController.getLeftX(),
+      ()->new Rotation2d(UtilitiesFieldSectioning.getClosestSection(drive.getPose()).getRotation().getRadians())));
+    
+    algaeArm.setDefaultCommand(new AlgaeArmPositionCommand(algaeArm, 0.142));
 
-    // Lock to 0° when A button is held
-    driverController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> new Rotation2d()));
-
-    // Switch to X pattern when X button is pressed
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -225,13 +338,116 @@ public class RobotContainer {
                                 ? new Rotation2d(Math.PI)
                                 : new Rotation2d())
                             : new Rotation2d())); // zero gyro
-    // Reset gyro to 0° when B button is pressed
-    driverController.b().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
-    driverController.y().whileTrue(drive.generatePath(new Pose2d(3.589,5.334, Rotation2d.fromDegrees(-128.721))));
-    driverController.povUp().whileTrue(drive.generatePath(new Pose2d(3.483,7.142, Rotation2d.fromDegrees(108.814))));
+    
+    //Gyro reset - Reset gyro to 0° when button is pressed
+    driverController.back()
+        .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    // driverController.a().onTrue(Commands.run(() -> elevator.periodic(), elevator));
+    //Shoot
+    driverController.leftBumper()
+        .onTrue(Commands.runOnce(()->shooter.setVelocity(-5)))
+        .onFalse(Commands.runOnce(()->shooter.setVelocity(0)));
+    
+    //Full Algae thing
+    driverController.rightBumper()
+        .whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.85)
+          .andThen(Commands.run(()->shooter.setVoltage(7))))
+        .whileFalse(Commands.run(()->shooter.setVelocity(0)));
+    //driverController.leftStick().whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.F1, elevator));
+    //Intake
+    driverController.x()
+        .onTrue(new AllignShooterCommand(shooter, beamBreakBack, indexer).withTimeout(4)).whileFalse(Commands.run(()->indexer.setVoltage(0)));
 
+    //Arm movement
+    driverController.a()
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(-25)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    driverController.povDown()
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(18)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
+    //Turbo
+    driverController.leftTrigger()
+        .whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(27.5)))
+        .whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(5)));
+    
+    //Auto Climb
+    driverController.b().and(()->!beamBreakTop.beamBreakTripped())
+        .whileTrue(Commands.run(() -> Klamps.setVoltage(21)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+          .andThen(Commands.run(()->Klamps.setVoltage(0))));
+
+    //Climb override
+
+
+
+
+
+    //Test Commands:
+
+    // driverController.a().whileTrue(new AlgaeArmPositionCommand(algaeArm, 1.8));
+    // driverController.x().whileTrue(new AlgaeArmPositionCommand(algaeArm, 0.14));
+    // driverController.b().onTrue(Commands.runOnce(() ->shooter.setVelocity(10))).onFalse(Commands.runOnce(() ->shooter.setVelocity(0)));
+    // driverController.leftBumper().whileTrue(new ShootCoral(shooter, elevator).withTimeout(3));
+    // driverController.leftBumper().whileTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.b().whileTrue(new Climber(Klamps,beamBreakTop).withInterruptBehavior(InterruptionBehavior.kCancelSelf)).onFalse(Commands.run(()->Klamps.setVoltage(0)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // driverController.leftTrigger().whileTrue(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(2))).whileFalse(Commands.run(()->DriveConstants.maxSpeedAt12Volts = FeetPerSecond.of(16)));
+    // driverController.povUp().onTrue(Commands.runOnce(() ->elevator.incrementPosition(0.5)).ignoringDisable(true));
+    // driverController.povDown().onTrue(Commands.runOnce(() ->elevator.incrementPosition(-0.5)).ignoringDisable(true));
+    // driverController.a().whileTrue(DriveCommands.wheelRadiusCharacterization(drive));
+    
+    // Elevator Zero
+    // driverController.povRight().onTrue(Commands.runOnce(()->elevator.zeroPosition()).ignoringDisable(true).andThen(new GoToPositionElevator(elevator, 0)).ignoringDisable(true));
+    // driverController.x().whileTrue(Commands.run(()->UtilitiesFieldSectioning.isCloseToReef(drive.getPose())));
+
+    //trigger controls
+    // yIsPressed.whileFalse(ManipulatorStop).whileTrue(ManipulatorShoot);
+    // povDownisPressed.whileFalse(indexerStop).whileTrue(indexerStart);
+
+
+    // Switch to X pattern when X button is pressed
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+
+    
+
+    //driverController.leftStick().whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.F1, elevator));
+
+    ButtonBoardButtons.LEVEL_1.whileTrue(new GoToPositionElevator(elevator,0.25).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_2.whileTrue(new GoToPositionElevator(elevator,4).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_3.whileTrue(new GoToPositionElevator(elevator,11).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    ButtonBoardButtons.LEVEL_4.whileTrue(new GoToPositionElevator(elevator,28).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    if (DriverStation.getAlliance().isPresent()
+    && DriverStation.getAlliance().get() == Alliance.Blue){
+      // ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1));
+      ButtonBoardButtons.L2.onTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L3, ()->drive.getPose(), elevator, () ->
+      DriveCommands.getLinearVelocityFromJoysticks(
+        driverController.getLeftX(), driverController.getLeftY()),//TODO: make work with red
+        () -> driverController.getRightX()));
+      ButtonBoardButtons.L3.whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L3, elevator));
+      ButtonBoardButtons.L4.whileTrue(new AutoDriveToPoseCommand(drive, ()->UtilitiesFieldSectioning.L4, elevator));
+      // ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5));
+      // ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6));
+      // ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1));
+      // ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2));
+      // ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3));
+      // ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4));
+      // ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5));
+      // ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6));
+    }
+    // else if (DriverStation.getAlliance().isPresent()
+    // && DriverStation.getAlliance().get() == Alliance.Red) {
+    //   ButtonBoardButtons.L1.onTrue(drive.generatePath(UtilitiesFieldSectioning.L1Red));
+    //   ButtonBoardButtons.L2.onTrue(drive.generatePath(UtilitiesFieldSectioning.L2Red));
+    //   ButtonBoardButtons.L3.onTrue(drive.generatePath(UtilitiesFieldSectioning.L3Red));
+    //   ButtonBoardButtons.L4.onTrue(drive.generatePath(UtilitiesFieldSectioning.L4Red));
+    //   ButtonBoardButtons.L5.onTrue(drive.generatePath(UtilitiesFieldSectioning.L5Red));
+    //   ButtonBoardButtons.L6.onTrue(drive.generatePath(UtilitiesFieldSectioning.L6Red));
+    //   ButtonBoardButtons.R1.onTrue(drive.generatePath(UtilitiesFieldSectioning.R1Red));
+    //   ButtonBoardButtons.R2.onTrue(drive.generatePath(UtilitiesFieldSectioning.R2Red));
+    //   ButtonBoardButtons.R3.onTrue(drive.generatePath(UtilitiesFieldSectioning.R3Red));
+    //   ButtonBoardButtons.R4.onTrue(drive.generatePath(UtilitiesFieldSectioning.R4Red));
+    //   ButtonBoardButtons.R5.onTrue(drive.generatePath(UtilitiesFieldSectioning.R5Red));
+    //   ButtonBoardButtons.R6.onTrue(drive.generatePath(UtilitiesFieldSectioning.R6Red));
+    // }
+    
     AdvancedPPHolonomicDriveController.setYSetpointIncrement(xOverride::get);
   }
 
@@ -243,7 +459,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
-
+  public static CommandJoystick getButtonBoard() {
+    return buttonboardController;
+  } 
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 

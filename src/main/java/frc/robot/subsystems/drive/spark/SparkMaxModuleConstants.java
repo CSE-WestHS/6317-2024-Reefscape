@@ -13,25 +13,26 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class SparkMaxModuleConstants {
   // Drive PID configuration
-  public static final double driveKp = 0.0;
-  public static final double driveKd = 0.0;
-  public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKp = 0.012;
+  public static final double driveKd = 0.002;
+  public static final double driveKs = 0;
+  public static final double driveKv = 0.012;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.0;
   public static final double driveSimKv = 0.0789;
 
   // Turn PID configuration
-  public static final double turnKp = 5.0;
-  public static final double turnKd = 0.0;
-  public static final double turnSimP = 8.0;
+  public static final double turnKp = 1.5;
+  public static final double turnKd = 0.15;
+  public static final double turnKs = 0.0;
+  public static final double turnKv = 0.1;
+  public static final double turnSimP = 16.0;
   public static final double turnSimD = 0.0;
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
@@ -103,12 +104,18 @@ public class SparkMaxModuleConstants {
       Angle CANCoderOffset,
       boolean invertDrive,
       boolean invertSteer) {}
-  // CanID change: Used for global find
-  public static final ModuleSpecificConfiguration frontLeft = new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(-0.152832), true, true);
-  public static final ModuleSpecificConfiguration frontRight = new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.005859), true, true);
+  // CanID change: Used for global findP
+  public static final ModuleSpecificConfiguration frontLeft = new ModuleSpecificConfiguration(9, 10, 16, Rotations.of(-0.225586), true, true);
+  public static final ModuleSpecificConfiguration frontRight = new ModuleSpecificConfiguration(1, 2, 15, Rotations.of(0.072998), true, true);
       
-  public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(-0.055176), true, true);
+  public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(7, 6, 17, Rotations.of(0.156982), true, true);
+  public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(4, 5, 18, Rotations.of( 0.265625), true, true);
+
+
+//   public static final ModuleSpecificConfiguration frontLeft = new ModuleSpecificConfiguration(3, 1, 2, Rotations.of(-0.152832), true, true);
+//   public static final ModuleSpecificConfiguration frontRight = new ModuleSpecificConfiguration(6, 4, 5, Rotations.of(0.005859), true, true);
       
-  public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.350830), true, true);
-     
+//   public static final ModuleSpecificConfiguration rearLeft =  new ModuleSpecificConfiguration(12, 10, 11, Rotations.of(-0.055176), true, true);
+      
+//   public static final ModuleSpecificConfiguration rearRight = new ModuleSpecificConfiguration(9, 7, 8, Rotations.of(0.350830), true, true);
 }

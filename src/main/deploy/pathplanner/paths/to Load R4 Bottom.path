@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.169,
+        "y": 2.6501498287671232
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.120233552631579,
+        "y": 1.918899828767123
+      },
+      "isLocked": false,
+      "linkedName": "Reef R4"
+    },
+    {
+      "anchor": {
+        "x": 1.5,
+        "y": 0.775
+      },
+      "prevControl": {
+        "x": 2.23125,
+        "y": 1.1887335526315779
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BOTTOM Loading Pos"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 55.55606224646741
+  },
+  "reversed": false,
+  "folder": "Processpor Side Auto",
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

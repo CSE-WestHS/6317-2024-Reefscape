@@ -35,11 +35,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.spark.SparkMaxModuleConstants.ModuleSpecificConfiguration;
-import frc.robot.subsystems.drive.TalonFXModuleConstants;
 import frc.robot.util.PhoenixUtil;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
@@ -94,7 +91,7 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig.inverted(constants.invertDrive());
     tryUntilOk(
         driveSpark,
-        5,
+        50,
         () ->
             driveSpark.configure(
                 driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
@@ -116,7 +113,7 @@ public class ModuleIOSpark implements ModuleIO {
     
     tryUntilOk(
         turnSpark,
-        5,
+        50,
         () ->
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
@@ -154,6 +151,12 @@ public class ModuleIOSpark implements ModuleIO {
             SparkMaxModuleConstants.driveKd,
             SparkMaxModuleConstants.driveKs,
             SparkMaxModuleConstants.driveKv,
+            0.0,
+            SparkMaxModuleConstants.turnKp,
+            0.0,
+            SparkMaxModuleConstants.turnKd,
+            SparkMaxModuleConstants.turnKs,
+            SparkMaxModuleConstants.turnKv,
             0.0);
   }
 
@@ -240,15 +243,24 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setGains(ModuleGains gains) {
     this.gains = gains;
-
+    
     tryUntilOk(
         driveSpark,
         5,
         () ->
             driveSpark.configure(
                 driveConfig.apply(
-                    new ClosedLoopConfig().pidf(gains.kP(), gains.kI(), gains.kD(), gains.kV())),
+                    new ClosedLoopConfig().pidf(gains.drivekP(), gains.drivekI(), gains.drivekD(), gains.drivekV())),
                 ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters));
+                PersistMode.kPersistParameters));
+    tryUntilOk(
+        turnSpark,
+        5,
+        () ->
+            turnSpark.configure(
+            turnConfig.apply(
+                new ClosedLoopConfig().pidf(gains.turnkP(), gains.turnkI(), gains.turnkD(), gains.turnkV())),
+            ResetMode.kNoResetSafeParameters,
+            PersistMode.kPersistParameters));
   }
 }

@@ -1,18 +1,79 @@
 package frc.robot.subsystems.Elevator;
 
-public class ElevatorConstants {
-  public record ElevatorGains(double kP, double kI, double kD, double kS, double kV, double kA) {}
+import edu.wpi.first.math.geometry.Rotation2d;
 
+public class ElevatorConstants {
+  public enum GravityType {
+    CONSTANT,
+    COSINE,
+    // Not supported by TalonFX
+    SINE
+  }
+
+  public enum EncoderType {
+    INTERNAL,
+    EXTERNAL_CANCODER,
+    EXTERNAL_DIO,
+    EXTERNAL_SPARK
+  }
+
+  public record ElevatorGains(
+      double kP,
+      double kI,
+      double kD,
+      double kS,
+      double kG,
+      double kV,
+      double kA,
+      double kMaxVelo,
+      double kMaxAccel,
+      double kMinPosition,
+      double kMaxPosition,
+      double kTolerance) {}
+
+  // Position Joint Gear Ratio should be multiplied by Math.PI * 2 for rotation joints to convert
+  // from rotations to radians
   public record ElevatorHardwareConfig(
-      int[] canIds, boolean[] reversed, double gearRatio, String canBus) {}
+      int[] canIds,
+      boolean[] reversed,
+      double gearRatio,
+      int currentLimit,
+      GravityType gravity,
+      EncoderType encoderType,
+      int encoderID,
+      Rotation2d encoderOffset,
+      String canBus) {}
+
+  public static final ElevatorGains EXAMPLE_GAINS =
+      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 1000.0, 1200.0, 0.0, 30, 0.2);
 
   public static final ElevatorHardwareConfig EXAMPLE_CONFIG =
       new ElevatorHardwareConfig(
-          new int[] {1, 2}, new boolean[] {true, false}, 24.0 / 48.0, "CANBus");
+          new int[] {3,8},//{3,8}
+          new boolean[] {false,true},
+          1/( 2.8),//2.8 gives inches of travel //85.33333 * 2 * Math.PI
+          20,
+          GravityType.CONSTANT,
+          EncoderType.INTERNAL,
+          9999, //TODO: ID
+          Rotation2d.fromRotations(0),
+          "");
 
-  public static final ElevatorGains EXAMPLE_GAINS =
-      new ElevatorGains(0.2, 0.0, 0.0, 0.0, 0.065, 0.0);
+
+
+
+  public static final ElevatorGains CompBot_GAINS =
+      new ElevatorGains(0.1, 0.0, 0, 0.0, 0.08, .50, 0.01, 75.0, 120.0, 0.0, 30, 0.2);
     
-  public static final double MINPOS = 0;
-  public static final double MAXPOS = 0;
+  public static final ElevatorHardwareConfig CompBot_CONFIG =
+      new ElevatorHardwareConfig(
+          new int[] {3,8},//{3,8}
+          new boolean[] {false, true},
+          1/( 2.8),//2.8 gives inches of travel //85.33333 * 2 * Math.PI
+          18,
+          GravityType.CONSTANT,
+          EncoderType.INTERNAL,
+          9999, //TODO: ID
+          Rotation2d.fromRotations(0),
+          "");
 }

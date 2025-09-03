@@ -1,5 +1,12 @@
 package frc.robot.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -12,39 +19,44 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
+import frc.robot.subsystems.drive.ModuleIO.ModuleGains;
+import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
-  private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  public static final double DEADBAND = 0.1;
+  public static double ANGLE_KP = 5;
+  public static double ANGLE_KD = 0.0;
+  public static final double ANGLE_MAX_VELOCITY = 20.0;
+  public static final double ANGLE_MAX_ACCELERATION = 10.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
-  private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 4; // Rad/Sec
+  private static final double WHEEL_RADIUS_RAMP_RATE = 0.5; // Rad/Sec^2
+  public static LoggedTunableNumber Kp = new LoggedTunableNumber("kp drive cmd",ANGLE_KP);
+ // private final LoggedTunableNumber Ki;
+  public static LoggedTunableNumber Kd = new LoggedTunableNumber("Kd drive cmd",ANGLE_KD);
 
-  private DriveCommands() {}
+  private DriveCommands() {
+    //tuneable number test 
+    Kp = new LoggedTunableNumber("kp drive cmd",ANGLE_KP);
+    Kd = new LoggedTunableNumber("Kd drive cmd",ANGLE_KD);
+  }
 
-  private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+  public static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
     // Apply deadband
     double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
     Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
 
     // Square magnitude for more precise control
     linearMagnitude = linearMagnitude * linearMagnitude;
-
+    
+  
     // Return new linear velocity
     return new Pose2d(new Translation2d(), linearDirection)
         .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
@@ -107,14 +119,17 @@ public class DriveCommands {
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
+    angleController.setTolerance(Units.degreesToRadians(5));
 
     // Construct command
     return Commands.run(
             () -> {
+              //set pid controller with new values from advantage scope
+              angleController.setPID(ANGLE_KP, 0, ANGLE_KD);
               // Get linear velocity
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-
+              
               // Calculate angular speed
               double omega =
                   angleController.calculate(
@@ -279,5 +294,10 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = new Rotation2d();
     double gyroDelta = 0.0;
+  }
+  public static void setDriveConstantPID(double Kd_v,double KP_v){
+    ANGLE_KP=KP_v;
+    ANGLE_KD=Kd_v;
+    
   }
 }

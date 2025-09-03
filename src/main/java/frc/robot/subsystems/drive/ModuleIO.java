@@ -41,10 +41,10 @@ public interface ModuleIO {
   public default void setTurnPosition(Rotation2d rotation) {}
 
   public default ModuleGains getGains() {
-    return new ModuleGains(0, 0, 0, 0, 0, 0);
+    return new ModuleGains(0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0);
   }
 
   public default void setGains(ModuleGains gains) {}
 
-  public record ModuleGains(double kP, double kI, double kD, double kS, double kV, double kA) {}
+  public record ModuleGains(double drivekP, double drivekI, double drivekD, double drivekS, double drivekV, double drivekA,double turnkP, double turnkI, double turnkD, double turnkS, double turnkV, double turnkA) {}
 }

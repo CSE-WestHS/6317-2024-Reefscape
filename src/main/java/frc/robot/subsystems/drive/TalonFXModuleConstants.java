@@ -16,7 +16,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.*;
-import frc.robot.subsystems.drive.DriveConstants;
 
 public class TalonFXModuleConstants {
   public static String CANBusName = "Drive";

@@ -7,6 +7,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -27,13 +29,17 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.drive.spark.ModuleIOSpark;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.pathplanner.AdvancedPPHolonomicDriveController;
+import frc.robot.util.mechanical_advantage.LoggedTunableNumber;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -82,13 +88,16 @@ public class Drive extends SubsystemBase {
     }
 
     // Configure AutoBuilder for PathPlanner
+
+
     AutoBuilder.configure(
         this::getPose,
         this::setPose,
         this::getChassisSpeeds,
+        // () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new AdvancedPPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(5.0, 2, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
         DriveConstants.ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -136,6 +145,7 @@ public class Drive extends SubsystemBase {
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      
     }
 
     // Update odometry
@@ -170,7 +180,15 @@ public class Drive extends SubsystemBase {
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
       
     }
-
+    // //log drive commands pid values
+    // SmartDashboard.putNumber("kp", DriveCommands.ANGLE_KP);
+    // SmartDashboard.putNumber("kd", DriveCommands.ANGLE_KD);
+    // LoggedTunableNumber.ifChanged(2000,() -> {
+    //   DriveCommands.setDriveConstantPID(DriveCommands.Kd.get(),DriveCommands.Kp.get());
+    //   },
+    //   DriveCommands.Kp,DriveCommands.Kd);
+    // //run LEDS
+    // RobotContainer.led.runLEDS();
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
@@ -186,12 +204,13 @@ public class Drive extends SubsystemBase {
         speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, 0.2);
 
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
+    Logger.recordOutput("SwerveStates/preDesaturate", setpointStates);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.maxSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
-
+    Logger.recordOutput("SwerveChassisSpeeds/driveVelocity", setpointStates[0].speedMetersPerSecond);
+    Logger.recordOutput("SwerveStates/MaxSpeed", DriveConstants.maxSpeedAt12Volts);
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       modules[i].runSetpoint(setpointStates[i]);
@@ -259,7 +278,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  private ChassisSpeeds getChassisSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -321,8 +340,7 @@ public class Drive extends SubsystemBase {
     return DriveConstants.moduleTranslations;
   }
   public Command generatePath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(2,1,Units.degreesToRadians(540),Units.degreesToRadians(720));
-    
+    PathConstraints constraints = new PathConstraints(Units.feetToMeters(8),Units.feetToMeters(4),Units.degreesToRadians(240),Units.degreesToRadians(120));
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0);
   }
 }

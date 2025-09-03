@@ -122,14 +122,14 @@ public class ModuleIOSim implements ModuleIO {
 
   @Override
   public ModuleGains getGains() {
-    return new ModuleGains(DRIVE_KP, 0, DRIVE_KD, DRIVE_KS, DRIVE_KV, 0);
+    return new ModuleGains(DRIVE_KP, 0, DRIVE_KD, DRIVE_KS, DRIVE_KV, 0,DRIVE_KP, 0, DRIVE_KD, DRIVE_KS, DRIVE_KV, 0);
   }
 
   @Override
   public void setGains(ModuleGains gains) {
-    driveController.setP(gains.kP());
-    driveController.setI(gains.kI());
-    driveController.setD(gains.kD());
-    driveFFVolts = gains.kS();
+    driveController.setP(gains.drivekP());
+    driveController.setI(gains.drivekI());
+    driveController.setD(gains.drivekD());
+    driveFFVolts = gains.drivekS();
   }
 }
